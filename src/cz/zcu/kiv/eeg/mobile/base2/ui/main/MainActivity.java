@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.mobile.base2.ui.main;
 import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.*;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -23,17 +24,19 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.R.id;
+import cz.zcu.kiv.eeg.mobile.base2.R.layout;
+import cz.zcu.kiv.eeg.mobile.base2.R.menu;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
-import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItem;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
-
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private TaskFragment mTaskFragment;  //
+    private TaskFragment mTaskFragment; //
     private ProgressBar mProgressBar;
     private ProgressDialog progressDialog; // todo volatile
     private TextView mPercent;
@@ -43,25 +46,30 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
 	Log.i(TAG, "onCreate(Bundle)");
 	super.onCreate(savedInstanceState);
+		
 	Form form = new Form();
 	form.setType("OsobaPokus");
-	
-	
-	
-	//FormDAO personDao = new FormDAO(this);
-	//personDao.saveOrUpdate(form);
-	
-	
-	/*setContentView(R.layout.base_person_add);
-	findViewById(R.id.person_name_label).setOnTouchListener(new MyTouchListener());
-	findViewById(R.id.person_surname_label).setOnTouchListener(new MyTouchListener());
-	findViewById(R.id.person_name_value).setOnTouchListener(new MyTouchListener());
-	
-	findViewById(R.id.person_name_label).setOnDragListener(new MyDragListener());
-	findViewById(R.id.person_surname_label).setOnDragListener(new MyDragListener());
-	findViewById(R.id.person_name_value).setOnDragListener(new MyDragListener());*/
-	
-	
+
+	// FormDAO personDao = new FormDAO(this);
+	// personDao.saveOrUpdate(form);
+
+	/*
+	 * setContentView(R.layout.base_person_add);
+	 * findViewById(R.id.person_name_label).setOnTouchListener(new
+	 * MyTouchListener());
+	 * findViewById(R.id.person_surname_label).setOnTouchListener(new
+	 * MyTouchListener());
+	 * findViewById(R.id.person_name_value).setOnTouchListener(new
+	 * MyTouchListener());
+	 * 
+	 * findViewById(R.id.person_name_label).setOnDragListener(new
+	 * MyDragListener());
+	 * findViewById(R.id.person_surname_label).setOnDragListener(new
+	 * MyDragListener());
+	 * findViewById(R.id.person_name_value).setOnDragListener(new
+	 * MyDragListener());
+	 */
+
 	setContentView(R.layout.activity_main);
 	mProgressBar = (ProgressBar) findViewById(R.id.progress_horizontal);
 	mPercent = (TextView) findViewById(R.id.percent_progress);
@@ -76,17 +84,28 @@ public class MainActivity extends FragmentActivity {
 		}
 	    }
 	});
+
+	Button dashboardButton = (Button) findViewById(R.id.dashboardButton);
+	dashboardButton.setOnClickListener(new OnClickListener() {
+
+	    @Override
+	    public void onClick(View v) {
+		System.out.println("pokusnicek");
+		openDashboard();
+	    }
+	});
+
 	RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main_layout);
-	LinearLayout lin = new ViewBuilder(this).getLinearLayout("Person-generated");
-	
-	RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-	        ViewGroup.LayoutParams.WRAP_CONTENT);
+	/*LinearLayout lin = new ViewBuilder(this).getLinearLayout("Person-generated");
+
+	RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(
+		ViewGroup.LayoutParams.WRAP_CONTENT, 
+		ViewGroup.LayoutParams.WRAP_CONTENT);
 
 	p.addRule(RelativeLayout.BELOW, R.id.data);
-	layout.addView(lin, p);
-	
-	
-    // asynchr. tasky
+	layout.addView(lin, p);*/
+
+	// asynchr. tasky
 	FragmentManager fm = getSupportFragmentManager();
 	mTaskFragment = (TaskFragment) fm.findFragmentByTag("task");
 
@@ -97,7 +116,7 @@ public class MainActivity extends FragmentActivity {
 
 	if (mTaskFragment.state == RUNNING) {
 	    mProgressBar.setProgress(mTaskFragment.progress); // asi ani nen�
-							      // pot�ebapot�eba
+	    // pot�ebapot�eba
 	    showProgressDialog("");
 	    mButton.setText("Cancel");
 	} else {
@@ -105,71 +124,43 @@ public class MainActivity extends FragmentActivity {
 	}
     }
 
-    //ToDo - do samostatn�ch t��d - bal�k com.mobile.editor
-    private final class MyTouchListener implements OnTouchListener {
-	public boolean onTouch(View view, MotionEvent motionEvent) {
-	    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-		ClipData data = ClipData.newPlainText("", "");
-		DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);		
-		view.startDrag(data, shadowBuilder, view, 0);
-		view.setVisibility(View.INVISIBLE);
-		return true;
-	    } else {
-		return false;
-	    }
-	}
-    }
-
-  //ToDo - do samostatn�ch t��d editor
-    class MyDragListener implements OnDragListener {
-	Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
-	Drawable normalShape = getResources().getDrawable(R.drawable.shape);
-
-	@Override
-	public boolean onDrag(View viewB, DragEvent event) {
-	    int action = event.getAction();
-	    switch (event.getAction()) {
-	    case DragEvent.ACTION_DRAG_STARTED:
-		// Do nothing
-		break;
-	    case DragEvent.ACTION_DRAG_ENTERED:
-		viewB.setBackgroundDrawable(enterShape);
-		//v.setBackgroundColor(50);
-		break;
-	    case DragEvent.ACTION_DRAG_EXITED:
-		viewB.setBackgroundDrawable(normalShape);
-		break;
-	    case DragEvent.ACTION_DROP:
-		View viewA = (View) event.getLocalState();
-		ViewGroup layout = (ViewGroup) viewA.getParent();
-		int indexA = layout.indexOfChild(viewA);
-		int indexB = layout.indexOfChild(viewB);
-		
-		
-		if(indexA > indexB){
-		    layout.removeView(viewB);
-		    layout.removeView(viewA);
-		    layout.addView(viewA, indexB);
-		    layout.addView(viewB, indexA);
-		}
-		else{
-		    layout.removeView(viewA);
-		    layout.removeView(viewB);	
-		    layout.addView(viewB, indexA);
-		    layout.addView(viewA, indexB);
-		    
-		}
-		
-		viewA.setVisibility(View.VISIBLE);								
-		break;
-	    case DragEvent.ACTION_DRAG_ENDED:
-		viewB.setBackgroundDrawable(normalShape);
-	    default:
-		break;
-	    }
-	    return true;
-	}
-    }
+    // ToDo - do samostatn�ch t��d - bal�k com.mobile.editor
+    /*
+     * private final class MyTouchListener implements OnTouchListener { public
+     * boolean onTouch(View view, MotionEvent motionEvent) { if
+     * (motionEvent.getAction() == MotionEvent.ACTION_DOWN) { ClipData data =
+     * ClipData.newPlainText("", ""); DragShadowBuilder shadowBuilder = new
+     * View.DragShadowBuilder( view); view.startDrag(data, shadowBuilder, view,
+     * 0); view.setVisibility(View.INVISIBLE); return true; } else { return
+     * false; } } }
+     * 
+     * // ToDo - do samostatn�ch t��d editor class MyDragListener implements
+     * OnDragListener { Drawable enterShape = getResources().getDrawable(
+     * R.drawable.shape_droptarget); Drawable normalShape =
+     * getResources().getDrawable(R.drawable.shape);
+     * 
+     * @Override public boolean onDrag(View viewB, DragEvent event) { int action
+     * = event.getAction(); switch (event.getAction()) { case
+     * DragEvent.ACTION_DRAG_STARTED: // Do nothing break; case
+     * DragEvent.ACTION_DRAG_ENTERED: viewB.setBackgroundDrawable(enterShape);
+     * // v.setBackgroundColor(50); break; case DragEvent.ACTION_DRAG_EXITED:
+     * viewB.setBackgroundDrawable(normalShape); break; case
+     * DragEvent.ACTION_DROP: View viewA = (View) event.getLocalState();
+     * ViewGroup layout = (ViewGroup) viewA.getParent(); int indexA =
+     * layout.indexOfChild(viewA); int indexB = layout.indexOfChild(viewB);
+     * 
+     * if (indexA > indexB) { layout.removeView(viewB);
+     * layout.removeView(viewA); layout.addView(viewA, indexB);
+     * layout.addView(viewB, indexA); } else { layout.removeView(viewA);
+     * layout.removeView(viewB); layout.addView(viewB, indexA);
+     * layout.addView(viewA, indexB);
+     * 
+     * }
+     * 
+     * viewA.setVisibility(View.VISIBLE); break; case
+     * DragEvent.ACTION_DRAG_ENDED: viewB.setBackgroundDrawable(normalShape);
+     * default: break; } return true; } }
+     */
 
     public void changeProgress(final int percent) {
 	Log.i(TAG, "onProgressUpdate(" + percent + "%)");
@@ -266,6 +257,10 @@ public class MainActivity extends FragmentActivity {
     protected void onDestroy() {
 	Log.i(TAG, "onDestroy()");
 	super.onDestroy();
+    }
+
+    public void openDashboard() {
+	startActivity(new Intent(this, DashboardActivity.class));
     }
 
 }

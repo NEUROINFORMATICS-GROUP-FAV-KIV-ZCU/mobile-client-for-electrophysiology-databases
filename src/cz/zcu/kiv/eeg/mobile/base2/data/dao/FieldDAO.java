@@ -4,7 +4,11 @@ import java.sql.SQLException;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.DataSet;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
@@ -30,11 +34,36 @@ public class FieldDAO {
 		return null;
 	}
 
-	public Field saveOrUpdate(final String name, final String type, final Form form) {
+	public Field saveOrUpdate(final String name, final String type,
+			final Form form) {
 		try {
-			Field field = new Field(name, type, form);			
+			Field field = new Field(name, type, form);
 			getFieldDao().createOrUpdate(field);
 			return field;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Field getField(final int id) {
+		try {
+			return getFieldDao().queryForId(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Field getFieldByNameAndForm(final String name, final String formId) {
+		try {		 	
+			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();			
+			Where<Field, Integer> where = queryBuilder.where();		
+			where.eq("form_id", formId);		
+			where.and();		
+			where.eq("name", name);
+			PreparedQuery<Field> preparedQuery = queryBuilder.prepare();			
+			return getFieldDao().queryForFirst(preparedQuery);						
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

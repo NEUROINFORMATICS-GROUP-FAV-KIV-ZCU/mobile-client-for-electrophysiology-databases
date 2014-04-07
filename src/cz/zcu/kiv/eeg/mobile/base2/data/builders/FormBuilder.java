@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 
 import android.content.Context;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItem;
 
 public class FormBuilder {
 	private DAOFactory daoFactory;
@@ -38,8 +40,8 @@ public class FormBuilder {
 			this.xmlData = getStringFromInputStream(readOdmlFromFile());  //todo testovaci
 			
 			//odmlRoot = reader.loadAxim(data.getBody().getInputStream()); todo live
-			odmlRoot = reader.loadAxim(readOdmlFromFile()); // todo testovaci
-			odmlForm = odmlRoot.getSection(0);
+			odmlRoot = reader.load(readOdmlFromFile()); // todo testovaci
+			odmlForm = odmlRoot.getSection(0);							
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,8 +54,12 @@ public class FormBuilder {
 			Layout layout = saveLayout();
 			saveFormLayouts(form, layout);
 			createFields(odmlForm.getSections(), form, layout);
-			//String layoutik = daoFactory.getLayoutDAO().getLayoutByName("Person-generated").getXmlData();
-			//System.out.println(layoutik);
+			
+			MenuItem item0 = new MenuItem("Dashboard", layout);
+			daoFactory.getMenuItemDAO().saveOrUpdate(item0);				
+			MenuItem item1 = new MenuItem("Testovaci formulář", layout);
+			daoFactory.getMenuItemDAO().saveOrUpdate(item1);					
+			
 		} else {
 			// TODO error pokud neexistuje
 		}
@@ -62,6 +68,7 @@ public class FormBuilder {
 	public void createFields(Vector<Section> sections, Form form, Layout layout) {
 		for (Section section : sections) {
 			if (section.getType().equalsIgnoreCase(ELEMENT_SET)) {
+				//todo upravit na form
 				createFields(section.getSections(), form, layout);
 			} else if (section.getType().equalsIgnoreCase(ELEMENT_FORM)) {
 				 form = saveForm(section);
@@ -88,7 +95,11 @@ public class FormBuilder {
 	}
 	
 	private void saveField(Section field, Form form) {
-		daoFactory.getFieldDAO().saveOrUpdate(field.getName(), field.getType(), form);
+		Field mField = new Field(field.getName(), field.getType(), form);
+		if(field.getProperty("label") != null){
+			mField.setLabel(field.getProperty("label").getText());
+		}	
+		daoFactory.getFieldDAO().saveOrUpdate(mField);	
 	}
 
 	// ////////////////////////

@@ -8,17 +8,23 @@ public class Field {
 
 	public static final String TABLE_NAME = "fields";
 	public static final String FK_ID_FORM = "form_id";
+	public static final String INDEX_NAME = "field_form_name_idx";
+	public static final String NAME_FIELD_NAME = "name";
+	public static final String FORM_FIELD_NAME = "form";
 
 	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(uniqueIndexName = "field_form_name_idx")
+	@DatabaseField(uniqueIndexName = INDEX_NAME)
 	private String name;
 
 	@DatabaseField
 	private String type;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = "field_form_name_idx")
+	@DatabaseField
+	private String label;
+
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
 	private Form form;
 
 	public Field() {
@@ -30,6 +36,14 @@ public class Field {
 		this.name = name;
 		this.type = type;
 		this.form = form;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -46,6 +60,14 @@ public class Field {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public Form getForm() {

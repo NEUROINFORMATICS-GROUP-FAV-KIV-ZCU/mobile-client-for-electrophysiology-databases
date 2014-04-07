@@ -22,7 +22,7 @@ public class TaskFragment extends Fragment {
 	private DAOFactory daoFactory;
 	// private boolean running;
 	public TaskState state = INACTIVE;
-	public int progress = 0; // aktivita si naèítá pøi obnovení stavu
+	public int progress = 0; // aktivita si naï¿½ï¿½tï¿½ pï¿½i obnovenï¿½ stavu
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -41,7 +41,7 @@ public class TaskFragment extends Fragment {
 
 	/**
 	 * This method is <em>not</em> called when the Fragment is being retained
-	 * across Activity instances. Voláno až když je aktivita odstranìná
+	 * across Activity instances. Volï¿½no aï¿½ kdyï¿½ je aktivita odstranï¿½nï¿½
 	 */
 	@Override
 	public void onDestroy() {

@@ -6,34 +6,38 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = DataSet.TABLE_NAME)
 public class DataSet {
 
-    public static final String TABLE_NAME = "dataSets";
-    public static final String FK_ID_FORM = "form_id";
+	public static final String TABLE_NAME = "dataSets";
+	public static final String FK_ID_FORM = "form_id";
 
-    @DatabaseField(generatedId = true)
-    private int id;
+	@DatabaseField(generatedId = true)
+	private int id;
 
-    @DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
-    private Form form;
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
+	private Form form;
 
-    public DataSet() {
-	super();
-    }
+	public DataSet() {
+		super();
+	}
+	
+	public DataSet(Form form) {
+		super();
+		this.form = form;
+	    }
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public Form getForm() {
-        return form;
-    }
+	public Form getForm() {
+		return form;
+	}
 
-    public void setForm(Form form) {
-        this.form = form;
-    }
+	public void setForm(Form form) {
+		this.form = form;
+	}
 
-   
 }

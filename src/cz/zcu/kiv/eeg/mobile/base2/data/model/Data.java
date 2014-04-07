@@ -6,55 +6,76 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = Data.TABLE_NAME)
 public class Data {
 
-    public static final String TABLE_NAME = "data";
-    public static final String FK_ID_DataSet = "dataset_id";
-    public static final String FK_ID_Field =   "field_id";
+	public static final String TABLE_NAME = "data";
+	public static final String FK_ID_DataSet = "dataset_id";
+	public static final String FK_ID_Field = "field_id";
 
-    @DatabaseField(generatedId = true)
-    private int id;
-    
-    @DatabaseField
-    private String data;
+	@DatabaseField(generatedId = true)
+	private int id;
 
-    @DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_DataSet)
-    private DataSet dataset;
-    
-    @DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_Field)
-    private DataSet field;
+	@DatabaseField
+	private String data;
 
-    public Data() {
-	super();
-    }
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_DataSet)
+	private DataSet dataset;
 
-    public int getId() {
-        return id;
-    }
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_Field)
+	private Field field;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public Data() {
+		super();
+	}
+	
+	public Data(int id, String data) {
+		super();
+		this.id = id;	
+		this.data = data;
+	}
+	
+	public Data(int id, DataSet dataset, Field field, String data) {
+		super();
+		this.id = id;
+		this.dataset = dataset;
+		this.field = field;
+		this.data = data;
+	}
+	
+	public Data(DataSet dataset, Field field, String data) {
+		super();
+		this.dataset = dataset;
+		this.field = field;
+		this.data = data;
+	}
 
-    public String getData() {
-        return data;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setData(String data) {
-        this.data = data;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public DataSet getDataset() {
-        return dataset;
-    }
+	public String getData() {
+		return data;
+	}
 
-    public void setDataset(DataSet dataset) {
-        this.dataset = dataset;
-    }
+	public void setData(String data) {
+		this.data = data;
+	}
 
-    public DataSet getField() {
-        return field;
-    }
+	public DataSet getDataset() {
+		return dataset;
+	}
 
-    public void setField(DataSet field) {
-        this.field = field;
-    }
+	public void setDataset(DataSet dataset) {
+		this.dataset = dataset;
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public void Field(Field field) {
+		this.field = field;
+	}
 }

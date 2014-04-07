@@ -7,6 +7,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
 public class FormDAO {
 
@@ -35,6 +36,15 @@ public class FormDAO {
 			Form form = new Form(type, date);			
 			getFormDao().createOrUpdate(form);
 			return form;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Form getFormByType(final String name) {
+		try {
+			return getFormDao().queryForId(name);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
