@@ -9,6 +9,11 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 public class FormLayoutsDAO {
 
 	private DatabaseHelper databaseHelper;
@@ -29,8 +34,8 @@ public class FormLayoutsDAO {
 			e.printStackTrace();
 		}
 		return null;
-	}	
-	
+	}
+
 	public CreateOrUpdateStatus saveOrUpdate(final Form form, final Layout layout) {
 		try {
 			FormLayouts formLayouts = new FormLayouts(form, layout);
@@ -39,5 +44,5 @@ public class FormLayoutsDAO {
 			e.printStackTrace();
 		}
 		return null;
-	}	
+	}
 }

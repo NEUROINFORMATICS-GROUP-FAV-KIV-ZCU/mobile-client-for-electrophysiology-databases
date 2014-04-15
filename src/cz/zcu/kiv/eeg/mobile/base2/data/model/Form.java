@@ -6,6 +6,11 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 @DatabaseTable(tableName = Form.TABLE_NAME)
 public class Form {
 	public static final String TABLE_NAME = "forms";

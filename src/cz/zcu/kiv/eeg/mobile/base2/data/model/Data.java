@@ -3,6 +3,11 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 @DatabaseTable(tableName = Data.TABLE_NAME)
 public class Data {
 
@@ -17,7 +22,7 @@ public class Data {
 	private String data;
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_DataSet)
-	private DataSet dataset;
+	private Dataset dataset;
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_Field)
 	private Field field;
@@ -25,22 +30,22 @@ public class Data {
 	public Data() {
 		super();
 	}
-	
+
 	public Data(int id, String data) {
 		super();
-		this.id = id;	
+		this.id = id;
 		this.data = data;
 	}
-	
-	public Data(int id, DataSet dataset, Field field, String data) {
+
+	public Data(int id, Dataset dataset, Field field, String data) {
 		super();
 		this.id = id;
 		this.dataset = dataset;
 		this.field = field;
 		this.data = data;
 	}
-	
-	public Data(DataSet dataset, Field field, String data) {
+
+	public Data(Dataset dataset, Field field, String data) {
 		super();
 		this.dataset = dataset;
 		this.field = field;
@@ -63,11 +68,11 @@ public class Data {
 		this.data = data;
 	}
 
-	public DataSet getDataset() {
+	public Dataset getDataset() {
 		return dataset;
 	}
 
-	public void setDataset(DataSet dataset) {
+	public void setDataset(Dataset dataset) {
 		this.dataset = dataset;
 	}
 

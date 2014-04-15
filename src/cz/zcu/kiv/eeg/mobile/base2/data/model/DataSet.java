@@ -3,10 +3,15 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = DataSet.TABLE_NAME)
-public class DataSet {
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
+@DatabaseTable(tableName = Dataset.TABLE_NAME)
+public class Dataset {
 
-	public static final String TABLE_NAME = "dataSets";
+	public static final String TABLE_NAME = "datasets";
 	public static final String FK_ID_FORM = "form_id";
 
 	@DatabaseField(generatedId = true)
@@ -15,14 +20,14 @@ public class DataSet {
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
 	private Form form;
 
-	public DataSet() {
+	public Dataset() {
 		super();
 	}
-	
-	public DataSet(Form form) {
+
+	public Dataset(Form form) {
 		super();
 		this.form = form;
-	    }
+	}
 
 	public int getId() {
 		return id;

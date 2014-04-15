@@ -9,17 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
 /**
  * 
  * @author Jaroslav Hošek
  * 
  */
-public class SpinnerAdapter extends ArrayAdapter<String> {
+public class LayoutSpinnerAdapter extends ArrayAdapter<Layout> {
 
 	int rowLayout;
 
-	public SpinnerAdapter(Context context, int rowLayout, ArrayList<String> items) {
+	public LayoutSpinnerAdapter(Context context, int rowLayout, ArrayList<Layout> items) {
 		super(context, rowLayout, items);
 		this.rowLayout = rowLayout;
 	}
@@ -54,7 +55,8 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
 		}
 
 		TextView text = (TextView) row;
-		text.setText(getItem(position));
+		text.setText(getItem(position).getName());
+
 		return row;
 	}
 }

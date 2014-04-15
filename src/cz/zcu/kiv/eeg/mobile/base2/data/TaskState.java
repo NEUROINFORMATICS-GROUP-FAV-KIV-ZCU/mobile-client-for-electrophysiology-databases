@@ -6,7 +6,7 @@ package cz.zcu.kiv.eeg.mobile.base2.data;
 public enum TaskState {
 
     /**
-     * Service is inactive.  //todo tohle asi nebude potøeba
+     * Service is inactive. 
      */
     INACTIVE,
 

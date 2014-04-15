@@ -12,52 +12,55 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.DataSet;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItem;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
 /**
- * Database helper class used to manage the creation and upgrading of your
- * database. This class also usually provides the DAOs used by the other
- * classes.
+ * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
+ * the DAOs used by the other classes.
+ * 
+ * @author Jaroslav Hošek
+ * 
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public static final String TAG = "DatabaseHelper";
 	private static final String DATABASE_NAME = "eegMobileDatabase.db";
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 53;
 
 	private static Dao<Form, String> formDao = null;
 	private static Dao<Field, Integer> fieldDao = null;
 	private static Dao<Layout, String> layoutDao = null;
-	private static Dao<DataSet, Integer> datasetDao = null;
+	private static Dao<Dataset, Integer> datasetDao = null;
 	private static Dao<Data, Integer> dataDao = null;
-	private static Dao<MenuItem, Integer> menuItemDao = null;
+	private static Dao<MenuItems, Integer> menuItemDao = null;
 	private static Dao<FormLayouts, Integer> formLayoutsDao = null;
+	private static Dao<User, Integer> userDao = null;
 
 	public DatabaseHelper(final Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	/**
-	 * Tato metoda je volana pri prvnim vytvoreni databaze. Vytvari prislusne
-	 * tabulky.
+	 * Tato metoda je volana pri prvnim vytvoreni databaze. Vytvari prislusne tabulky.
 	 */
 	@Override
-	public void onCreate(final SQLiteDatabase db,
-			final ConnectionSource connectionSource) {
+	public void onCreate(final SQLiteDatabase db, final ConnectionSource connectionSource) {
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
 			TableUtils.createTable(connectionSource, Form.class);
 			TableUtils.createTable(connectionSource, Field.class);
 			TableUtils.createTable(connectionSource, Layout.class);
-			TableUtils.createTable(connectionSource, MenuItem.class);
+			TableUtils.createTable(connectionSource, MenuItems.class);
 			TableUtils.createTable(connectionSource, FormLayouts.class);
-			TableUtils.createTable(connectionSource, DataSet.class);
+			TableUtils.createTable(connectionSource, Dataset.class);
 			TableUtils.createTable(connectionSource, Data.class);
+			TableUtils.createTable(connectionSource, User.class);
 
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -66,27 +69,27 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Tato metoda je volana kdyz je novejsi verze databaze. Podle verze pridava
-	 * tabulku ci nove radky.
+	 * Tato metoda je volana kdyz je novejsi verze databaze. Podle verze pridava tabulku ci nove radky.
 	 */
 	@Override
-	public void onUpgrade(final SQLiteDatabase db,
-			final ConnectionSource connectionSource, final int oldVersion,
+	public void onUpgrade(final SQLiteDatabase db, final ConnectionSource connectionSource, final int oldVersion,
 			final int newVersion) {
 
 		try {
-			Log.i(DatabaseHelper.class.getName(), "onUpgrade, stara verze "
-					+ oldVersion + ", nova verze " + newVersion);
+			Log.i(DatabaseHelper.class.getName(), "onUpgrade, stara verze " + oldVersion + ", nova verze " + newVersion);
 
 			TableUtils.dropTable(connectionSource, Form.class, false);
 			TableUtils.dropTable(connectionSource, Field.class, false);
 			TableUtils.dropTable(connectionSource, FormLayouts.class, false);
 			TableUtils.dropTable(connectionSource, Layout.class, false);
+			TableUtils.dropTable(connectionSource, MenuItems.class, false);
+			TableUtils.dropTable(connectionSource, Dataset.class, false);
+			TableUtils.dropTable(connectionSource, Data.class, false);
+			TableUtils.dropTable(connectionSource, User.class, false);
 			onCreate(db, connectionSource);
 
 		} catch (SQLException e) {
-			Log.e(DatabaseHelper.class.getName(),
-					"Chyba pri upgradu databaze.", e);
+			Log.e(DatabaseHelper.class.getName(), "Chyba pri upgradu databaze.", e);
 			throw new RuntimeException(e);
 		}
 
@@ -112,33 +115,40 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return layoutDao;
 	}
-	
-	public Dao<MenuItem, Integer> getMenuItemDao() throws SQLException {
+
+	public Dao<MenuItems, Integer> getMenuItemDao() throws SQLException {
 		if (menuItemDao == null) {
-		    menuItemDao = getDao(MenuItem.class);
+			menuItemDao = getDao(MenuItems.class);
 		}
 		return menuItemDao;
 	}
-	
+
 	public Dao<FormLayouts, Integer> getFormLayoutsDao() throws SQLException {
 		if (formLayoutsDao == null) {
 			formLayoutsDao = getDao(FormLayouts.class);
 		}
 		return formLayoutsDao;
 	}
-	
-	public Dao<DataSet, Integer> getDataSetDao() throws SQLException {
+
+	public Dao<Dataset, Integer> getDataSetDao() throws SQLException {
 		if (datasetDao == null) {
-			datasetDao = getDao(DataSet.class);
+			datasetDao = getDao(Dataset.class);
 		}
 		return datasetDao;
 	}
-	
+
 	public Dao<Data, Integer> getDataDao() throws SQLException {
 		if (dataDao == null) {
 			dataDao = getDao(Data.class);
 		}
 		return dataDao;
+	}
+
+	public Dao<User, Integer> getUserDao() throws SQLException {
+		if (userDao == null) {
+			userDao = getDao(User.class);
+		}
+		return userDao;
 	}
 
 	/**
@@ -154,5 +164,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		formLayoutsDao = null;
 		datasetDao = null;
 		dataDao = null;
+		userDao = null;
 	}
 }

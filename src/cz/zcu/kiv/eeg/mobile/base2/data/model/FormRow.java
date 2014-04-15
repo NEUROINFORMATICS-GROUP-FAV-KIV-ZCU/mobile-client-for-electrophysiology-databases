@@ -1,12 +1,17 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 public class FormRow {
 
-	private int id;   // Todo ID datasetu (zatím))
+	private int id; // TODO ID datasetu (zatím))
 	private String name;
 	private String description;
 	private String mine;
-	
+
 	public FormRow(int id, String name, String description, String mine) {
 		super();
 		this.id = id;

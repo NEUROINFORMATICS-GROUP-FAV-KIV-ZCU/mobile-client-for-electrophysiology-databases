@@ -2,23 +2,10 @@ package cz.zcu.kiv.eeg.mobile.base2.data.builders;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import odml.core.Reader;
 import odml.core.Section;
-import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.DataSet;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
@@ -27,76 +14,54 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 public class ViewBuilder {
 
 	// todo přesunout
 	private static final String LAYOUT_NAME = "layoutName";
 	private static final String ELEMENT_FORM = "form";
 	private static final String ELEMENT_SET = "set";
-	SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná
-																// HashMap<Integer,
-																// ?>
+	SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná HashMap<Integer, ?>
 	private DAOFactory daoFactory;
-
+	Layout layout;
 	private Context ctx;
 
-	public ViewBuilder(Context ctx) {
+	public ViewBuilder(Context ctx, Layout layout) {
 		super();
 		this.ctx = ctx;
+		this.layout = layout;
 		daoFactory = new DAOFactory(ctx);
 	}
 
-	public LinearLayout getLinearLayout(String layoutName) {
-		DAOFactory daoFactory = new DAOFactory(ctx);
-		String data = daoFactory.getLayoutDAO().getLayoutByName(layoutName).getXmlData();
-		// System.out.println(data);
-
+	public LinearLayout getLinearLayout() {
+		String data = layout.getXmlData();
 		Reader reader;
-
 		try {
 			reader = new Reader();
 			Section odmlRoot = reader.load(new ByteArrayInputStream(data.getBytes()));
 			Section odmlForm = odmlRoot.getSection(0);
 			loadViews(odmlForm.getSections());
-			recountPositions(); // todo docasne
+			recountPositions();
 
 			System.out.println("test");
-
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return createLinearLayout();
-	}
-
-	// z načtených view vytvořím layout (průchod zleva doprava a dolu)
-	private LinearLayout createLinearLayout() {
-		LinearLayout layout = new LinearLayout(ctx);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
-		ViewNode child = null;
-		// průchod grafem
-		for (int i = 0; i < nodes.size(); i++) {
-			ViewNode parent;
-			if (i == 0) {
-				parent = nodes.get(1);
-			} else {
-				parent = child;
-			}
-
-			if (parent.right != 0) {
-				child = nodes.get(parent.right);
-			} else if (parent.bottom != 0) {
-				child = nodes.get(parent.bottom);
-			}
-
-			// .getNode());
-			layout.addView(parent.getWrapNode(), i);
-		}
-		return layout;
 	}
 
 	private void loadViews(Vector<Section> sections) {
@@ -134,7 +99,6 @@ public class ViewBuilder {
 		} else if (type.equalsIgnoreCase("checkbox")) {
 			view = new CheckBox(ctx);
 		} else if (type.equalsIgnoreCase("combobox")) {
-			// view = new EditText(ctx);
 			Spinner combobox = new Spinner(ctx);
 			ArrayList<String> itemList = new ArrayList<String>();
 			for (Object value : field.getProperty("values").getValues()) {
@@ -166,48 +130,75 @@ public class ViewBuilder {
 
 	}
 
+	// z načtených view vytvořím layout (průchod zleva doprava a dolu)
+	private LinearLayout createLinearLayout() {
+		LinearLayout layout = new LinearLayout(ctx);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		ViewNode child = null;
+		// průchod grafem
+		for (int i = 0; i < nodes.size(); i++) {
+			ViewNode parent;
+			if (i == 0) {
+				parent = nodes.get(1);
+			} else {
+				parent = child;
+			}
+
+			if (parent.right != 0) {
+				child = nodes.get(parent.right);
+			} else if (parent.bottom != 0) {
+				child = nodes.get(parent.bottom);
+			}
+			layout.addView(parent.getWrapNode(), i);
+		}
+		return layout;
+	}
+
 	// načte data do formuláře
-	public void initData(int index, String formName) {
-		// Todo zde naplnim jiz existujici data
-		// System.out.println("cccccccccccccccccccccccccccccccccc " +
-		// Arrays.toString(daoFactory.getDataDAO().getData()));
+	public void initData(int datasetID) {
+		if (datasetID != -1) {
+			Form form = layout.getRootForm();
+			Dataset dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
 
-		Form form = daoFactory.getFormDAO().getFormByType(formName);
-		DataSet dataset = daoFactory.getDataSetDAO().getDataSet(index);
-
-		if (dataset != null) {
-			for (int i = 0; i < nodes.size(); i++) {
-				Field field = daoFactory.getFieldDAO().getFieldByNameAndForm(nodes.valueAt(i).name, form.getType());
-				Data data = daoFactory.getDataDAO().getDataByDataset(dataset.getId(), field.getId());
-				nodes.valueAt(i).setData(data.getData());
+			if (dataset != null) {
+				for (int i = 0; i < nodes.size(); i++) {
+					Field field = daoFactory.getFieldDAO().getFieldByNameAndForm(nodes.valueAt(i).name, form.getType());
+					Data data = daoFactory.getDataDAO().getDataByDatasetAndField(dataset.getId(), field.getId());
+					if (data != null) {
+						nodes.valueAt(i).setData(data.getData());
+					}
+				}
 			}
 		}
 	}
 
-	// slouží k uložení do databáze
-	public void saveData(int index, String formName) {
-		Form form = daoFactory.getFormDAO().getFormByType(formName);
-		DataSet dataset = daoFactory.getDataSetDAO().getDataSet(index);
-
-		if (dataset == null) {
-			dataset = new DataSet(form);
+	// slouží k uložení/aktualizace do databáze
+	public int saveOrUpdateData(int datasetID) {
+		// Form form = daoFactory.getFormDAO().getFormByType(formName);
+		Form form = layout.getRootForm();
+		Dataset dataset;
+		if (datasetID != -1) {
+			dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
+		} else {
+			dataset = new Dataset(form);
+			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
 		}
 
 		for (int i = 0; i < nodes.size(); i++) {
 			Field field = daoFactory.getFieldDAO().getFieldByNameAndForm(nodes.valueAt(i).name, form.getType());
 			String data = nodes.valueAt(i).getData();
-			if (data != null) { //todo testovat ""
-				if (index == -1) {
-					daoFactory.getDataDAO().create(dataset, field, nodes.valueAt(i).getData());
-					daoFactory.getDataSetDAO().saveOrUpdate(dataset);
+			if (data != null && !data.equals("")) {
+				if (datasetID == -1) {
+					daoFactory.getDataDAO().create(dataset, field, data);
 				} else {
-					daoFactory.getDataDAO().update(index, nodes.valueAt(i).getData());
+					daoFactory.getDataDAO().update(dataset, field, data); // hledat podle pole a datasetu
 				}
-
 			}
 		}
-
-		// Todo zde naplnim jiz existujici data
+		return dataset.getId();
 	}
 
 	private void recountPositions() {

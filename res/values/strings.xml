@@ -4,6 +4,7 @@
     <string name="nav_open">Show navigation</string>
     <string name="nav_close">Hide navigation</string>
     <string name="app_name">EEGMobileClient</string>
+    <string name="app_form">Form</string>
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_pokus">Pokus</string>
     <string name="app_welcome">Welcome to EEG Base!</string>
@@ -33,15 +34,21 @@
     <string name="task_running">Probíhá stahování dat ze serveru</string>
 
     <!-- Settings activity -->
-    <string name="app_settings">Settings</string>
+    <string name="app_settings">Login Settings</string>
     <string name="settings_username">Username</string>
     <string name="settings_password">Password</string>
     <string name="settings_url">Service URL</string>
     <string name="settings_saved">Settings saved.</string>
+    <string name="settings_login">Login</string>
 
     <!-- Form management -->
     <string name="form_add">Add form</string>
+    <string name="form_new">New Form</string>
     <string name="form_refresh">Fetch data</string>
+    <string name="form_name">Name</string>
+    <string name="form_layouts">Layout</string>
+    <string name="form_description1">Description 1</string>
+    <string name="form_description2">Description 2</string>
 
     <!-- person management -->
     <string name="person_add">Add person</string>
@@ -62,5 +69,48 @@
     <color name="red">#FFFF0000</color>
 
     <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="error_offline">Connection is unavailable. Request could not be completed.</string>
+    <string name="error_connection">Connection to server issues occurred. Try again later.</string>
+    <string name="error_date_comparison">Reservation action cannot end before it even started!</string>
+    <string name="error_unknown_host">Invalid host name/address!</string>
+    <string name="error_invalid_password">Password must be entered!</string>
+    <string name="error_invalid_url">Entered value is not invalid URL!</string>
+    <string name="error_invalid_username">Username must be an email!</string>
+    <string name="error_host_unreach">Host unavailable (no route exist). Is hostname/IP correct?</string>
+    <string name="error_host_timeout">Connection timeout. Try again.</string>
+    <string name="error_host_con_refused">Connection refused. Are your credentials correct?</string>
+    <string name="error_http_400">Application made invalid request towards server.</string>
+    <string name="error_http_401">User authorization check failed. Check your login information.</string>
+    <string name="error_http_403">You do not have permissions for such request.</string>
+    <string name="error_http_404">Location not found. This is probably a server issue, but check your server URL just to
+        be sure.</string>
+    <string name="error_http_405">Request method not allowed.</string>
+    <string name="error_http_408">Request timed out.</string>
+    <string name="error_http_500">Internal server error.</string>
+    <string name="error_http_503">Service is currently unavailable. Try again later.</string>
+    <string name="error_no_file_selected">No file selected!</string>
+    <string name="error_no_experiment_selected">No experiment selected!</string>
+    <string name="error_no_group_selected">No research group selected!</string>
+    <string name="error_invalid_mail_format">Invalid mail format!</string>
+    <string name="error_invalid_date_format">Invalid date format!</string>
+    <string name="error_empty_field">Field must be filled</string>
+    <string name="error_ssl">SSL connection fell apart. Try again.</string>
+    <string name="error_no_type_selected">No electrode type selected!</string>
+    <string name="error_no_fix_selected">No electrode fix selected!</string>
+    <string name="error_no_scenario_selected">No scenario selected!</string>
+    <string name="error_no_subject_selected">No subject selected!</string>
+    <string name="error_no_artifact_selected">No artifact selected!</string>
+    <string name="error_no_digitization_selected">No digitization selected!</string>
+    <string name="error_no_electrode_system_selected">No electrode system selected!</string>
+    <string name="error_no_electrode_location_selected">No electrode location selected!</string>
+    <string name="error_no_weather_selected">No weather selected!</string>
+    <string name="error_time_start_after_end">Time of start cannot be after the end time!</string>
 
+    <!-- Working -->
+    <string name="working_ws_credentials">Verifying login information…</string>
+    <string name="working_ws_layouts">Fetching available layouts…</string>
+
+    <!-- Spinners -->
+    <string name="spinner_layout">[Select layout...]</string>
+    <string name="spinner_field">[Select field...]</string>
 </resources>

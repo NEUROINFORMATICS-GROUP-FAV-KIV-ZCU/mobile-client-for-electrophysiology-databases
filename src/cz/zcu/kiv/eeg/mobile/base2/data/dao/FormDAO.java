@@ -7,8 +7,12 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
+/**
+ * 
+ * @author Jaroslav Hošek
+ * 
+ */
 public class FormDAO {
 
 	private DatabaseHelper databaseHelper;
@@ -33,7 +37,7 @@ public class FormDAO {
 
 	public Form saveOrUpdate(final String type, final Date date) {
 		try {
-			Form form = new Form(type, date);			
+			Form form = new Form(type, date);
 			getFormDao().createOrUpdate(form);
 			return form;
 		} catch (SQLException e) {
@@ -41,7 +45,7 @@ public class FormDAO {
 		}
 		return null;
 	}
-	
+
 	public Form getFormByType(final String name) {
 		try {
 			return getFormDao().queryForId(name);
