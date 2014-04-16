@@ -119,7 +119,7 @@ public class DashboardActivity extends Activity {
 
 		}
 
-		drawerLayout.closeDrawer(drawerList);
+		//drawerLayout.closeDrawer(drawerList);
 		return true;
 	}
 

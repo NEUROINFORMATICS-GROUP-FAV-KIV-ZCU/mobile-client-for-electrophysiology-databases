@@ -29,9 +29,8 @@ public class MenuItems {
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT)
 	private Layout layout;
 
-	/*
-	 * @DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM) private Form rootForm;
-	 */
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
+	private Form rootForm;
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
 	private Field fieldID;
@@ -49,12 +48,13 @@ public class MenuItems {
 		super();
 	}
 
-	public MenuItems(String name, Layout layout, Field fieldDescription1, Field fieldDescription2) {
+	public MenuItems(String name, Layout layout, Form rootForm, Field fieldDescription1, Field fieldDescription2) {
 		super();
 		this.name = name;
 		this.layout = layout;
 		this.fieldDescription1 = fieldDescription1;
 		this.fieldDescription2 = fieldDescription2;
+		this.rootForm = rootForm;
 	}
 
 	public MenuItems(String name, Layout layout) {
@@ -85,6 +85,14 @@ public class MenuItems {
 
 	public void setLayout(Layout layout) {
 		this.layout = layout;
+	}
+
+	public Form getRootForm() {
+		return rootForm;
+	}
+
+	public void setRootForm(Form rootForm) {
+		this.rootForm = rootForm;
 	}
 
 	public Field getFieldID() {

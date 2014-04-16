@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * 
@@ -21,8 +22,9 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 public class FormAdapter extends ArrayAdapter<FormRow> {
 
 	private final Context context;
-	private final int layoutResourceId; // Todo prejmenovat na rowLayout jako spinnerAdapte
+	private final int rowLayout;
 	private List<FormRow> formList;
+	private MenuItems menu;
 
 	/**
 	 * Adapter constructor.
@@ -31,11 +33,13 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	 * @param resourceId row layout identifier
 	 * @param items scenario data collection
 	 */
-	public FormAdapter(Context context, int resourceId, List<FormRow> items) {
-		super(context, resourceId);
-		this.layoutResourceId = resourceId;
+	public FormAdapter(Context context, int rowLayout, MenuItems menu, List<FormRow> items) {
+		super(context, rowLayout);
+		this.rowLayout = rowLayout;
 		this.context = context;
-		formList = new ArrayList<FormRow>(items.size());
+		//this.formType = formType;
+		this.menu = menu;
+		this.formList = new ArrayList<FormRow>(items.size());
 	}
 
 	/**
@@ -101,7 +105,7 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 		View row = convertView;
 		if (row == null) {
 			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			row = inflater.inflate(layoutResourceId, parent, false);
+			row = inflater.inflate(rowLayout, parent, false);
 		}
 		FormRow record = getItem(position);
 		if (record != null) {
@@ -132,5 +136,21 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
+	}
+
+	/*public String getFormType() {
+		return formType;
+	}
+
+	public void setFormType(String formType) {
+		this.formType = formType;
+	}*/
+
+	public MenuItems getMenu() {
+		return menu;
+	}
+
+	public void setMenu(MenuItems menu) {
+		this.menu = menu;
 	}
 }

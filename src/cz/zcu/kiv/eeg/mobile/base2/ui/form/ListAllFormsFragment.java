@@ -29,7 +29,7 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 public class ListAllFormsFragment extends ListFragment {
 
 	public final static String TAG = ListAllFormsFragment.class.getSimpleName();
-	public static FormAdapter adapter;
+	// public static FormAdapter adapter;
 	// TODO podpora pro adaptéry ze všech formulářů
 	private static SparseArray<FormAdapter> adapters = new SparseArray<FormAdapter>();
 	private DAOFactory daoFactory;
@@ -55,7 +55,7 @@ public class ListAllFormsFragment extends ListFragment {
 		super.onViewCreated(view, savedInstanceState);
 		// aby se aktualizoval pri navratu
 		setListAdapter(null);
-		setListAdapter(getAdapter());
+		setListAdapter(getAdapter(menu.getId()));
 	}
 
 	/*
@@ -63,9 +63,15 @@ public class ListAllFormsFragment extends ListFragment {
 	 * setListAdapter(null); setListAdapter(getAdapter()); }
 	 */
 
-	public FormAdapter getAdapter() {
+	public FormAdapter getAdapter(int menuID) {
+		FormAdapter adapter = adapters.get(menuID);
+		
 		if (adapter == null) {
-			adapter = new FormAdapter(getActivity(), R.layout.form_row, new ArrayList<FormRow>());
+			adapter = new FormAdapter(getActivity(), 
+					R.layout.form_row, 
+					//menu.getRootForm().getType(), 
+					menu,
+					new ArrayList<FormRow>());
 
 			// podle čeho hledám
 			String id = "id";// menu.getFieldID().getName(); //ID DATASETU
@@ -92,14 +98,20 @@ public class ListAllFormsFragment extends ListFragment {
 						descriptionData2 = description2.getData();
 					}
 				}
-				adapter.add(new FormRow(dataset_id, descriptionData1, descriptionData2, "Já"));
+				adapter.add(new FormRow(dataset_id, descriptionData1, descriptionData2, "Já"));		
 			}
+			adapters.put(menuID, adapter);
 		}
+		
 		return adapter;
 	}
 
-	public static FormAdapter getAdapterForUpdate() {
-		return adapter;
+	public static SparseArray<FormAdapter> getAdaptersForUpdate() {
+		return adapters;
+	}
+	
+	public static FormAdapter getAdaptersForUpdate11() {
+		return adapters.valueAt(0);
 	}
 
 	@Override
@@ -109,7 +121,7 @@ public class ListAllFormsFragment extends ListFragment {
 	}
 
 	private void showDetails(int index) {
-		FormAdapter dataAdapter = getAdapter();
+		FormAdapter dataAdapter = getAdapter(menu.getId());
 		boolean empty = dataAdapter == null || dataAdapter.isEmpty();
 		if (!empty) {
 			FormRow row = dataAdapter.getItem(index);

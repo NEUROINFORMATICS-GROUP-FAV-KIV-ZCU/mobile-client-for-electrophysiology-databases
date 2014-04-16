@@ -71,8 +71,7 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 				System.out.println("layouty ulozeny" + body.size());
 
 				for (Layout layout : body.getLayouts()) {
-					String urlLayout = user.getUrl()
-							+ String.format(Values.SERVICE_GET_LAYOUT, layout.getFormName(), layout.getName());
+					String urlLayout = user.getUrl()+ String.format(Values.SERVICE_GET_LAYOUT, layout.getFormName(), layout.getName());
 					ResponseEntity<Resource> result = restTemplate.exchange(urlLayout, HttpMethod.GET, entity,
 							Resource.class);
 					new FormBuilder(fragment.getDaoFactory(), result).start();
@@ -81,7 +80,6 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 			}
 		} catch (Exception e) {
 			fragment.setState(ERROR, e);
-			Log.i("test", "testovnicek");
 			Log.e(TAG, e.getMessage(), e);
 		}
 		return null;

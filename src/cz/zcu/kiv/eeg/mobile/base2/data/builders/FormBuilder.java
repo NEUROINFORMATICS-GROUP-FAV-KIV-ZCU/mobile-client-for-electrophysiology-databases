@@ -68,9 +68,9 @@ public class FormBuilder {
 				// todo upravit na form
 				createFields(section.getSections(), form, layout);
 			} else if (section.getType().equalsIgnoreCase(ELEMENT_FORM)) {
-				form = saveForm(section);
-				saveFormLayouts(form, layout);
-				createFields(section.getSections(), form, layout);
+				Form subform = saveForm(section);
+				saveFormLayouts(subform, layout);
+				createFields(section.getSections(), subform, layout);
 			} else {
 				saveField(section, form);
 			}

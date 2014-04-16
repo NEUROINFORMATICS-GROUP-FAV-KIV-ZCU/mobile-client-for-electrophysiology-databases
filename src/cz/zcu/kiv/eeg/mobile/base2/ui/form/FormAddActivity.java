@@ -103,7 +103,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 		Field field1 = (Field) fieldSpinner1.getSelectedItem();
 		Field field2 = (Field) fieldSpinner2.getSelectedItem();
 
-		MenuItems menu = new MenuItems(formName.getText().toString(), layout, field1, field2);
+		MenuItems menu = new MenuItems(formName.getText().toString(), layout, layout.getRootForm(), field1, field2);
 		daoFactory.getMenuItemDAO().saveOrUpdate(menu);
 		finish();
 	}
