@@ -19,6 +19,9 @@ public class Dataset {
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
 	private Form form;
+	
+	@DatabaseField
+	private String recordId;
 
 	public Dataset() {
 		super();
@@ -45,4 +48,11 @@ public class Dataset {
 		this.form = form;
 	}
 
+	public String getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(String recordId) {
+		this.recordId = recordId;
+	}
 }

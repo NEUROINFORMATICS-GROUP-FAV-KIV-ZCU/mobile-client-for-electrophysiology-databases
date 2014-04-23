@@ -37,20 +37,31 @@ public class DatasetDAO {
 		return null;
 	}
 
-	public Dataset saveOrUpdate(final Form form) {
+	public Dataset create (final Form form) {
 		try {
 			Dataset dataset = new Dataset(form);
-			getDataSetDao().createOrUpdate(dataset);
+			getDataSetDao().create(dataset);
 			return dataset;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
 	public Dataset getDataSet(final int id) {
 		try {
 			return getDataSetDao().queryForId(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Dataset getDataSet(final String recordId) {
+		try {
+			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
+			queryBuilder.where().eq("recordId", recordId);
+			return queryBuilder.queryForFirst();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

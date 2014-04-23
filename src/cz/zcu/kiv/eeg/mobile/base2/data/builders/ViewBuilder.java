@@ -7,8 +7,12 @@ import java.util.Vector;
 import odml.core.Reader;
 import odml.core.Section;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
@@ -35,16 +40,19 @@ public class ViewBuilder {
 	private static final String LAYOUT_NAME = "layoutName";
 	private static final String ELEMENT_FORM = "form";
 	private static final String ELEMENT_SET = "set";
-	SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná HashMap<Integer, ?>
+	private SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná HashMap<Integer, ?>, key = ID
+																		// sekce
+	private ArrayList<LinearLayout> newColumn = new ArrayList<LinearLayout>();
 	private DAOFactory daoFactory;
-	Layout layout;
+	private LinearLayout formLayout;
+	private Layout layout;
 	private Context ctx;
 
-	public ViewBuilder(Context ctx, Layout layout) {
+	public ViewBuilder(Context ctx, Layout layout, DAOFactory daoFactory) {
 		super();
 		this.ctx = ctx;
 		this.layout = layout;
-		daoFactory = new DAOFactory(ctx);
+		this.daoFactory = daoFactory;
 	}
 
 	public LinearLayout getLinearLayout() {
@@ -61,7 +69,7 @@ public class ViewBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return createLinearLayout();
+		return createForm();
 	}
 
 	private void loadViews(Vector<Section> sections) {
@@ -81,6 +89,7 @@ public class ViewBuilder {
 	private void createView(Section field) {
 		String type = field.getType();
 		String name = field.getName();
+		int weight = 100;
 		int top = 0;
 		int left = 0;
 
@@ -89,6 +98,9 @@ public class ViewBuilder {
 		}
 		if (field.getProperty("idLeft") != null) {
 			left = Integer.parseInt(field.getProperty("idLeft").getText());
+		}
+		if (field.getProperty("weight") != null) {
+			weight = Integer.parseInt(field.getProperty("weight").getText());
 		}
 
 		int id = Integer.parseInt(field.getProperty("id").getText());
@@ -107,7 +119,6 @@ public class ViewBuilder {
 			SpinnerAdapter spinnerAdapter = new SpinnerAdapter(ctx, R.layout.spinner_row_simple, itemList);
 			combobox.setAdapter(spinnerAdapter);
 			view = combobox;
-
 		} else if (type.equalsIgnoreCase("choice")) {
 			view = new EditText(ctx);
 		} else if (type.equalsIgnoreCase("set")) { // todo tohle tu casem nebude
@@ -116,44 +127,125 @@ public class ViewBuilder {
 			view = tmp;
 		}
 
+		view.setTag(id);
+
 		ViewNode node = null;
 		if (field.getProperty("label") != null) {
 			LinearLayout layout = new LinearLayout(ctx);
+			layout.setTag(id);
 
 			TextView label = new TextView(ctx);
 			label.setText(field.getProperty("label").getText());
-			node = new ViewNode(view, layout, label, name, top, 0, left, 0);
+			label.setTag(id);
+			label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+
+			node = new ViewNode(id, view, layout, label, name, top, 0, left, 0, weight);
 		} else {
-			node = new ViewNode(view, name, top, 0, left, 0);
+			node = new ViewNode(view, name, top, 0, left, 0, weight);
 		}
 		nodes.put(id, node);
 
 	}
 
 	// z načtených view vytvořím layout (průchod zleva doprava a dolu)
-	private LinearLayout createLinearLayout() {
+	private LinearLayout createForm() { // TODO create form
+		formLayout = new LinearLayout(ctx);
+		formLayout.setOrientation(LinearLayout.VERTICAL);
+		formLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+		formLayout.setTag("rootLayout");
+
+		int nodeId = 1;
+		// průchod grafem
+		while (true) {
+			// vytvořím nový řádek
+			LinearLayout rowLayout = new LinearLayout(ctx);
+			rowLayout.setTag("řádek_" + nodeId);
+			rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+			rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT));
+
+			ViewNode node = getViewNode(nodeId);
+			node.setDiffWeight(10);
+			View view = node.getWrapNode();
+			rowLayout.addView(getWrapButton());
+			rowLayout.addView(view);
+
+			// přidání všech položek na řádku
+			while (node.right != 0) {
+				node = getViewNode(node.right);
+				rowLayout.addView(node.getWrapNode());
+			}
+
+			node.setDiffWeight(10);
+			rowLayout.addView(getWrapButton());
+			formLayout.addView(rowLayout);
+
+			if (node.bottom != 0) {
+				nodeId = node.bottom;
+			} else {
+				break;
+			}
+		}
+		return formLayout;
+	}
+
+	public void saveLayout() {
+		SparseArray<ViewNode> newNodes = new SparseArray<ViewNode>();
+		int newId = 1;
+
+		// průchod zleva doprava a dolu
+		for (int i = 0; i < formLayout.getChildCount(); i++) {
+			ViewGroup rowLayout = (ViewGroup) formLayout.getChildAt(i);
+
+			// zpracování řádku
+			int count = rowLayout.getChildCount() - 2;
+			for (int j = 1; j <= count; j++) {
+				ViewGroup wrapLayout = (ViewGroup) rowLayout.getChildAt(j);
+				View field = wrapLayout.getChildAt(1);
+				int id = (Integer) field.getTag();
+				ViewNode node = nodes.get(id);
+				node.right = 0;
+				node.left = 0;
+				node.top = 0;
+				node.bottom = 0;
+
+				ViewGroup wrapLayoutChild;
+				int idChild;
+				// nalezení potomka (napravo)
+				if (j + 1 <= count) {
+					node.right = newId + 1;
+				}
+				// nalezení potomka (o řádek níže)
+				else if (i + i < formLayout.getChildCount()) {
+					node.bottom = newId + 1;
+				}
+				newNodes.put(newId, node);
+				newId++;
+			}
+		}
+		OdmlBuilder.createODML(newNodes, layout, daoFactory);
+	}
+
+	private ViewNode getViewNode(int key) {
+		return nodes.get(key);
+	}
+
+	private LinearLayout getWrapButton() {
+		Drawable editShape = ctx.getResources().getDrawable(R.drawable.shape);
 		LinearLayout layout = new LinearLayout(ctx);
 		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
-
-		ViewNode child = null;
-		// průchod grafem
-		for (int i = 0; i < nodes.size(); i++) {
-			ViewNode parent;
-			if (i == 0) {
-				parent = nodes.get(1);
-			} else {
-				parent = child;
-			}
-
-			if (parent.right != 0) {
-				child = nodes.get(parent.right);
-			} else if (parent.bottom != 0) {
-				child = nodes.get(parent.bottom);
-			}
-			layout.addView(parent.getWrapNode(), i);
-		}
+		layout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 10));
+		layout.setBackgroundDrawable(editShape);
+		Button button = new Button(ctx);
+		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT));
+		button.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		button.setText("+");
+		button.setTag(-1);
+		layout.addView(button);
+		layout.setVisibility(View.GONE);
+		newColumn.add(layout);
 		return layout;
 	}
 
@@ -165,7 +257,7 @@ public class ViewBuilder {
 
 			if (dataset != null) {
 				for (int i = 0; i < nodes.size(); i++) {
-					Field field = daoFactory.getFieldDAO().getFieldByNameAndForm(nodes.valueAt(i).name, form.getType());
+					Field field = daoFactory.getFieldDAO().getField(nodes.valueAt(i).name, form.getType());
 					Data data = daoFactory.getDataDAO().getDataByDatasetAndField(dataset.getId(), field.getId());
 					if (data != null) {
 						nodes.valueAt(i).setData(data.getData());
@@ -177,7 +269,6 @@ public class ViewBuilder {
 
 	// slouží k uložení/aktualizace do databáze
 	public int saveOrUpdateData(int datasetID) {
-		// Form form = daoFactory.getFormDAO().getFormByType(formName);
 		Form form = layout.getRootForm();
 		Dataset dataset;
 		if (datasetID != -1) {
@@ -188,7 +279,7 @@ public class ViewBuilder {
 		}
 
 		for (int i = 0; i < nodes.size(); i++) {
-			Field field = daoFactory.getFieldDAO().getFieldByNameAndForm(nodes.valueAt(i).name, form.getType());
+			Field field = daoFactory.getFieldDAO().getField(nodes.valueAt(i).name, form.getType());
 			String data = nodes.valueAt(i).getData();
 			if (data != null && !data.equals("")) {
 				if (datasetID == -1) {
@@ -213,5 +304,13 @@ public class ViewBuilder {
 				leftParent.right = childID;
 			}
 		}
+	}
+
+	public SparseArray<ViewNode> getNodes() {
+		return nodes;
+	}
+
+	public ArrayList<LinearLayout> getNewColumn() {
+		return newColumn;
 	}
 }

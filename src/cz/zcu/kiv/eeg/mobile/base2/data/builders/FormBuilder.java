@@ -6,6 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
+//import odml.core.Reader;
+//import odml.core.Section;
+
+
+
 import odml.core.Reader;
 import odml.core.Section;
 
@@ -29,7 +34,6 @@ public class FormBuilder {
 	private Section odmlForm;
 	private Section odmlRoot;
 
-	// todo přesunout
 	private static final String LAYOUT_NAME = "layoutName";
 	private static final String ELEMENT_FORM = "form";
 	private static final String ELEMENT_SET = "set";

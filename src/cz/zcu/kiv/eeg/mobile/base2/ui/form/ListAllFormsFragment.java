@@ -39,9 +39,7 @@ public class ListAllFormsFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true); // povolí action bar
-		menu = ((FormActivity) getActivity()).getMenuData();
 		daoFactory = new DAOFactory(getActivity());
-		// layout = daoFactory.getLayoutDAO().getLayoutByName(menu.getLayout().getName());
 	}
 
 	@Override
@@ -54,14 +52,17 @@ public class ListAllFormsFragment extends ListFragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		// aby se aktualizoval pri navratu
-		setListAdapter(null);
-		setListAdapter(getAdapter(menu.getId()));
+		//setListAdapter(null);
+		//setListAdapter(getAdapter(menu.getId())); //TODO zlobí
 	}
-
-	/*
-	 * @Override public void onActivityCreated(Bundle savedInstanceState) { super.onActivityCreated(savedInstanceState);
-	 * setListAdapter(null); setListAdapter(getAdapter()); }
-	 */
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		menu = ((FormActivity) getActivity()).getMenuData();
+		setListAdapter(null);
+		setListAdapter(getAdapter(menu.getId())); //TODO zlobí
+	}
 
 	public FormAdapter getAdapter(int menuID) {
 		FormAdapter adapter = adapters.get(menuID);
@@ -69,7 +70,6 @@ public class ListAllFormsFragment extends ListFragment {
 		if (adapter == null) {
 			adapter = new FormAdapter(getActivity(), 
 					R.layout.form_row, 
-					//menu.getRootForm().getType(), 
 					menu,
 					new ArrayList<FormRow>());
 
@@ -78,8 +78,8 @@ public class ListAllFormsFragment extends ListFragment {
 			Field description1Field = daoFactory.getFieldDAO().getField(menu.getFieldDescription1().getId());
 			Field description2Field = daoFactory.getFieldDAO().getField(menu.getFieldDescription2().getId());
 			Form form = daoFactory.getFormDAO().getFormByType(description1Field.getForm().getType());
-
-			for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
+		
+			for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {			
 				int dataset_id = dataset.getId();
 				String descriptionData1 = null;
 				String descriptionData2 = null;
@@ -108,10 +108,6 @@ public class ListAllFormsFragment extends ListFragment {
 
 	public static SparseArray<FormAdapter> getAdaptersForUpdate() {
 		return adapters;
-	}
-	
-	public static FormAdapter getAdaptersForUpdate11() {
-		return adapters.valueAt(0);
 	}
 
 	@Override

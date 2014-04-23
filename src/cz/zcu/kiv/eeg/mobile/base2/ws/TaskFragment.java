@@ -32,6 +32,7 @@ public class TaskFragment extends Fragment {
 	private DummyTask mTask;
 	private TestCreditialsTask mTaskLogin;
 	private FetchLayoutsTask mTaskLayouts;
+	private FetchDataTask mTaskData;
 	private DAOFactory daoFactory;
 	public TaskState state = INACTIVE;
 
@@ -73,6 +74,13 @@ public class TaskFragment extends Fragment {
 		if (state != RUNNING) {
 			mTask = new DummyTask(this);
 			mTask.execute();
+		}
+	}
+	
+	public void startData(String url) {
+		if (state != RUNNING) {
+			mTaskData = new FetchDataTask(this);
+			mTaskData.execute(url);
 		}
 	}
 	

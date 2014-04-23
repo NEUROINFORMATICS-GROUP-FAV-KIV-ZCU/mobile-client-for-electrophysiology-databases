@@ -31,19 +31,19 @@ public class Data {
 		super();
 	}
 
-	public Data(int id, String data) {
+	/*public Data(int id, String data) {
 		super();
 		this.id = id;
 		this.data = data;
-	}
+	}*/
 
-	public Data(int id, Dataset dataset, Field field, String data) {
+	/*public Data(int id, Dataset dataset, Field field, String data) {
 		super();
 		this.id = id;
 		this.dataset = dataset;
 		this.field = field;
 		this.data = data;
-	}
+	}*/
 
 	public Data(Dataset dataset, Field field, String data) {
 		super();

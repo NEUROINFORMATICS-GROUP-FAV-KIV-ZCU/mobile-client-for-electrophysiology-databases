@@ -45,6 +45,8 @@
     <string name="form_add">Add form</string>
     <string name="form_new">New Form</string>
     <string name="form_refresh">Fetch data</string>
+    <string name="form_edit_layout">Edit layout</string>
+    <string name="form_save_layout">Save layout</string>
     <string name="form_name">Name</string>
     <string name="form_layouts">Layout</string>
     <string name="form_description1">Description 1</string>

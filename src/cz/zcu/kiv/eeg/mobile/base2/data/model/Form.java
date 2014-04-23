@@ -30,6 +30,11 @@ public class Form {
 		this.type = type;
 		this.date = date;
 	}
+	
+	public Form(String type) {
+		super();
+		this.type = type;
+	}
 
 	public String getType() {
 		return type;

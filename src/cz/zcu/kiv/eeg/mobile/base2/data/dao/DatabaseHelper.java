@@ -31,7 +31,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public static final String TAG = "DatabaseHelper";
 	private static final String DATABASE_NAME = "eegMobileDatabase.db";
-	private static final int DATABASE_VERSION = 54;
+	private static final int DATABASE_VERSION = 57;
 
 	private static Dao<Form, String> formDao = null;
 	private static Dao<Field, Integer> fieldDao = null;

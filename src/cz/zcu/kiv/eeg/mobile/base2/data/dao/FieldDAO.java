@@ -59,7 +59,7 @@ public class FieldDAO {
 		return null;
 	}
 
-	public Field getFieldByNameAndForm(final String name, final String formId) {
+	public Field getField(final String name, final String formId) {
 		try {
 			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
 			Where<Field, Integer> where = queryBuilder.where();
