@@ -4,12 +4,12 @@ import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.ws.FetchLayoutsTask;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,7 +20,7 @@ import android.widget.TextView;
  * 
  * @author Jaroslav Hošek
  */
-public class TaskFragmentActivity extends FragmentActivity {
+public class TaskFragmentActivity extends Activity {
 
 	private static final String TAG = TaskFragmentActivity.class.getSimpleName();
 
@@ -104,8 +104,7 @@ public class TaskFragmentActivity extends FragmentActivity {
 					default:
 						break;
 					}
-				} catch (Exception e) {
-					// Log.w(TAG, e.getMessage());
+				} catch (Exception e) {				
 					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
 			}

@@ -14,6 +14,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = Form.TABLE_NAME)
 public class Form {
 	public static final String TABLE_NAME = "forms";
+	public static final String FORM_TYPE = "formType";
 
 	@DatabaseField(id = true, columnName = "type_id")
 	private String type;

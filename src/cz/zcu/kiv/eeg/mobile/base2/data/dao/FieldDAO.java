@@ -1,6 +1,8 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
@@ -9,6 +11,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
@@ -28,6 +31,16 @@ public class FieldDAO {
 
 	private Dao<Field, Integer> getFieldDao() throws SQLException {
 		return databaseHelper.getFieldDao();
+	}
+
+	public Field create(final Field field) {
+		try {
+			getFieldDao().create(field);
+			return field;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public CreateOrUpdateStatus saveOrUpdate(final Field field) {
@@ -74,10 +87,22 @@ public class FieldDAO {
 		return null;
 	}
 
-	public List<Field> getFieldByRootForm(final Form rootForm) {
+	public List<Field> getFields(final String rootForm) {
 		try {
 			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
 			queryBuilder.where().eq("form_id", rootForm);
+			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	public List<Field> getFields(final Iterable<Integer> notIn, final String formType) {
+		try {
+			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
+			queryBuilder.where().notIn("id", notIn).and().eq("form_id", formType);
 			return queryBuilder.query();
 		} catch (SQLException e) {
 			e.printStackTrace();

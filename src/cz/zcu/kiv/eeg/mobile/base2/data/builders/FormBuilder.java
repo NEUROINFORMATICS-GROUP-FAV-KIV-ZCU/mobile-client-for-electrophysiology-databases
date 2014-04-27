@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 //import odml.core.Reader;
 //import odml.core.Section;
-
-
 
 import odml.core.Reader;
 import odml.core.Section;
@@ -18,10 +18,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
 import android.content.Context;
+import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
 /**
  * 
@@ -29,6 +32,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
  * 
  */
 public class FormBuilder {
+	private static final String TAG = FormBuilder.class.getSimpleName();
 	private DAOFactory daoFactory;
 	private String xmlData;
 	private Section odmlForm;
@@ -51,7 +55,7 @@ public class FormBuilder {
 			// odmlRoot = reader.load(readOdmlFromFile()); todo testovaci
 			odmlForm = odmlRoot.getSection(0);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		}
 	}
 
@@ -76,13 +80,13 @@ public class FormBuilder {
 				saveFormLayouts(subform, layout);
 				createFields(section.getSections(), subform, layout);
 			} else {
-				saveField(section, form);
+				saveField(section, form, layout);
 			}
 		}
 	}
 
 	private Form saveForm(Section formSection) {
-		return daoFactory.getFormDAO().saveOrUpdate(formSection.getName(), odmlRoot.getDocumentDate());
+		return daoFactory.getFormDAO().saveOrUpdate(formSection.getReference(), odmlRoot.getDocumentDate());
 	}
 
 	private Layout saveLayout(Form rootForm) {
@@ -93,12 +97,50 @@ public class FormBuilder {
 		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
 	}
 
-	private void saveField(Section field, Form form) {
-		Field mField = new Field(field.getName(), field.getType(), form);
-		if (field.getProperty("label") != null) {
-			mField.setLabel(field.getProperty("label").getText());
+	private void saveField(Section fieldSection, Form form, Layout layout) {
+		Field field = daoFactory.getFieldDAO().getField(fieldSection.getName(), form.getType());
+
+		if (layout.getName().equalsIgnoreCase("Person-generated")) {
+			System.out.println("sračička");
 		}
-		daoFactory.getFieldDAO().saveOrUpdate(mField);
+
+		if (field == null) {
+			field = new Field(fieldSection.getName(), fieldSection.getType(), form);
+			daoFactory.getFieldDAO().create(field);
+		}
+
+		LayoutProperty property = new LayoutProperty(field, layout);
+
+		if (fieldSection.getProperty("label") != null) {
+			property.setLabel(fieldSection.getProperty("label").getText());
+		}
+		if (fieldSection.getProperty("id") != null) {
+			property.setIdNode(Integer.parseInt(fieldSection.getProperty("id").getText()));
+		}
+		if (fieldSection.getProperty("idTop") != null) {
+			property.setIdTop(Integer.parseInt(fieldSection.getProperty("idTop").getText()));
+		}
+		if (fieldSection.getProperty("idBottom") != null) {
+			property.setIdTop(Integer.parseInt(fieldSection.getProperty("idBottom").getText()));
+		}
+		if (fieldSection.getProperty("idLeft") != null) {
+			property.setIdLeft(Integer.parseInt(fieldSection.getProperty("idLeft").getText()));
+		}
+		if (fieldSection.getProperty("idRight") != null) {
+			property.setIdLeft(Integer.parseInt(fieldSection.getProperty("idRight").getText()));
+		}
+		if (fieldSection.getProperty("weight") != null) {
+			property.setWeight(Integer.parseInt(fieldSection.getProperty("weight").getText()));
+		} else {
+			property.setWeight(100);
+		}
+		// zatím hodnoty pouze pro combobox
+		if (fieldSection.getProperty("values") != null) {
+			for (Object value : fieldSection.getProperty("values").getValues()) {
+				daoFactory.getFieldValueDAO().saveOrUpdate(new FieldValue((String) value, field));
+			}
+		}
+		daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
 	}
 
 	private String getLayoutName() {
@@ -118,13 +160,13 @@ public class FormBuilder {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e(TAG, e.getMessage());
 				}
 			}
 		}
@@ -140,7 +182,7 @@ public class FormBuilder {
 		try {
 			is = context.getResources().getAssets().open(filename);
 		} catch (Exception e) {
-			e.getMessage();
+			Log.e(TAG, e.getMessage());
 		}
 		return is;
 	}

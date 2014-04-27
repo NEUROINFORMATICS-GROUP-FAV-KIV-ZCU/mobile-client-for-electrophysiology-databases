@@ -6,7 +6,7 @@ import java.util.Calendar;
  * Gathered values used in application. Values' names are descriptive enough.
  */
 public class Values {
-
+	
 	// activity results flags
 	public static final int ADD_RESERVATION_FLAG = 1;
 	public static final int SELECT_FILE_FLAG = 2;
@@ -48,6 +48,13 @@ public class Values {
 	// REST service qualifiers
 	public static final String SERVICE_QUALIFIER_MINE = "mine";
 	public static final String SERVICE_QUALIFIER_ALL = "all";
+	
+	//INTENT
+	public static final int PICK_FIELD_ID_REQUEST = 1;
+	public static final String USED_FIELD = "usedFields";
+	
+	// ViewBuilder
+	public static final int NODE_ID = 1;
 
 	// ODML
 	public static final String ODML_STRING_TYPE = "string";
@@ -57,19 +64,9 @@ public class Values {
 	public static final String ODML_FORM = "form";
 	public static final String ODML_LABEL = "label";
 	public static final String ODML_REQUIRED = "required";
-	public static final String ODML_ID = "id";
+	public static final String ODML_ID_NODE = "id";
 	public static final String ODML_ID_RIGHT = "idRight";
 	public static final String ODML_ID_BOTTOM = "idBottom";
-
-	// logged in user information
-	// public static UserInfo user;
-
-	// day displayed as first in calendar view
-	public static int firstDayOfWeek = Calendar.SUNDAY;
-
-	// bolean values in bytes for parcelable implementation
-	public static byte TRUE = 1;
-	public static byte FALSE = 0;
 
 	public static final int ADD_SCENARIO_FLAG = 20;
 	public static final int ADD_PERSON_FLAG = 21;

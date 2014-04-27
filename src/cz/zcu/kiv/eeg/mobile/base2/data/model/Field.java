@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
+import java.util.List;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -14,8 +16,7 @@ public class Field {
 	public static final String TABLE_NAME = "fields";
 	public static final String FK_ID_FORM = "form_id";
 	public static final String INDEX_NAME = "field_form_name_idx";
-	// public static final String NAME_FIELD_NAME = "name";
-	// public static final String FORM_FIELD_NAME = "form";
+	public static final String FIELD_ID = "field_id";
 
 	@DatabaseField(generatedId = true)
 	private int id;
@@ -25,9 +26,6 @@ public class Field {
 
 	@DatabaseField
 	private String type;
-
-	@DatabaseField
-	private String label;
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
 	private Form form;
@@ -65,14 +63,6 @@ public class Field {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 	public Form getForm() {

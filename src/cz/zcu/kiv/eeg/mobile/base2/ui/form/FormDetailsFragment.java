@@ -3,30 +3,43 @@ package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.ActionMode;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
+import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
+import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
+import android.view.View.OnClickListener;
 
 /**
  * 
@@ -42,11 +55,14 @@ public class FormDetailsFragment extends Fragment {
 	private Layout layout;
 	private ViewBuilder vb;
 	private int datasetID = -1;
-	private boolean isEnabledEdit = true;
+	private boolean isEnabledEdit = false;
+	private boolean isEnabledMove = false;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 		daoFactory = new DAOFactory(getActivity());
 		Bundle extras = getActivity().getIntent().getExtras();
@@ -54,9 +70,12 @@ public class FormDetailsFragment extends Fragment {
 		datasetID = extras.getInt(DATASET_ID, -1);
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 		layout = daoFactory.getLayoutDAO().getLayoutByName(menu.getLayout().getName());
+	}
 
-		vb = new ViewBuilder(getActivity(), layout, daoFactory);
-		View view = vb.getLinearLayout();
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		vb = new ViewBuilder(getActivity(), layout, daoFactory);	
+		View view = vb.getLinearLayout();	
 		vb.initData(datasetID);
 		return view;
 	}
@@ -117,34 +136,50 @@ public class FormDetailsFragment extends Fragment {
 	}
 
 	private void editLayout() {
-		SparseArray<ViewNode> nodes = vb.getNodes();
-		for (int i = 0; i < nodes.size(); i++) {
-			ViewNode node = nodes.valueAt(i);
-			node.setEditor(getActivity(), nodes);
-		}
-		ArrayList<LinearLayout> newColumn = vb.getNewColumn();
-		for(LinearLayout column : newColumn){
-			column.setVisibility(View.VISIBLE);
-		}
-		
-		isEnabledEdit = false;
-		getActivity().invalidateOptionsMenu();
-	}
-	
-	private void saveLayout() {
-		SparseArray<ViewNode> nodes = vb.getNodes();
-		for (int i = 0; i < nodes.size(); i++) {
-			ViewNode node = nodes.valueAt(i);
-			node.removeEditor();
-		}
-		ArrayList<LinearLayout> newColumn = vb.getNewColumn();
-		for(LinearLayout column : newColumn){
-			column.setVisibility(View.GONE);
-		}
-		
-		vb.saveLayout();
+
+		vb.enableLocalEdit(getActivity());
 		isEnabledEdit = true;
 		getActivity().invalidateOptionsMenu();
+	}
+
+	private void saveLayout() {
+		vb.saveLayout();
+		isEnabledEdit = false;
+		if (isEnabledMove) {
+			vb.disableEditor();
+			isEnabledMove = false;
+		}
+		getActivity().invalidateOptionsMenu();
+	}
+
+	private void addField() {
+		Intent intent = new Intent(getActivity(), FieldAddActivity.class);
+		intent.putExtra(Form.FORM_TYPE, layout.getRootForm().getType());
+		intent.putExtra(Layout.LAYOUT_NAME, layout.getName());
+		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
+		startActivityForResult(intent, Values.PICK_FIELD_ID_REQUEST);
+	}
+
+	private void moveFields() {
+		if (isEnabledMove) {
+			vb.disableEditor();	
+			editLayout();
+			isEnabledMove = false;
+		} else {
+			vb.enableEditor();
+			isEnabledMove = true;
+		}
+		getActivity().invalidateOptionsMenu();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK) {
+			if (requestCode == Values.PICK_FIELD_ID_REQUEST) {
+				vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
+			}
+		}
 	}
 
 	@Override
@@ -152,13 +187,24 @@ public class FormDetailsFragment extends Fragment {
 		super.onPrepareOptionsMenu(menu);
 		MenuItem editMenu = menu.findItem(R.id.form_edit_layout);
 		MenuItem saveMenu = menu.findItem(R.id.form_save_layout);
+		MenuItem move = menu.findItem(R.id.form_move);
+		MenuItem add = menu.findItem(R.id.form_add);
 
 		if (isEnabledEdit) {
-			editMenu.setVisible(true);
-			saveMenu.setVisible(false);
-		} else {
 			editMenu.setVisible(false);
 			saveMenu.setVisible(true);
+			add.setVisible(true);
+			move.setVisible(true);
+			if (isEnabledMove) {
+				move.setIcon(R.drawable.ic_action_move_off);
+			} else {
+				move.setIcon(R.drawable.ic_action_move_on);
+			}
+		} else {
+			editMenu.setVisible(true);
+			saveMenu.setVisible(false);
+			move.setVisible(false);
+			add.setVisible(false);
 		}
 	}
 
@@ -175,9 +221,14 @@ public class FormDetailsFragment extends Fragment {
 		case R.id.form_edit_layout:
 			editLayout();
 			return true;
-
 		case R.id.form_save_layout:
 			saveLayout();
+			return true;
+		case R.id.form_add:
+			addField();
+			return true;
+		case R.id.form_move:
+			moveFields();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

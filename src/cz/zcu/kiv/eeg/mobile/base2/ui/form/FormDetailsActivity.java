@@ -4,14 +4,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
-import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 
 /**
  * 
@@ -33,19 +30,18 @@ public class FormDetailsActivity extends Activity {
 			fragmentTransaction.replace(android.R.id.content, details);
 			fragmentTransaction.commit();
 		}
-		
+
 		// enables up button, sets section icon
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setIcon(R.drawable.ic_action_info);
 		actionBar.setTitle(getIntent().getExtras().getString(DashboardActivity.MENU_ITEM_NAME));
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.form_edit_menu, menu);
-		//MenuItem item = menu.findItem(R.id.form_save_layout);
-		//item.setVisible(false);
 		return true;
 	}
 
@@ -55,12 +51,15 @@ public class FormDetailsActivity extends Activity {
 		case android.R.id.home:
 			finish();
 			return true;
-		case R.id.form_edit_layout:		
+		case R.id.form_edit_layout:
 			return false;
-		case R.id.form_save_layout:		
-			return false;	
+		case R.id.form_save_layout:
+			return false;
+		case R.id.form_move:
+			return false;
+		case R.id.form_add:
+			return false;
 		}
-		
 		return false;
 	}
 }

@@ -17,9 +17,10 @@ public class Layout {
 	public static final String XML_ROOT = "layout";
 	public static final String TABLE_NAME = "layouts";
 	public static final String FK_ID_FORM = "root_form_id";
+	public static final String LAYOUT_NAME = "layoutName";
 
 	@DatabaseField(id = true, columnName = "name_id")
-	@Element(name = "layoutName")
+	@Element(name = LAYOUT_NAME)
 	private String name;
 
 	@DatabaseField(columnName = "xml_data")

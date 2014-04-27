@@ -14,10 +14,12 @@ import com.j256.ormlite.table.TableUtils;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
 /**
@@ -31,10 +33,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public static final String TAG = "DatabaseHelper";
 	private static final String DATABASE_NAME = "eegMobileDatabase.db";
-	private static final int DATABASE_VERSION = 57;
+	private static final int DATABASE_VERSION = 78;
 
 	private static Dao<Form, String> formDao = null;
 	private static Dao<Field, Integer> fieldDao = null;
+	private static Dao<FieldValue, Integer> fieldValueDao = null;
+	private static Dao<LayoutProperty, Integer> layoutPropertyDao = null;
 	private static Dao<Layout, String> layoutDao = null;
 	private static Dao<Dataset, Integer> datasetDao = null;
 	private static Dao<Data, Integer> dataDao = null;
@@ -61,6 +65,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Dataset.class);
 			TableUtils.createTable(connectionSource, Data.class);
 			TableUtils.createTable(connectionSource, User.class);
+			TableUtils.createTable(connectionSource, LayoutProperty.class);
+			TableUtils.createTable(connectionSource, FieldValue.class);
 
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -86,6 +92,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Dataset.class, false);
 			TableUtils.dropTable(connectionSource, Data.class, false);
 			TableUtils.dropTable(connectionSource, User.class, false);
+			TableUtils.dropTable(connectionSource, LayoutProperty.class, false);
+			TableUtils.dropTable(connectionSource, FieldValue.class, false);
+			
 			onCreate(db, connectionSource);
 
 		} catch (SQLException e) {
@@ -150,6 +159,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return userDao;
 	}
+	
+	public Dao<LayoutProperty, Integer> getLayoutPropertyDao() throws SQLException {
+		if (layoutPropertyDao == null) {
+			layoutPropertyDao = getDao(LayoutProperty.class);
+		}
+		return layoutPropertyDao;
+	}
+	
+	public Dao<FieldValue, Integer> getFieldValueDao() throws SQLException {
+		if (fieldValueDao == null) {
+			fieldValueDao = getDao(FieldValue.class);
+		}
+		return fieldValueDao;
+	}
 
 	/**
 	 * Uzavreni databaze a odstraneni nacachovanych DAO.
@@ -165,5 +188,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		datasetDao = null;
 		dataDao = null;
 		userDao = null;
+		layoutPropertyDao = null;
+		fieldValueDao = null;
 	}
 }

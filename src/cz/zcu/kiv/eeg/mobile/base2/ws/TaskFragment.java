@@ -10,8 +10,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;

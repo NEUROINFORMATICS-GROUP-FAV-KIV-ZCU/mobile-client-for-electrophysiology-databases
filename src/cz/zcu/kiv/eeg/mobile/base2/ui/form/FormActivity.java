@@ -2,9 +2,9 @@ package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -69,7 +69,7 @@ public class FormActivity extends TaskFragmentActivity {
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 		actionBar.setTitle(menu.getName());
 
-		FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG);
 		if (mTaskFragment == null) {
 			mTaskFragment = new TaskFragment();

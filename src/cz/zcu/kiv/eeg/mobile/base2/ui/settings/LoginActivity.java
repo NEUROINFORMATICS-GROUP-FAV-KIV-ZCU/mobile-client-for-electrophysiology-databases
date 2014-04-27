@@ -1,8 +1,8 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.settings;
 
 import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +38,7 @@ public class LoginActivity extends TaskFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 
-		FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "Fragment");
 		if (mTaskFragment == null) {
 			mTaskFragment = new TaskFragment();

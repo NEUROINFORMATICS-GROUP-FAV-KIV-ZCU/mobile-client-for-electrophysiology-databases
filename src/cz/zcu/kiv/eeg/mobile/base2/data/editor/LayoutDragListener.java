@@ -10,14 +10,15 @@ import android.view.ViewGroup;
 import android.view.View.OnDragListener;
 import android.widget.LinearLayout;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
 public class LayoutDragListener implements OnDragListener {
 	static int count = 0; // TODO
 	Drawable enterShape;
 	Drawable normalShape;
-	Context ctx;
-	private SparseArray<ViewNode> nodes;
+	Context ctx; //TODO zatim zbytecne
+	private SparseArray<ViewNode> nodes;//TODO zatim zbytecne
 
 	public LayoutDragListener(Context ctx, SparseArray<ViewNode> nodes) {
 		this.enterShape = ctx.getResources().getDrawable(R.drawable.shape_droptarget); // červený rámeček
@@ -31,12 +32,11 @@ public class LayoutDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View viewB, DragEvent event) {
 		int action = event.getAction();
-		System.out.println(viewB.getTag() + "_all " + count);
+		//System.out.println(viewB.getTag(Values.NODE_ID) + "_all " + count);
 		ViewGroup wrapLayoutB = (ViewGroup) viewB.getParent();
 
 		switch (event.getAction()) {
 		case DragEvent.ACTION_DRAG_STARTED: // Do nothing
-			System.out.println(viewB.getTag() + "_start");
 			wrapLayoutB.setBackgroundDrawable(normalShape);
 			break;
 		case DragEvent.ACTION_DRAG_ENTERED:
@@ -60,18 +60,17 @@ public class LayoutDragListener implements OnDragListener {
 			int rowLayoutAIndex = formLayout.indexOfChild(rowLayoutA);
 			int rowLayoutBIndex = formLayout.indexOfChild(rowLayoutB);
 
-			//vytvoření nového sloupce
-			if (((Integer) viewB.getTag()) == -1) {
-			//if (((String) viewB.getTag()).equalsIgnoreCase("newColumn")) {
+			// vytvoření nového sloupce
+			if (((Integer) viewB.getTag(R.id.NODE_ID)) == -1) {
 				// přidání pole na řádku
 				if (rowLayoutAIndex != rowLayoutBIndex) {
 					// začátek řádky
 					if (wrapLayoutBIndex == 0) {
 						rowLayoutA.removeView(wrapLayoutA);
 						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex + 1);
-					} 
+					}
 					// konec řádky
-					else {						
+					else {
 						rowLayoutA.removeView(wrapLayoutA);
 						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex);
 					}
@@ -79,7 +78,7 @@ public class LayoutDragListener implements OnDragListener {
 					recalculateWeight(rowLayoutB);
 					// přepočet váhy pro zdrojový řádek
 					if (rowLayoutA.getChildCount() == 2) {
-						formLayout.removeView(rowLayoutA);
+						formLayout.removeView(rowLayoutA); // TODO sem přidat prostor pro přesun
 					} else {
 						recalculateWeight(rowLayoutA);
 					}
@@ -117,8 +116,10 @@ public class LayoutDragListener implements OnDragListener {
 			View item = rowLayout.getChildAt(i);
 			if (i != 1 && i != count) {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight;
+				nodes.get((Integer)item.getTag(R.id.NODE_ID)).setWeight((int)weight);
 			} else {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight - 10;
+				nodes.get((Integer)item.getTag(R.id.NODE_ID)).setWeight((int)weight);
 			}
 		}
 	}

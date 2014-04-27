@@ -32,6 +32,9 @@
     <string name="one_hundred_percent">100%</string>
     <string name="menu_trigger_config_change">Trigger Config Change</string>
     <string name="task_running">Probíhá stahování dat ze serveru</string>
+    <string name="discard">Discard</string>
+    <string name="back">Back</string>
+    <string name="remove">Remove</string>
 
     <!-- Settings activity -->
     <string name="app_settings">Login Settings</string>
@@ -42,15 +45,29 @@
     <string name="settings_login">Login</string>
 
     <!-- Form management -->
+    <string name="form_plus">+</string>
+    <string name="form_label">Label</string>
     <string name="form_add">Add form</string>
     <string name="form_new">New Form</string>
+    <string name="form_new_field">New Field</string>
     <string name="form_refresh">Fetch data</string>
     <string name="form_edit_layout">Edit layout</string>
     <string name="form_save_layout">Save layout</string>
+    <string name="form_move">Move fields</string>
     <string name="form_name">Name</string>
-    <string name="form_layouts">Layout</string>
+    <string name="form_layouts">Select Layout</string>
+    <string name="form_fields">Select field</string>
     <string name="form_description1">Description 1</string>
     <string name="form_description2">Description 2</string>
+    
+     <!-- Field management -->
+    <string name="field_label">Label</string>
+    <string name="field_add">Add field</string>
+    <string name="field_name">Field Name</string>
+    <string name="field_type">Type</string>
+    <string name="field_save">Save field</string>
+    <string name="field_exists">The field name already exists</string>
+    <string name="field_empty_name">Empty field name</string>
 
     <!-- person management -->
     <string name="person_add">Add person</string>

@@ -13,6 +13,8 @@ import odml.core.Section;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
+import android.util.Log;
+import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
@@ -24,6 +26,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
  * 
  */
 public class DataBuilder {
+	private static final String TAG = DataBuilder.class.getSimpleName();
 	private DAOFactory daoFactory;
 	private String xmlData;
 	// private Section odmlForm;
@@ -38,7 +41,7 @@ public class DataBuilder {
 			this.xmlData = getStringFromInputStream(data.getBody().getInputStream());
 			odmlRoot = reader.load(data.getBody().getInputStream());			
 		} catch (Exception e) {
-			e.printStackTrace();
+			 Log.e(TAG, e.getMessage());
 		}
 	}
 
@@ -82,13 +85,13 @@ public class DataBuilder {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e(TAG, e.getMessage());
 				}
 			}
 		}

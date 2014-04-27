@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActionBar;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,7 +50,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 		actionBar.setIcon(R.drawable.ic_action_event);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "Fragment");
 		if (mTaskFragment == null) {
 			mTaskFragment = new TaskFragment();
@@ -68,7 +68,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				Layout layout = (Layout) parent.getItemAtPosition(pos);
-				initFieldSpinner(daoFactory.getFieldDAO().getFieldByRootForm(layout.getRootForm()));
+				initFieldSpinner(daoFactory.getFieldDAO().getFields(layout.getRootForm().getType()));
 			}
 
 			@Override

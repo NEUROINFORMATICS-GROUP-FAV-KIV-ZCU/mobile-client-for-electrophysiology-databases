@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
    
+   <item
+        android:id="@+id/form_move"
+        android:icon="@drawable/ic_action_move_off"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_move">
+    </item>
+    
+    <item
+        android:id="@+id/form_add"
+        android:icon="@drawable/ic_action_add"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/field_add">
+    </item>
+    
     <item
         android:id="@+id/form_edit_layout"
         android:icon="@drawable/ic_action_edit"
