@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="field_type">
+        <item>Textbox</item>
+        <item>Checkbox</item>
+        <item>Combobox</item>
+        <item>Form</item>
+    </string-array>
+</resources>

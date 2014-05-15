@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pokus"
+    style="?android:actionBarTabTextStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:drawableLeft="@drawable/ic_action_discard"
+    android:drawablePadding="8dp"
+    android:gravity="center_vertical"
+    android:paddingRight="20dp"
+    android:text="@string/remove" />  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:divider="?android:attr/dividerVertical"
+    android:dividerPadding="12dp"
+    android:orientation="horizontal"
+    android:showDividers="middle" 
+    android:baselineAligned="false">
+
+    <FrameLayout
+        android:id="@+id/pokus"
+        style="?android:actionButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <TextView
+            style="?android:actionBarTabTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/ic_action_add"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingRight="20dp"
+            android:text="@string/remove" />
+    </FrameLayout>
+
+</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/discard_action_bar.xml -->

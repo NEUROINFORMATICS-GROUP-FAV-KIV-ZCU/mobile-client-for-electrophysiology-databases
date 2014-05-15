@@ -1,0 +1,47 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* ic_launcher-web.png
+* mobile-client-for-electrophysiology-databases.iml
+* pom.xml
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets/
+* libs/jdom.jar => app/libs/jdom.jar
+* libs/odml.jar => app/libs/odml.jar
+* libs/ormlite-android-4.48.jar => app/libs/ormlite-android-4.48.jar
+* libs/ormlite-core-4.48.jar => app/libs/ormlite-core-4.48.jar
+* libs/simple-xml-2.7.1.jar => app/libs/simple-xml-2.7.1.jar
+* libs/slf4j-api.jar => app/libs/slf4j-api.jar
+* libs/slf4j-jdk14.jar => app/libs/slf4j-jdk14.jar
+* libs/spring-android-core-1.0.1.RELEASE.jar => app/libs/spring-android-core-1.0.1.RELEASE.jar
+* libs/spring-android-rest-template-1.0.1.RELEASE.jar => app/libs/spring-android-rest-template-1.0.1.RELEASE.jar
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

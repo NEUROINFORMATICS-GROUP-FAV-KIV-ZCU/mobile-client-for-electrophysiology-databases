@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   
+    <string-array name="sections_list">
+        <item>@string/menu_dashboard</item>
+         <item>@string/menu_pokus</item>             
+    </string-array>
+ 
+</resources>

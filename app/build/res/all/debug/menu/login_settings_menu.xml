@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/login"
+        android:icon="@drawable/ic_action_login"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/settings_login">
+    </item>
+    
+</menu><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/login_settings_menu.xml -->

@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res" >
+            <file
+                name="ic_action_person"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable/ic_action_person.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="shape"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable/shape.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="shape_droptarget"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable/shape_droptarget.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="shape_edit"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable/shape_edit.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="ic_action_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_add.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_back"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_back.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_discard"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_discard.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_edit"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_edit.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_event"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_event.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_move"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_move.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_move_off"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_move_off.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_move_on"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_move_on.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_person"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_person.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_refresh"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_refresh.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_remove"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_remove.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_save"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_save.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_settings"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_settings.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_action_storage"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_action_storage.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-hdpi/ic_launcher.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="drawer_shadow"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/drawer_shadow.9.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_add.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_back"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_back.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_discard"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_discard.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_edit"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_edit.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_event"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_event.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_person"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_person.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_refresh"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_refresh.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_remove"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_remove.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_save"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_save.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_settings"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_settings.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_storage"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_action_storage.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_drawer"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_drawer.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-mdpi/ic_launcher.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="ic_action_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_add.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_back"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_back.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_discard"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_discard.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_edit"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_edit.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_event"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_event.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_info"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_info.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_login"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_login.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_person"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_person.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_refresh"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_refresh.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_remove"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_remove.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_save"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_save.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_settings"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_settings.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_storage"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_action_storage.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xhdpi/ic_launcher.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_back"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_back.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_discard"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_discard.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_event"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_event.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_person"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_person.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_refresh"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_refresh.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_remove"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_remove.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_save"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_save.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_settings"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_settings.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_action_storage"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_action_storage.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="ic_launcher"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/drawable-xxhdpi/ic_launcher.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="activity_form_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/activity_form_add.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_main"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/activity_main.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="activity_settings"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/activity_settings.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="base_person_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/base_person_add.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="dashboard_drawer"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/dashboard_drawer.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="dashboard_drawer_item"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/dashboard_drawer_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="dashboard_layout"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/dashboard_layout.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="discard_action_bar"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/discard_action_bar.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="field_add"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/field_add.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="field_select"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/field_select.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="form_list"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/form_list.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="form_row"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/form_row.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="spinner_row_simple"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/spinner_row_simple.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="dashboard_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/dashboard_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="field_add_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/field_add_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="form_add_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/form_add_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="form_edit_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/form_edit_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="form_list_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/form_list_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="form_local_edit_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/form_local_edit_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                name="login_settings_menu"
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/menu/login_settings_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/arrays.xml"
+                qualifiers="" >
+                <string-array name="field_type" >
+                    <item>
+Textbox
+                    </item>
+                    <item>
+Checkbox
+                    </item>
+                    <item>
+Combobox
+                    </item>
+                    <item>
+Form
+                    </item>
+                </string-array>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/colors.xml"
+                qualifiers="" >
+                <color name="bg_gray" >#cecbce
+                </color>
+                <color name="selected" >#ff0099cc
+                </color>
+                <color name="emphasis" >#31b6e7
+                </color>
+                <color name="label" >#e0f7ff
+                </color>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/dimens.xml"
+                qualifiers="" >
+                <dimen name="activity_horizontal_margin" >16dp
+                </dimen>
+                <dimen name="activity_vertical_margin" >16dp
+                </dimen>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/ids.xml"
+                qualifiers="" >
+                <item
+                    name="NODE_ID"
+                    type="id"/>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/sections.xml"
+                qualifiers="" >
+                <string-array name="sections_list" >
+                    <item>
+@string/menu_dashboard
+                    </item>
+                    <item>
+@string/menu_pokus
+                    </item>
+                </string-array>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/strings.xml"
+                qualifiers="" >
+                <string name="error_no_type_selected" >No electrode type selected!
+                </string>
+                <string name="error_no_artifact_selected" >No artifact selected!
+                </string>
+                <string name="person_age" >Age
+                </string>
+                <string name="settings_url" >Service URL
+                </string>
+                <string name="error_host_unreach" >Host unavailable (no route exist). Is hostname/IP correct?
+                </string>
+                <string name="error_no_fix_selected" >No electrode fix selected!
+                </string>
+                <string name="error_ssl" >SSL connection fell apart. Try again.
+                </string>
+                <string name="error_no_file_selected" >No file selected!
+                </string>
+                <string name="spinner_field" >[Select field...]
+                </string>
+                <string name="discard" >Discard
+                </string>
+                <string name="task_progress_msg" >Progress:
+                </string>
+                <string name="remove" >Remove
+                </string>
+                <string name="error_no_digitization_selected" >No digitization selected!
+                </string>
+                <string name="error_offline" >Connection is unavailable. Request could not be completed.
+                </string>
+                <string name="error_host_con_refused" >Connection refused. Are your credentials correct?
+                </string>
+                <string name="field_name" >Field Name
+                </string>
+                <string name="form_save_layout" >Save layout
+                </string>
+
+                <color name="red" >#FFFF0000
+                </color>
+
+                <string name="person_mail" >Email
+                </string>
+                <string name="person_owner" >Owner
+                </string>
+                <string name="settings_saved" >Settings saved.
+                </string>
+                <string name="working_ws_credentials" >Verifying login information…
+                </string>
+                <string name="app_welcome" >Welcome to EEG Base!
+                </string>
+                <string name="app_underDevelopment" >This application is currently under development, so its features
+        are limited and maybe bugged sometimes. Thank you for your patience and bug reporting on GitHub project site!
+                </string>
+                <string name="app_settings" >Login Settings
+                </string>
+                <string name="error_invalid_username" >Username must be an email!
+                </string>
+                <string name="form_layouts" >Select Layout
+                </string>
+                <string name="action_settings" >Settings
+                </string>
+                <string name="settings_username" >Username
+                </string>
+                <string name="field_type" >Type
+                </string>
+                <string name="error_connection" >Connection to server issues occurred. Try again later.
+                </string>
+                <string name="optional" >Optionable
+                </string>
+                <string name="cancel" >Cancel
+                </string>
+                <string name="person_subject" >Subject
+                </string>
+                <string name="zero_percent" >0%
+                </string>
+                <string name="error_date_comparison" >Reservation action cannot end before it even started!
+                </string>
+                <string name="hello_world" >Hello world!
+                </string>
+                <string name="working_ws_layouts" >Fetching available layouts…
+                </string>
+                <string name="error_http_503" >Service is currently unavailable. Try again later.
+                </string>
+                <string name="back" >Back
+                </string>
+                <string name="form_description2" >Description 2
+                </string>
+                <string name="form_add" >Add form
+                </string>
+                <string name="field_empty_name" >Empty field name
+                </string>
+                <string name="error_unknown_host" >Invalid host name/address!
+                </string>
+                <string name="error_http_500" >Internal server error.
+                </string>
+                <string name="form_description1" >Description 1
+                </string>
+                <string name="spinner_layout" >[Select layout...]
+                </string>
+                <string name="form_name" >Name
+                </string>
+                <string name="error_time_start_after_end" >Time of start cannot be after the end time!
+                </string>
+                <string name="person_phone" >Phone number
+                </string>
+                <string name="settings_login" >Login
+                </string>
+                <string name="person_notes" >Notes
+                </string>
+                <string name="error_no_group_selected" >No research group selected!
+                </string>
+                <string name="form_plus" >+
+                </string>
+                <string name="app_name" >EEGMobileClient
+                </string>
+                <string name="error_no_electrode_location_selected" >No electrode location selected!
+                </string>
+                <string name="error_invalid_url" >Entered value is not invalid URL!
+                </string>
+                <string name="nav_close" >Hide navigation
+                </string>
+                <string name="start" >Start
+                </string>
+                <string name="error_no_experiment_selected" >No experiment selected!
+                </string>
+                <string name="error_no_scenario_selected" >No scenario selected!
+                </string>
+                <string name="form_fields" >Select field
+                </string>
+                <string name="menu_pokus" >Pokus
+                </string>
+                <string name="menu_dashboard" >Dashboard
+                </string>
+                <string name="task_complete_msg" >Task complete!
+                </string>
+                <string name="field_exists" >The field name already exists
+                </string>
+                <string name="app_intro" >This application was created in order to cover basic needs of EEG researchers.\n
+        \n
+        By clicking on drop-down menu in left upper corner you can select from following sections:\n
+        *
+<b>
+Scenarios
+                    </b>        - Here you can look over basic scenario information and create new scenario of your own.\n
+        *
+<b>
+Experiments
+                    </b>        - Section for displaying basic information about experiments and for creating a new ones.\n
+        *
+<b>
+Upload file
+                    </b>        - If you need to upload a data file to your experiment, head over here.\n
+        *
+<b>
+Reservations
+                    </b>        - Here you can use EEG Lab reservation system, for creating a reservation time for your research team!\n
+        *
+<b>
+Settings
+                    </b>        - Gathers basic settings for this application to run properly.\n
+        \n
+        Hopefully you will find this application useful!
+                </string>
+                <string name="task_running" >Probíhá stahování dat ze serveru
+                </string>
+                <string name="task_started_msg" >Task started!
+                </string>
+                <string name="form_edit_layout" >Edit layout
+                </string>
+                <string name="nav_open" >Show navigation
+                </string>
+                <string name="form_move" >Move fields
+                </string>
+                <string name="error_host_timeout" >Connection timeout. Try again.
+                </string>
+                <string name="error_no_subject_selected" >No subject selected!
+                </string>
+                <string name="error_invalid_mail_format" >Invalid mail format!
+                </string>
+                <string name="person_add" >Add person
+                </string>
+                <string name="menu_trigger_config_change" >Trigger Config Change
+                </string>
+                <string name="app_form" >Form
+                </string>
+                <string name="error_no_weather_selected" >No weather selected!
+                </string>
+                <string name="field_add" >Add field
+                </string>
+                <string name="form_refresh" >Fetch data
+                </string>
+                <string name="error_invalid_date_format" >Invalid date format!
+                </string>
+                <string name="person_surname" >Surname
+                </string>
+                <string name="person_gender" >Gender
+                </string>
+                <string name="one_hundred_percent" >100%
+                </string>
+                <string name="form_new" >New Form
+                </string>
+                <string name="person_name" >Name
+                </string>
+                <string name="error_invalid_password" >Password must be entered!
+                </string>
+                <string name="field_save" >Save field
+                </string>
+                <string name="error_no_electrode_system_selected" >No electrode system selected!
+                </string>
+                <string name="form_new_field" >New Field
+                </string>
+                <string name="field_label" >Label
+                </string>
+                <string name="mandatory" >Mandatory
+                </string>
+                <string name="settings_password" >Password
+                </string>
+                <string name="title_activity_dashboard" >DashboardActivity
+                </string>
+                <string name="form_label" >Label
+                </string>
+                <string name="error_http_400" >Application made invalid request towards server.
+                </string>
+                <string name="error_http_401" >User authorization check failed. Check your login information.
+                </string>
+                <string name="error_http_404" >Location not found. This is probably a server issue, but check your server URL just to
+        be sure.
+                </string>
+                <string name="error_http_405" >Request method not allowed.
+                </string>
+                <string name="person_lefthand" >Left-handedness
+                </string>
+                <string name="error_http_403" >You do not have permissions for such request.
+                </string>
+                <string name="error_http_408" >Request timed out.
+                </string>
+                <string name="error_empty_field" >Field must be filled
+                </string>
+                <string name="task_cancelled_msg" >Task cancelled!
+                </string>
+                <string name="person_birthday" >Birthday
+                </string>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values/styles.xml"
+                qualifiers="" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="Theme.AppCompat.Light" >
+
+                    <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+                    -->
+                </style>
+
+                <style
+                    name="AppTheme"
+                    parent="AppBaseTheme" >
+
+                    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+                </style>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values-v11/styles.xml"
+                qualifiers="v11" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="Theme.AppCompat.Light" >
+
+                    <!-- API 11 theme customizations can go here. -->
+                </style>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values-v14/styles.xml"
+                qualifiers="v14" >
+
+                <style
+                    name="AppBaseTheme"
+                    parent="Theme.AppCompat.Light.DarkActionBar" >
+
+                    <!-- API 14 theme customizations can go here. -->
+                </style>
+            </file>
+            <file
+                path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/values-w820dp/dimens.xml"
+                qualifiers="w820dp" >
+                <dimen name="activity_horizontal_margin" >64dp
+                </dimen>
+            </file>
+        </source>
+        <source path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/build/res/rs/debug" />
+        <source path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/debug/res" />
+    </dataSet>
+
+</merger>
