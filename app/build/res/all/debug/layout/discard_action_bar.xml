@@ -39,4 +39,4 @@
             android:text="@string/remove" />
     </FrameLayout>
 
-</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/discard_action_bar.xml -->
+</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases/app/src/main/res/layout/discard_action_bar.xml -->

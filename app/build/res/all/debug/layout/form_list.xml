@@ -9,4 +9,4 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>   
-</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/form_list.xml -->
+</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases/app/src/main/res/layout/form_list.xml -->

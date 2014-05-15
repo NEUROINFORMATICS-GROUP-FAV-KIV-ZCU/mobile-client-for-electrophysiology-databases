@@ -18,4 +18,4 @@
         android:divider="@android:color/darker_gray"     
         android:dividerHeight="0.5dp"
         android:background="#111"/>
-</android.support.v4.widget.DrawerLayout> <!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/dashboard_drawer.xml -->
+</android.support.v4.widget.DrawerLayout> <!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases/app/src/main/res/layout/dashboard_drawer.xml -->

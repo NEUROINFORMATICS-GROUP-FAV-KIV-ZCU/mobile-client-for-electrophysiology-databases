@@ -1,10 +1,12 @@
 apply plugin: 'android'
 
 android {
-    compileSdkVersion 16
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 19
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
+        versionCode 1
+        versionName '1.0.0-SNAPSHOT'
         minSdkVersion 14
         targetSdkVersion 19
     }
@@ -18,13 +20,14 @@ android {
 }
 
 dependencies {
-    compile files('libs/jdom.jar')
-    compile files('libs/odml.jar')
-    compile files('libs/ormlite-android-4.48.jar')
+    compile 'com.android.support:support-v4:19.1.+'
+    compile 'com.android.support:appcompat-v7:19.1.+'
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE@jar'
+    compile('org.simpleframework:simple-xml:2.7.1@jar'){
+        exclude group: 'org.simpleframework.stax'
+        exclude group: 'org.simpleframework.xpp3'
+    }
+    compile files('./libs/jdom.jar')
     compile files('libs/ormlite-core-4.48.jar')
-    compile files('libs/simple-xml-2.7.1.jar')
-    compile files('libs/slf4j-api.jar')
-    compile files('libs/slf4j-jdk14.jar')
-    compile files('libs/spring-android-core-1.0.1.RELEASE.jar')
-    compile files('libs/spring-android-rest-template-1.0.1.RELEASE.jar')
+    compile files('libs/ormlite-android-4.48.jar')
 }

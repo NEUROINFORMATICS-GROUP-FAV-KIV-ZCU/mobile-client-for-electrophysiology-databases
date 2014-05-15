@@ -4,6 +4,7 @@
 
 # Java Generated files
 gen/
+app/build/*
 
 # Gradle Wrapper
 .gradle/

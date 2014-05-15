@@ -6,4 +6,4 @@
     android:gravity="center_vertical"
     android:paddingLeft="10dip"
     android:minHeight="?android:attr/listPreferredItemHeightSmall" >
-</TextView><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/spinner_row_simple.xml -->
+</TextView><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases/app/src/main/res/layout/spinner_row_simple.xml -->

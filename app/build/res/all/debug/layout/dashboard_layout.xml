@@ -19,4 +19,4 @@
             android:text="@string/app_intro"
             android:layout_gravity="fill_horizontal"
             android:padding="5dp"/>
-</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases1/app/src/main/res/layout/dashboard_layout.xml -->
+</LinearLayout><!-- From: file:/Users/x/Documents/workspace/Android/mobile-client-for-electrophysiology-databases/app/src/main/res/layout/dashboard_layout.xml -->
