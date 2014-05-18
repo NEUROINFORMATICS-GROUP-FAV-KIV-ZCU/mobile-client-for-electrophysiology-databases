@@ -12,6 +12,7 @@ import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
@@ -25,7 +26,6 @@ public class FormActivity extends TaskFragmentActivity {
 
 	private static final String TAG = FormActivity.class.getSimpleName();
 	private static final String SELECTED_TAB = "selected_tab";
-	private TaskFragment mTaskFragment;
 	private MenuItems menu;
 	private int menuItemID = -1;
 	private DAOFactory daoFactory;
@@ -59,22 +59,16 @@ public class FormActivity extends TaskFragmentActivity {
 		// menu
 		if (savedInstanceState != null) {
 			actionBar.setSelectedNavigationItem(savedInstanceState.getInt(SELECTED_TAB, 1));
-			menuItemID = savedInstanceState.getInt(DashboardActivity.MENU_ITEM_ID, -1);
+			menuItemID = savedInstanceState.getInt(Values.MENU_ITEM_ID, -1);
 		} else {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				menuItemID = extras.getInt(DashboardActivity.MENU_ITEM_ID, -1);			
+				menuItemID = extras.getInt(Values.MENU_ITEM_ID, -1);			
 			}
 		}
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 		actionBar.setTitle(menu.getName());
 
-		FragmentManager fm = getFragmentManager();
-		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG);
-		if (mTaskFragment == null) {
-			mTaskFragment = new TaskFragment();
-			fm.beginTransaction().add(mTaskFragment, "taskFragment").commit();
-		}
 	}
 
 	@Override
@@ -103,15 +97,18 @@ public class FormActivity extends TaskFragmentActivity {
 		case R.id.form_new_data:
 			Toast.makeText(this, "New data", Toast.LENGTH_SHORT).show();
 			Intent intent = new Intent(this, FormDetailsActivity.class);
-			intent.putExtra(DashboardActivity.MENU_ITEM_ID, menu.getId());
-			intent.putExtra(DashboardActivity.MENU_ITEM_NAME, menu.getName());
+			intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
+			intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+			intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
 			startActivity(intent);
 			break;
-		case R.id.form_refresh:
-			// TODO
-			String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType();
-			mTaskFragment.startData(url);
-			// Toast.makeText(this, "Fetch data", Toast.LENGTH_SHORT).show();
+		
+		case R.id.form_edit_layout:
+			Intent intentEdit = new Intent(this, FormDetailsActivity.class);
+			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getId());
+			intentEdit.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);
+			startActivity(intentEdit);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -121,7 +118,7 @@ public class FormActivity extends TaskFragmentActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());
-		outState.putInt(DashboardActivity.MENU_ITEM_ID, menuItemID);		
+		outState.putInt(Values.MENU_ITEM_ID, menuItemID);	
 	}
 
 	@Override

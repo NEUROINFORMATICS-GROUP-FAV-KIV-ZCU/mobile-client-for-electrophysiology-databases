@@ -1,10 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="odml.xsl"?>
 <?xml-stylesheet type="text/xsl" href="odmlTerms.xsl"?>
 <odML version="1">
-  <date>2014-04-06</date>
+  <date>2014-04-28</date>
   <section>
     <type>form</type>
     <name>Person</name>
+    <reference>Person</reference>
+    <property>
+      <name>label</name>
+      <value>
+        Person
+        <type>string</type>
+      </value>
+    </property>
     <property>
       <name>layoutName</name>
       <value>
@@ -12,95 +21,42 @@
         <type>string</type>
       </value>
     </property>
-    
-	<section>
-      <type>textbox</type>
-      <name>givenname</name>
-      <property>
-        <name>id</name>
-        <value>
-          1
-          <type>int</type>
-        </value>
-      </property>
-      <property>
-        <name>label</name>
-        <value>
-          givenname
-          <type>string</type>
-        </value>
-      </property>
-      <property>
-        <name>required</name>
-        <value>
-          true
-          <type>boolean</type>
-        </value>
-      </property>
-      <property>
-        <name>datatype</name>
-        <value>
-          string
-          <type>string</type>
-        </value>
-      </property>
-    </section>
-	
-    <section>
-      <type>textbox</type>
-      <name>surname</name>
-      <property>
-        <name>id</name>
-        <value>
-          2
-          <type>int</type>
-        </value>
-      </property>
-      <property>
-        <name>label</name>
-        <value>
-          surname
-          <type>string</type>
-        </value>
-      </property>
-      <property>
-        <name>required</name>
-        <value>
-          true
-          <type>boolean</type>
-        </value>
-      </property>
-      <property>
-        <name>datatype</name>
-        <value>
-          string
-          <type>string</type>
-        </value>
-      </property>
-      <property>
-        <name>idTop</name>
-        <value>
-          1
-          <type>int</type>
-        </value>
-      </property>
-    </section>
-	
+    <property>
+      <name>previewMajor</name>
+      <value>
+        surname
+        <type>string</type>
+      </value>
+    </property>
+    <property>
+      <name>previewMinor</name>
+      <value>
+        givenname
+        <type>string</type>
+      </value>
+    </property>
     <section>
       <type>textbox</type>
       <name>dateOfBirth</name>
       <property>
         <name>id</name>
         <value>
-          3
+          1
           <type>int</type>
         </value>
       </property>
       <property>
         <name>label</name>
         <value>
-          dateOfBirth
+          Date of birth
           <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>cardinality</name>
+        <value>
+          1
+          <type>int</type>
         </value>
       </property>
       <property>
@@ -117,6 +73,91 @@
           <type>string</type>
         </value>
       </property>
+    </section>
+    <section>
+      <type>textbox</type>
+      <name>email</name>
+      <property>
+        <name>id</name>
+        <value>
+          2
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>label</name>
+        <value>
+          Email
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>cardinality</name>
+        <value>
+          1
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>required</name>
+        <value>
+          false
+          <type>boolean</type>
+        </value>
+      </property>
+      <property>
+        <name>datatype</name>
+        <value>
+          string
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>idTop</name>
+        <value>
+          1
+          <type>int</type>
+        </value>
+      </property>
+    </section>
+    <section>
+      <type>textbox</type>
+      <name>givenname</name>
+      <property>
+        <name>id</name>
+        <value>
+          3
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>label</name>
+        <value>
+          Givenname
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>cardinality</name>
+        <value>
+          1
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>required</name>
+        <value>
+          true
+          <type>boolean</type>
+        </value>
+      </property>
+      <property>
+        <name>datatype</name>
+        <value>
+          string
+          <type>string</type>
+        </value>
+      </property>
       <property>
         <name>idTop</name>
         <value>
@@ -125,7 +166,6 @@
         </value>
       </property>
     </section>
-	
     <section>
       <type>combobox</type>
       <name>gender</name>
@@ -139,8 +179,15 @@
       <property>
         <name>label</name>
         <value>
-          gender
+          Gender
           <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>cardinality</name>
+        <value>
+          1
+          <type>int</type>
         </value>
       </property>
       <property>
@@ -176,7 +223,185 @@
         </value>
       </property>
     </section>
-	
+    
+    
+    
+    
+    
+    
+    
+    <section>
+		<type>form</type>
+		<name>Article</name>
+		<property>
+		  <name>layoutName</name>
+		  <value>
+			Article-generated
+			<type>string</type>
+		  </value>
+		</property>
+          
+		<reference>Article</reference>
+		<property>
+		  <name>label</name>
+		  <value>
+			články
+			<type>string</type>
+		  </value>
+		</property>
+    
+   
+		<property>
+		  <name>previewMajor</name>
+		  <value>
+			text
+			<type>string</type>
+		  </value>
+		</property>
+		<property>
+		  <name>previewMinor</name>
+		  <value>
+			title
+			<type>string</type>
+		  </value>
+		</property>
+		<property>
+			<name>id</name>
+			<value>
+			  5
+			  <type>int</type>
+			</value>
+		</property>
+		<property>
+			<name>idTop</name>
+			<value>
+			  4
+			  <type>int</type>
+			</value>
+		 </property>
+   
+   <section>
+      <type>textbox</type>
+      <name>text</name>
+      <property>
+        <name>id</name>
+        <value>
+          6
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>label</name>
+        <value>
+          text
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>required</name>
+        <value>
+          true
+          <type>boolean</type>
+        </value>
+      </property>
+      <property>
+        <name>datatype</name>
+        <value>
+          string
+          <type>string</type>
+        </value>
+      </property>
+    </section>
+    <section>
+      <type>textbox</type>
+      <name>title</name>
+      <property>
+        <name>id</name>
+        <value>
+          7
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>label</name>
+        <value>
+          title
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>required</name>
+        <value>
+          true
+          <type>boolean</type>
+        </value>
+      </property>
+      <property>
+        <name>datatype</name>
+        <value>
+          string
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>idTop</name>
+        <value>
+          6
+          <type>int</type>
+        </value>
+      </property>
+    </section>
+  </section>
+    
+    
+    
+    
+    <section>
+      <type>textbox</type>
+      <name>surname</name>
+      <property>
+        <name>id</name>
+        <value>
+          6
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>label</name>
+        <value>
+          Surname
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>cardinality</name>
+        <value>
+          1
+          <type>int</type>
+        </value>
+      </property>
+      <property>
+        <name>required</name>
+        <value>
+          true
+          <type>boolean</type>
+        </value>
+      </property>
+      <property>
+        <name>datatype</name>
+        <value>
+          string
+          <type>string</type>
+        </value>
+      </property>
+      <property>
+        <name>idTop</name>
+        <value>
+          5
+          <type>int</type>
+        </value>
+      </property>
+    </section>
   </section>
 </odML>
 

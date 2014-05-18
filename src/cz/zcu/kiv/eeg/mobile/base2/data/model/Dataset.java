@@ -13,6 +13,8 @@ public class Dataset {
 
 	public static final String TABLE_NAME = "datasets";
 	public static final String FK_ID_FORM = "form_id";
+	public static final String DATASET_ID = "dataset_id";
+	public static final String DATASET_ROOT_ID = "dataset_root_id";
 
 	@DatabaseField(generatedId = true)
 	private int id;

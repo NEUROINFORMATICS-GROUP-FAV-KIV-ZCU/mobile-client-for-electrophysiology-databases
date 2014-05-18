@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.DrawerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
@@ -34,8 +35,8 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
  */
 public class DashboardActivity extends Activity {
 	private static final String TAG = DashboardActivity.class.getSimpleName();
-	public static final String MENU_ITEM_ID = "menuItem_id";
-	public static final String MENU_ITEM_NAME = "menuItem_name";
+	//public static final String MENU_ITEM_ID = "menuItem_id";
+	//public static final String MENU_ITEM_NAME = "menuItem_name";
 
 	private int previousFragment = -10;
 	private DrawerLayout drawerLayout;
@@ -112,7 +113,7 @@ public class DashboardActivity extends Activity {
 			break;
 		default:
 			intent = new Intent(this, FormActivity.class);
-			intent.putExtra(MENU_ITEM_ID, itemPosition + 1); // v db se indexue od 1
+			intent.putExtra(Values.MENU_ITEM_ID, itemPosition + 1); // v db se indexue od 1
 			startActivity(intent);
 			previousFragment = itemPosition;
 			break;

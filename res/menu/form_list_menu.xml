@@ -9,6 +9,13 @@
     </item>
     
     <item
+        android:id="@+id/form_edit_layout"
+        android:icon="@drawable/ic_action_edit"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_edit_layout">
+    </item>
+    
+    <item
         android:id="@+id/form_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="ifRoom|withText"

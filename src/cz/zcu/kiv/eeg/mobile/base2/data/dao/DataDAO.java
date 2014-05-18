@@ -52,13 +52,13 @@ public class DataDAO {
 		return null;
 	}
 
-	public void update(final Dataset dataset, final Field fiel, final String data) {
+	public void update(final Dataset dataset, final Field field, final String data) {
 		try {
 			UpdateBuilder<Data, Integer> updateBuilder = getDataDao().updateBuilder();
 			Where<Data, Integer> where = updateBuilder.where();
 			where.eq("dataset_id", dataset);
 			where.and();
-			where.eq("field_id", fiel);
+			where.eq("field_id", field);
 
 			updateBuilder.updateColumnValue("data" /* column */, data /* value */);
 			updateBuilder.update();
@@ -67,7 +67,7 @@ public class DataDAO {
 		}
 	}
 
-	public void create(final Dataset dataset, Field field, String data) {
+	public void create(final Dataset dataset, final Field field, final String data) {
 		try {
 			Data tData = new Data(dataset, field, data);
 			getDataDao().create(tData);
@@ -76,6 +76,51 @@ public class DataDAO {
 		}
 	}
 
+	public Data getData(final Dataset dataset, final Field field) {
+		try {
+			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
+			Where<Data, Integer> where = queryBuilder.where();
+			where.eq("dataset_id", dataset);
+			where.and();
+			where.eq("field_id", field);
+			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
+			return getDataDao().queryForFirst(preparedQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Data getData(final int datasetId, final int fieldId) {
+		try {
+			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
+			Where<Data, Integer> where = queryBuilder.where();
+			where.eq("dataset_id", datasetId);
+			where.and();
+			where.eq("field_id", fieldId);
+			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
+			return getDataDao().queryForFirst(preparedQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Data> getAllData(final int datasetId, final int fieldId) {
+		try {
+			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
+			Where<Data, Integer> where = queryBuilder.where();
+			where.eq("dataset_id", datasetId);
+			where.and();
+			where.eq("field_id", fieldId);
+			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
+			return getDataDao().query(preparedQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	// todo odstranit
 	public String[] getData() {
 		try {
@@ -102,21 +147,6 @@ public class DataDAO {
 
 			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
 			return getDataDao().query(preparedQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public Data getDataByDatasetAndField(final int datasetId, final int fieldId) {
-		try {
-			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
-			Where<Data, Integer> where = queryBuilder.where();
-			where.eq("dataset_id", datasetId);
-			where.and();
-			where.eq("field_id", fieldId);
-			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
-			return getDataDao().queryForFirst(preparedQuery);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -13,6 +13,9 @@ public class LayoutProperty {
 	public static final String TABLE_NAME = "properties";
 	public static final String FK_ID_FIELD = "field_id";
 	public static final String FK_ID_LAYOUT = "layout_id";
+	public static final String FK_ID_SUBLAYOUT = "sublayout_id";
+	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
+	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
 	public static final String INDEX_NAME = "property_field_layout_idx";
 
 	@DatabaseField(generatedId = true)
@@ -23,6 +26,15 @@ public class LayoutProperty {
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
 	private Layout layout;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_SUBLAYOUT)
+	private Layout subLayout;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
+	private Field previewMajor;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
+	private Field previewMinor;
 	
 	@DatabaseField
 	private String label;
@@ -44,6 +56,9 @@ public class LayoutProperty {
 	
 	@DatabaseField
 	private int weight;
+		
+	@DatabaseField
+	private int cardinality;
 
 	public LayoutProperty() {
 		super();
@@ -78,6 +93,14 @@ public class LayoutProperty {
 
 	public void setLayout(Layout layout) {
 		this.layout = layout;
+	}
+
+	public Layout getSubLayout() {
+		return subLayout;
+	}
+
+	public void setSubLayout(Layout subLayout) {
+		this.subLayout = subLayout;
 	}
 
 	public String getLabel() {
@@ -134,5 +157,29 @@ public class LayoutProperty {
 
 	public void setWeight(int weight) {
 		this.weight = weight;
+	}
+
+	public Field getPreviewMajor() {
+		return previewMajor;
+	}
+
+	public void setPreviewMajor(Field previewMajor) {
+		this.previewMajor = previewMajor;
+	}
+
+	public Field getPreviewMinor() {
+		return previewMinor;
+	}
+
+	public void setPreviewMinor(Field previewMinor) {
+		this.previewMinor = previewMinor;
+	}
+
+	public int getCardinality() {
+		return cardinality;
+	}
+
+	public void setCardinality(int cardinality) {
+		this.cardinality = cardinality;
 	}
 }

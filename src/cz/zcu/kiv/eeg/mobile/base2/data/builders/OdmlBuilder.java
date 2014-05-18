@@ -30,7 +30,7 @@ public class OdmlBuilder {
 			String formType = layout.getRootForm().getType();
 			rootSection = new Section(formType, Values.ODML_FORM);
 			rootSection.setReference(formType);
-			Property property = new Property(Values.ODML_LAYOUT_NAME, layout.getName());
+			Property property = new Property(Values.ODML_LAYOUT_ID, layout.getName());
 			property.setType(Values.ODML_STRING_TYPE);
 			rootSection.add(property);
 

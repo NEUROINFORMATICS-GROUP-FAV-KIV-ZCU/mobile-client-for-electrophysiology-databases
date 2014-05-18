@@ -51,16 +51,28 @@ public class Values {
 	
 	//INTENT
 	public static final int PICK_FIELD_ID_REQUEST = 1;
+	public static final int PICK_SUBFORM_ID = 2;
 	public static final String USED_FIELD = "usedFields";
 	
 	// ViewBuilder
 	public static final int NODE_ID = 1;
+	public static final int NEW_DATA = -1;
+	
+	public static final int FORM_NEW_DATA = 1;
+	public static final int FORM_NEW_SUBFORM = 2;
+	public static final int FORM_EDIT_DATA = 3;
+	public static final int FORM_EDIT_LAYOUT = 4;
+	public static final String FORM_EMPTY = "Empty";
+
+	//MENU
+	public static final String MENU_ITEM_ID = "menuItem_id";
+	public static final String MENU_ITEM_NAME = "menuItem_name";
 
 	// ODML
 	public static final String ODML_STRING_TYPE = "string";
 	public static final String ODML_INT_TYPE = "int";
 	public static final String ODML_BOOLEAN_TYPE = "boolean";
-	public static final String ODML_LAYOUT_NAME = "layoutName";
+	public static final String ODML_LAYOUT_ID = "layoutId";
 	public static final String ODML_FORM = "form";
 	public static final String ODML_LABEL = "label";
 	public static final String ODML_REQUIRED = "required";
