@@ -13,8 +13,17 @@ android {
 
     buildTypes {
         release {
-            runProguard false
+            runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            debuggable false
+            jniDebugBuild true
+            zipAlign true
+        }
+        debug {
+            debuggable true
+            runProguard false
+            packageNameSuffix '.debug'
+            versionNameSuffix 'BETA'
         }
     }
 }
@@ -22,12 +31,15 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:19.1.+'
     compile 'com.android.support:appcompat-v7:19.1.+'
+    compile 'org.springframework.android:spring-android-core:1.0.1.RELEASE@jar'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE@jar'
-    compile('org.simpleframework:simple-xml:2.7.1@jar'){
+    compile('org.simpleframework:simple-xml:2.7.1@jar') {
         exclude group: 'org.simpleframework.stax'
         exclude group: 'org.simpleframework.xpp3'
     }
-    compile files('./libs/jdom.jar')
+    compile 'org.lightcouch:lightcouch:0.1.+'
+    compile files('libs/jdom.jar')
+    compile files('libs/odml.jar')
     compile files('libs/ormlite-core-4.48.jar')
     compile files('libs/ormlite-android-4.48.jar')
 }
