@@ -2,13 +2,24 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    buildToolsVersion '19.1'
 
     defaultConfig {
         versionCode 1
         versionName '1.0.0-SNAPSHOT'
         minSdkVersion 14
         targetSdkVersion 19
+    }
+
+    packagingOptions {
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 
     buildTypes {
@@ -29,15 +40,17 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.+'
-    compile 'com.android.support:appcompat-v7:19.1.+'
+    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:appcompat-v7:19.+'
     compile 'org.springframework.android:spring-android-core:1.0.1.RELEASE@jar'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE@jar'
     compile('org.simpleframework:simple-xml:2.7.1@jar') {
         exclude group: 'org.simpleframework.stax'
         exclude group: 'org.simpleframework.xpp3'
     }
-    compile 'org.lightcouch:lightcouch:0.1.+'
+
+    compile 'com.couchbase.lite:couchbase-lite-android:1.0.+'
+
     compile files('libs/jdom.jar')
     compile files('libs/odml.jar')
     compile files('libs/ormlite-core-4.48.jar')

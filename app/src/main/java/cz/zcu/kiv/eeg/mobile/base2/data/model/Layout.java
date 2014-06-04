@@ -1,10 +1,10 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 /**
  * 
@@ -29,7 +29,8 @@ public class Layout {
 	@DatabaseField(foreign = true, columnName = FK_ID_FORM)
 	private Form rootForm;
 
-	// pouze pomocná proměnná při získávání layoutu z ws
+	// cz: pouze pomocná proměnná při získávání layoutu z ws
+    // en: only auxiliary variable in getting the layout of ws
 	@Element
 	private String formName;
 
