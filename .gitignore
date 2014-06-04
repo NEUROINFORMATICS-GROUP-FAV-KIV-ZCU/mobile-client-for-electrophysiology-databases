@@ -1,0 +1,11 @@
+# Android Studio files
+.idea/
+*.iml
+
+# Java Generated files
+gen/
+app/build/*
+
+# Gradle Wrapper
+.gradle/
+gradle/

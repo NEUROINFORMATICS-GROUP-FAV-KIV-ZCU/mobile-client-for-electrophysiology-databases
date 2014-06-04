@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/form_new_data"
+        android:icon="@drawable/ic_action_add"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_add">
+    </item>
+    
+    <item
+        android:id="@+id/form_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_refresh">
+    </item>
+
+</menu>
