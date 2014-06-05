@@ -24,7 +24,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddFragment.FieldAddCallBack;
-import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.ListAllFormsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.TabListener;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardFragment;
@@ -34,12 +33,15 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardFragment;
  * @author Jaroslav Hošek
  * 
  */
-public class FieldAddActivity extends Activity implements FieldAddCallBack{
+public class FieldEditorAddActivity extends Activity implements FieldAddCallBack{
 
-	private static final String TAG = FieldAddActivity.class.getSimpleName();
+	private static final String TAG = FieldEditorAddActivity.class.getSimpleName();
+	private static final String SELECTED_TAB = "selected_tab";	
 	private DAOFactory daoFactory;
 	private String formType;
 	private String layoutName;
+	private ArrayList<Integer> usedFieldsOnLayout;
+	private ArrayList<Field> unusedFieldsOnLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,52 +49,67 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 		daoFactory = new DAOFactory(this);
 
 		ActionBar actionBar = getActionBar();
+		actionBar.setIcon(R.drawable.ic_action_storage);
 		actionBar.setDisplayHomeAsUpEnabled(true);	
-		actionBar.setIcon(R.drawable.ic_action_storage);			
-						
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+		ActionBar.Tab unused = actionBar
+				.newTab()
+				.setText("Unused field")
+				.setTabListener(
+						new TabListener<FieldSelectFragment>(this, FieldSelectFragment.class.getSimpleName(),
+								FieldSelectFragment.class));
+		ActionBar.Tab newField = actionBar
+				.newTab()
+				.setText("Create new field")
+				.setTabListener(
+						new TabListener<FieldAddFragment>(this, FieldAddFragment.class.getSimpleName(),
+								FieldAddFragment.class));
+
+		actionBar.addTab(unused);
+		actionBar.addTab(newField);
+				
 		if (savedInstanceState != null) {
 			formType = savedInstanceState.getString(Form.FORM_TYPE);
-			layoutName = savedInstanceState.getString(Layout.LAYOUT_NAME, null);
+			layoutName = savedInstanceState.getString(Layout.LAYOUT_NAME);
+			usedFieldsOnLayout = savedInstanceState.getIntegerArrayList(Values.USED_FIELD);
+			setUnusedFields();
 			
-			
+			actionBar.setSelectedNavigationItem(savedInstanceState.getInt(SELECTED_TAB, 1));
 		} else {
-			FieldAddFragment addFragment = new FieldAddFragment();
-			addFragment.setArguments(getIntent().getExtras());
-
-			FragmentManager fragmentManager = getFragmentManager();
-			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-			fragmentTransaction.replace(android.R.id.content, addFragment);
-			fragmentTransaction.commit();
-					
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
 				formType = extras.getString(Form.FORM_TYPE);
 				layoutName = extras.getString(Layout.LAYOUT_NAME);
-			}					
+				usedFieldsOnLayout = extras.getIntegerArrayList(Values.USED_FIELD);
+				setUnusedFields();
+			}
+			
+			if (getUnusedCount() > 0) {
+				actionBar.setSelectedNavigationItem(0);
+			} else {
+				actionBar.setSelectedNavigationItem(1);
+			}
 		}
 	}
-	
-	public String getFormType() {
-		return formType;
-	}
 
-	public String getLayoutName() {
-		return layoutName;
-	}
-	
-	/*@Override
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);		
 		getMenuInflater().inflate(R.menu.field_add_menu, menu);		
 		return true;
-	}*/
-		
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
-			return true;				
+			return true;	
+		case R.id.field_discard:
+			return false;	
+		case R.id.field_save:
+			return false;		
 		}		
 		return super.onOptionsItemSelected(item);
 	}
@@ -102,6 +119,29 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 		super.onSaveInstanceState(outState);
 		outState.putString(Form.FORM_TYPE, formType);
 		outState.putString(Layout.LAYOUT_NAME, layoutName);
+		outState.putIntegerArrayList(Values.USED_FIELD, usedFieldsOnLayout);
+		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());
+	}
+
+	public ArrayList<Field> getFields() {
+		return unusedFieldsOnLayout;
+	}
+
+	public void setUnusedFields() {
+		unusedFieldsOnLayout = (ArrayList<Field>) daoFactory.getFieldDAO().getFields(
+				(Iterable<Integer>) usedFieldsOnLayout, formType);
+	}
+
+	public int getUnusedCount() {
+		return unusedFieldsOnLayout.size();
+	}
+
+	public String getFormType() {
+		return formType;
+	}
+
+	public String getLayoutName() {
+		return layoutName;
 	}
 
 	public void hideKeyboard(){
