@@ -16,8 +16,10 @@ import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * This Fragment manages a single background task and retains itself across configuration changes.
@@ -77,9 +79,9 @@ public class TaskFragment extends Fragment {
 		}
 	}
 	
-	public void startData(String url) {
+	public void startData(String url, FormAdapter adapter, MenuItems menu) {
 		if (state != RUNNING) {
-			mTaskData = new FetchDataTask(this);
+			mTaskData = new FetchDataTask(this, adapter, menu);
 			mTaskData.execute(url);
 		}
 	}

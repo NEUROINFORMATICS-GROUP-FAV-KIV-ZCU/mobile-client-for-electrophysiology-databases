@@ -19,12 +19,11 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
  * @author Jaroslav Hošek
  * 
  */
-public class FormAdapter extends ArrayAdapter<FormRow> {
+public class SubformAdapter extends ArrayAdapter<FormRow> {
 
 	private final Context context;
 	private final int rowLayout;
 	private List<FormRow> formList;
-	private MenuItems menu;
 
 	/**
 	 * Adapter constructor.
@@ -33,12 +32,10 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	 * @param resourceId row layout identifier
 	 * @param items scenario data collection
 	 */
-	public FormAdapter(Context context, int rowLayout, MenuItems menu, List<FormRow> items) {
+	public SubformAdapter(Context context, int rowLayout, List<FormRow> items) {
 		super(context, rowLayout);
 		this.rowLayout = rowLayout;
 		this.context = context;
-		//this.formType = formType;
-		this.menu = menu;
 		this.formList = new ArrayList<FormRow>(items.size());
 	}
 
@@ -75,18 +72,6 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	@Override
 	public boolean isEmpty() {
 		return formList.isEmpty();
-	}
-	
-	public int getDatasetPosition(int datasetId){
-		int i = 0;
-		for(FormRow row : formList){
-			if(datasetId == row.getId()){
-				return i;
-			}
-			i++;
-		}
-		
-		return 0;
 	}
 
 	/**
@@ -148,21 +133,5 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-	}
-
-	/*public String getFormType() {
-		return formType;
-	}
-
-	public void setFormType(String formType) {
-		this.formType = formType;
-	}*/
-
-	public MenuItems getMenu() {
-		return menu;
-	}
-
-	public void setMenu(MenuItems menu) {
-		this.menu = menu;
 	}
 }

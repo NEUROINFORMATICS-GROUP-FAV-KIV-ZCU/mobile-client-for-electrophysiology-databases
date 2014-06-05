@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-   
-   <item
-        android:id="@+id/form_move"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/form_move_field"
         android:icon="@drawable/ic_action_move_off"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/form_move">
-    </item>
-    
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/form_move"/>
+
     <item
-        android:id="@+id/form_add"
+        android:id="@+id/form_add_field"
         android:icon="@drawable/ic_action_add"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/field_add">
-    </item>
-    
-    <item
-        android:id="@+id/form_edit_layout"
-        android:icon="@drawable/ic_action_edit"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/form_edit_layout">
-    </item>
-    
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/field_add"/>
+
     <item
         android:id="@+id/form_save_layout"
         android:icon="@drawable/ic_action_save"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/form_save_layout">
-    </item>
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/form_save_layout"/>
 
 </menu>

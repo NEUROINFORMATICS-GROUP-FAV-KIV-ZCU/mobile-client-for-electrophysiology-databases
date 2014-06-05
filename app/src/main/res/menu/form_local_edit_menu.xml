@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/form_sracka"
-        android:actionViewClass="android.widget.TextView"
-        android:icon="@drawable/ic_action_remove"
+    <!--  <item
+        android:id="@+id/form_remove_label"
+        android:actionViewClass="android.widget.TextView"      
         android:title="@string/remove">
-    </item>
+    </item>-->
     <item
         android:id="@+id/form_remove_field"
-        android:icon="@drawable/ic_action_remove"
+        android:icon="@drawable/ic_action_discard"
         android:title="@string/remove">
+    </item>
+    
+
+    <item
+        android:id="@+id/form_edit_field"
+        android:icon="@drawable/ic_action_edit"
+        android:title="@string/edit">
     </item>
 
 </menu>

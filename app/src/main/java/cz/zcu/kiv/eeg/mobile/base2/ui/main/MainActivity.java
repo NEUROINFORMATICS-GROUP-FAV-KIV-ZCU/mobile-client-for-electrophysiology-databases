@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
-import cz.zcu.kiv.eeg.mobile.base2.ws.DummyDatabase;
 
 /**
  * 
@@ -23,7 +21,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
-
 		daoFactory = new DAOFactory(this);
 
 		User user = daoFactory.getUserDAO().getUser();
@@ -47,11 +44,6 @@ public class MainActivity extends Activity {
 		 * findViewById(R.id.person_surname_label).setOnDragListener(new MyDragListener());
 		 * findViewById(R.id.person_name_value).setOnDragListener(new MyDragListener());
 		 */
-
-        // <-------
-        // TODO remove this
-        DummyDatabase s = new DummyDatabase(getApplicationContext());
-        // -------->
 	}
 
 	@Override

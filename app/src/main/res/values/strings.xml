@@ -35,6 +35,7 @@
     <string name="discard">Discard</string>
     <string name="back">Back</string>
     <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
 
     <!-- Settings activity -->
     <string name="app_settings">Login Settings</string>

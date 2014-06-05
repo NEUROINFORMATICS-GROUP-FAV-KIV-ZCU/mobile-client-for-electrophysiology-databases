@@ -16,7 +16,7 @@ public class LayoutTouchListener implements OnTouchListener {
 				
 				ViewGroup wrapLayout = (ViewGroup) view.getParent();
 				
-				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(wrapLayout);			
+				DragShadowBuilder shadowBuilder = new DragShadowBuilder(wrapLayout);
 				view.startDrag(data, shadowBuilder, wrapLayout, 0);
 				// view.setVisibility(View.INVISIBLE);
 				return true;

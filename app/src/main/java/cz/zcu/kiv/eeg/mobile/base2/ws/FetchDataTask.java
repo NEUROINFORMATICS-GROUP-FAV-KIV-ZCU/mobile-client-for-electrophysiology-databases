@@ -24,11 +24,19 @@ import android.os.AsyncTask;
 import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.DataBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.FormBuilder;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutList;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 
@@ -40,9 +48,13 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 public class FetchDataTask extends AsyncTask<String, Integer, Void> {
 	private static final String TAG = FetchDataTask.class.getSimpleName();
 	private TaskFragment fragment;
+	private FormAdapter adapter;
+	private MenuItems menu;
 
-	public FetchDataTask(TaskFragment fragment) {
+	public FetchDataTask(TaskFragment fragment, FormAdapter adapter, MenuItems menu) {
 		this.fragment = fragment;
+		this.adapter = adapter;
+		this.menu = menu;
 	}
 
 	@Override
@@ -77,6 +89,34 @@ public class FetchDataTask extends AsyncTask<String, Integer, Void> {
 
 	@Override
 	protected void onPostExecute(Void v) {
+		DAOFactory daoFactory = fragment.getDaoFactory();
+		
+		String id = "id";// menu.getFieldID().getName(); //ID DATASETU
+		Field description1Field = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
+		Field description2Field = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
+		Form form = daoFactory.getFormDAO().getFormByType(description1Field.getForm().getType());
+
+		for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
+			int dataset_id = dataset.getId();
+			String descriptionData1 = null;
+			String descriptionData2 = null;
+
+			if (description1Field != null) {
+				Data description1 = daoFactory.getDataDAO().getData(dataset.getId(),
+						description1Field.getId());
+				if (description1 != null) {
+					descriptionData1 = description1.getData();
+				}
+			}
+			if (description2Field != null) {
+				Data description2 = daoFactory.getDataDAO().getData(dataset.getId(),
+						description2Field.getId());
+				if (description2 != null) {
+					descriptionData2 = description2.getData();
+				}
+			}
+			adapter.add(new FormRow(dataset_id, descriptionData1, descriptionData2, "Já"));
+		}
 		fragment.setState(DONE);		
 	}
 

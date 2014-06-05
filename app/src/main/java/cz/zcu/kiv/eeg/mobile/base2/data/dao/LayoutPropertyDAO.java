@@ -60,21 +60,6 @@ public class LayoutPropertyDAO {
 		return null;
 	}
 
-	/*public Property getProperty(final int fieldId, final String layoutId) {
-		try {
-			QueryBuilder<Property, Integer> queryBuilder = getPropertyDao().queryBuilder();
-			Where<Property, Integer> where = queryBuilder.where();
-			where.eq(Property.FK_ID_FIELD, fieldId);
-			where.and();
-			where.eq(Property.FK_ID_LAYOUT, layoutId);
-			PreparedQuery<Property> preparedQuery = queryBuilder.prepare();
-			return getPropertyDao().queryForFirst(preparedQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}*/
-	
 	public LayoutProperty getProperty(final int fieldId, final String layoutId) {
 		try {
 			QueryBuilder<LayoutProperty, Integer> queryBuilder = getLayoutPropertyDao().queryBuilder();
@@ -89,6 +74,21 @@ public class LayoutPropertyDAO {
 		}
 		return null;
 	}
+	
+	/*public LayoutProperty getProperty(final int fieldId, final int layoutId) {
+		try {
+			QueryBuilder<LayoutProperty, Integer> queryBuilder = getLayoutPropertyDao().queryBuilder();
+			Where<LayoutProperty, Integer> where = queryBuilder.where();
+			where.eq(LayoutProperty.FK_ID_FIELD, fieldId);
+			where.and();
+			where.eq(LayoutProperty.FK_ID_LAYOUT, layoutId);
+			PreparedQuery<LayoutProperty> preparedQuery = queryBuilder.prepare();
+			return getLayoutPropertyDao().queryForFirst(preparedQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}*/
 	
 	public List<LayoutProperty> getProperties() {
 		try {

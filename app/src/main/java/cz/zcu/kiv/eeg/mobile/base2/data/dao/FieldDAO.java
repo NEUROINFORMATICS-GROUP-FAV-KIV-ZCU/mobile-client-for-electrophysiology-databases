@@ -42,6 +42,14 @@ public class FieldDAO {
 		}
 		return null;
 	}
+	
+	public void update(final Field field) {
+		try {
+			getFieldDao().update(field);	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public CreateOrUpdateStatus saveOrUpdate(final Field field) {
 		try {

@@ -15,8 +15,8 @@ public class MenuItems {
 	public static final String FK_ID_LAYOUT = "layout_id";
 	public static final String FK_ID_FIELD = "field_id";
 	public static final String FK_ID_FIELD_TMP = "field_id_tmp";
-	public static final String FK_ID_FIELD_DESC1 = "field_id_desc1";
-	public static final String FK_ID_FIELD_DESC2 = "field_id_desc2";
+	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
+	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
 	public static final String FK_ID_FORM = "form_id";
 	public static final String INDEX_NAME = "menu_items_name_idx";
 
@@ -38,11 +38,11 @@ public class MenuItems {
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_TMP)
 	private Field fieldTmp;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_DESC1)
-	private Field fieldDescription1;
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
+	private Field previewMajor;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_DESC2)
-	private Field fieldDescription2;
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
+	private Field previewMinor;
 
 	public MenuItems() {
 		super();
@@ -52,8 +52,8 @@ public class MenuItems {
 		super();
 		this.name = name;
 		this.layout = layout;
-		this.fieldDescription1 = fieldDescription1;
-		this.fieldDescription2 = fieldDescription2;
+		this.previewMajor = fieldDescription1;
+		this.previewMinor = fieldDescription2;
 		this.rootForm = rootForm;
 	}
 
@@ -111,19 +111,19 @@ public class MenuItems {
 		this.fieldTmp = fieldTmp;
 	}
 
-	public Field getFieldDescription1() {
-		return fieldDescription1;
+	public Field getPreviewMajor() {
+		return previewMajor;
 	}
 
-	public void setFieldDescription1(Field fieldDescription1) {
-		this.fieldDescription1 = fieldDescription1;
+	public void setPreviewMajor(Field previewMajor) {
+		this.previewMajor = previewMajor;
 	}
 
-	public Field getFieldDescription2() {
-		return fieldDescription2;
+	public Field getPreviewMinor() {
+		return previewMinor;
 	}
 
-	public void setFieldDescription2(Field fieldDescription2) {
-		this.fieldDescription2 = fieldDescription2;
+	public void setPreviewMinor(Field previewMinor) {
+		this.previewMinor = previewMinor;
 	}
 }

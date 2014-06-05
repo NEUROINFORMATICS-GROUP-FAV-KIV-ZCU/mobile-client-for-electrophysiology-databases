@@ -1,18 +1,15 @@
 package cz.zcu.kiv.eeg.mobile.base2.common;
 
-import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
-import cz.zcu.kiv.eeg.mobile.base2.ws.FetchLayoutsTask;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 
 /**
  * Activity with capability of recognizing Service state. If service was set and activity is recreated, progress dialog

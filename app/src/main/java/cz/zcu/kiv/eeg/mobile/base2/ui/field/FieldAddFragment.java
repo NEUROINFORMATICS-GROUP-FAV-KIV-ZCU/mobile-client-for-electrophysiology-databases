@@ -131,7 +131,7 @@ public class FieldAddFragment extends Fragment {
 			return true;
 		case R.id.field_discard:
 			activity.finish();
-			break;
+			return true;
 		case R.id.field_save:
 			save();
 			return true;

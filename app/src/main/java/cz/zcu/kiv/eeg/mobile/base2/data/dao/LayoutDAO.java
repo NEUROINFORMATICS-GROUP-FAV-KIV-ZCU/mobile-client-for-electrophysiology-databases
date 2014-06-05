@@ -36,9 +36,9 @@ public class LayoutDAO {
 		return null;
 	}
 
-	public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm) {
+	public Layout saveOrUpdate(String layoutName, Layout rootLayout, String xmlData, Form rootForm) {
 		try {
-			Layout layout = new Layout(layoutName, xmlData, rootForm);
+			Layout layout = new Layout(layoutName, xmlData, rootLayout, rootForm);
 			getLayoutDao().createOrUpdate(layout);
 			return layout;
 		} catch (SQLException e) {
@@ -47,7 +47,7 @@ public class LayoutDAO {
 		return null;
 	}
 
-	public Layout getLayoutByName(final String name) {
+	public Layout getLayout(final String name) {
 		try {
 			return getLayoutDao().queryForId(name);
 		} catch (SQLException e) {
