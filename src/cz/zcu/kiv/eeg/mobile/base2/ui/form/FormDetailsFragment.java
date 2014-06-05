@@ -38,7 +38,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
+import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 import android.view.View.OnClickListener;
@@ -120,7 +120,7 @@ public class FormDetailsFragment extends Fragment {
 	}
 
 	private void addField() {
-		Intent intent = new Intent(getActivity(), FieldAddActivity.class);
+		Intent intent = new Intent(getActivity(), FieldEditorAddActivity.class);
 		intent.putExtra(Form.FORM_TYPE, layout.getRootForm().getType());
 		intent.putExtra(Layout.LAYOUT_NAME, layout.getName());
 		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
@@ -158,7 +158,8 @@ public class FormDetailsFragment extends Fragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
 			if (requestCode == Values.PICK_FIELD_ID_REQUEST) {
-				vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
+				//vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
+				vb.addFieldsToForm(data.getIntegerArrayListExtra(Field.FIELD_ID), isEnabledMove, getActivity());
 			} else if (requestCode == Values.PICK_SUBFORM_ID) {
 				Intent intent = getActivity().getIntent();
 				getActivity().finish();
@@ -168,7 +169,7 @@ public class FormDetailsFragment extends Fragment {
 	}
 
 	private int saveData() {
-		int newDataset = vb.saveOrUpdateData(datasetId);
+		int newDataset = vb.saveFormData(datasetId);
 		SparseArray<FormAdapter> adapters = ListAllFormsFragment.getAdaptersForUpdate();
 
 		for (int i = 0; i < adapters.size(); i++) {

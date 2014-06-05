@@ -54,7 +54,7 @@ public class DataBuilder {
 			String recordId = section.getName();
 			
 			Dataset dataset = daoFactory.getDataSetDAO().getDataSet(recordId);
-			Form form = daoFactory.getFormDAO().getFormByType(formType);
+			Form form = daoFactory.getFormDAO().getForm(formType);
 			
 			if (dataset == null) {
 				dataset = daoFactory.getDataSetDAO().create(form);				

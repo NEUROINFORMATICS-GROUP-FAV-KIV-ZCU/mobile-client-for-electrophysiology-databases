@@ -94,7 +94,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, Void> {
 		String id = "id";// menu.getFieldID().getName(); //ID DATASETU
 		Field description1Field = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
 		Field description2Field = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
-		Form form = daoFactory.getFormDAO().getFormByType(description1Field.getForm().getType());
+		Form form = daoFactory.getFormDAO().getForm(description1Field.getForm().getType());
 
 		for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
 			int dataset_id = dataset.getId();

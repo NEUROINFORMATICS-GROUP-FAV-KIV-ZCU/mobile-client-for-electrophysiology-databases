@@ -17,6 +17,7 @@ import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
@@ -93,9 +94,9 @@ public class TaskFragment extends Fragment {
 		}
 	}
 	
-	public void startFetchLayouts(LayoutSpinnerAdapter layoutAdapter) {
+	public void startFetchLayouts(FormTypeSpinnerAdapter formAdapter) {
 		if (state != RUNNING) {
-			mTaskLayouts = new FetchLayoutsTask(this, layoutAdapter);
+			mTaskLayouts = new FetchLayoutsTask(this, formAdapter);
 			mTaskLayouts.execute();
 		}
 	}

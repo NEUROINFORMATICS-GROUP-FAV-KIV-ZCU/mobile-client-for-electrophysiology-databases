@@ -3,8 +3,10 @@ package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ListFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -86,7 +88,7 @@ public class ListAllFormsFragment extends ListFragment {
 			String id = "id";// menu.getFieldID().getName(); //ID DATASETU
 			Field previewMajor = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
 			Field PreviewMinor = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
-			Form form = daoFactory.getFormDAO().getFormByType(previewMajor.getForm().getType());
+			Form form = daoFactory.getFormDAO().getForm(previewMajor.getForm().getType());
 
 			for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
 				int dataset_id = dataset.getId();
@@ -163,16 +165,30 @@ public class ListAllFormsFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.form_refresh:
-			clearAdapter(menu.getId());
+			showAlert("Not implemented yet", false);
+			
+			/*clearAdapter(menu.getId());
 			String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType();
 			// mTaskFragment.startData(url, getAdapter(menu.getId()), menu);
 			
 			  mTaskFragment.startData(url, getStaticAdapter(getActivity(), menu,
-			  daoFactory), menu);
+			  daoFactory), menu);*/
 			 
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	//todo pouze kvuli not implemented
+	public void showAlert(final String alert, final boolean closeActivity) {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage(alert).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();				
+			}
+		});
+		builder.create().show();
 	}
 
 	@Override

@@ -1,21 +1,59 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
+    style="@style/AppBaseTheme"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
+
     <!-- The main content view -->
+
     <FrameLayout
         android:id="@+id/content_frame_drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </FrameLayout>
+
     <!-- The navigation drawer -->
     <!-- should not be larger than 320 to show content -->
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
+
+    <LinearLayout
+        android:id="@+id/left_drawer"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/darker_gray"     
-        android:dividerHeight="0.5dp"
-        android:background="#111"/>
-</android.support.v4.widget.DrawerLayout> 
+        android:background="@android:color/white"
+        android:onClick="createFolder"
+        android:orientation="vertical" >
+		
+        <!--  android:background="#111"-->
+        <ListView
+            android:id="@+id/drawer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"            
+            android:background="@android:color/white"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="0.5dp" />
+        
+         <Button
+             android:id="@+id/drawer_newFolder"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:onClick="createFolder"
+             android:text="@string/drawer_newfolder" />
+         
+         <Button
+             android:id="@+id/drawer_newForm"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:onClick="createForm"
+             android:text="Create form" />
+         
+         <Button
+             android:id="@+id/drawer_setServer"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:onClick="openSettings"
+             android:text="Settings" />         
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

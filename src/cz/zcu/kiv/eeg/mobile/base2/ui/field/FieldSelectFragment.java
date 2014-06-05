@@ -18,10 +18,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
 /**
@@ -33,7 +35,7 @@ public class FieldSelectFragment extends Fragment {
 
 	public final static String TAG = FieldSelectFragment.class.getSimpleName();
 
-	private FieldAddActivity activity;
+	private FieldEditorAddActivity activity;
 	private FieldSpinnerAdapter fieldAdapter;
 	private DAOFactory daoFactory;
 	private String layoutName;
@@ -43,15 +45,18 @@ public class FieldSelectFragment extends Fragment {
 	private Field field;
 	private LayoutProperty property;
 
+	private ArrayList<Integer> newFields;
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		this.activity = (FieldAddActivity) activity;
+		this.activity = (FieldEditorAddActivity) activity;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		newFields = new ArrayList<Integer>();
 		daoFactory = new DAOFactory(getActivity());
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		setHasOptionsMenu(true);
@@ -62,17 +67,19 @@ public class FieldSelectFragment extends Fragment {
 		View view = inflater.inflate(R.layout.field_select, container, false);
 		initView(view);
 		return view;
-
 	}
 
 	private void initView(View view) {
 		layoutName = activity.getLayoutName();
 		label = (EditText) view.findViewById(R.id.field_edit_Label);
-
+		TextView noUnusedFields =(TextView) view.findViewById(R.id.field_noUnusedFields);
+			
 		ArrayList<Field> fields = activity.getFields();
 		fieldAdapter = new FieldSpinnerAdapter(activity, R.layout.spinner_row_simple, fields);
+		
 		fieldSpinner = (Spinner) view.findViewById(R.id.field_spinnerField);
 		fieldSpinner.setAdapter(fieldAdapter);
+		fieldSpinner.setEmptyView(noUnusedFields);
 		fieldSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -87,24 +94,52 @@ public class FieldSelectFragment extends Fragment {
 			}
 		});
 
-		Button button = (Button) view.findViewById(R.id.field_buttonNewField);
+		Button button = (Button) view.findViewById(R.id.field_add_unused_button);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activity.openSection(1);
+				addSelectField();
 			}
 		});
 	}
 
 	private void initFields() {
-		label.setText(property.getLabel());	
+		if(property != null){
+			label.setText(property.getLabel());
+		}	
 	}
-	
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		MenuItem back = menu.findItem(R.id.field_back);
-		back.setVisible(false);
+
+	private void addSelectField() {
+		if (!fieldAdapter.isEmpty()) {
+			saveChanges();
+			fieldAdapter.remove(field);
+
+			newFields.add(field.getId());
+
+			if (!fieldAdapter.isEmpty()) {
+				fieldSpinner.setSelection(0, true);
+				field = (Field) fieldSpinner.getItemAtPosition(0);
+				property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
+				initFields();
+			} else {
+				removeFieldData();
+			}
+		}
+	}
+
+	private void saveChanges() {
+		// TODO rozšířím o další options
+		if(property == null){
+			Layout layout = new Layout(layoutName);
+			property = new LayoutProperty(field, layout);
+		}
+		
+		property.setLabel(label.getText().toString());
+		daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
+	}
+
+	private void removeFieldData() {
+		label.setText("");
 	}
 
 	@Override
@@ -121,13 +156,11 @@ public class FieldSelectFragment extends Fragment {
 			activity.finish();
 			return true;
 		case R.id.field_save:
-			property.setLabel(label.getText().toString());
-			daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
 			Intent data = new Intent();
-		    data.putExtra(Field.FIELD_ID, field.getId());
-		    activity.setResult(Activity.RESULT_OK, data);
-		    activity.finish();
-			return true;		
+			data.putExtra(Field.FIELD_ID, newFields);
+			activity.setResult(Activity.RESULT_OK, data);
+			activity.finish();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -135,6 +168,6 @@ public class FieldSelectFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		daoFactory.releaseHelper();
-		super.onDestroy();	
+		super.onDestroy();
 	}
 }

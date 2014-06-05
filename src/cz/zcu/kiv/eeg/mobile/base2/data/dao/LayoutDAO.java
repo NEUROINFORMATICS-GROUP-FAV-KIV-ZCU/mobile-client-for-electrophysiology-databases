@@ -36,10 +36,21 @@ public class LayoutDAO {
 		return null;
 	}
 
-	public Layout saveOrUpdate(String layoutName, Layout rootLayout, String xmlData, Form rootForm) {
+	public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm) {
 		try {
-			Layout layout = new Layout(layoutName, xmlData, rootLayout, rootForm);
+			Layout layout = new Layout(layoutName, xmlData , rootForm);
 			getLayoutDao().createOrUpdate(layout);
+			return layout;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Layout create(String layoutName, String xmlData, Form rootForm ) {
+		try {
+			Layout layout = new Layout(layoutName, xmlData , rootForm);
+			getLayoutDao().create(layout);
 			return layout;
 		} catch (SQLException e) {
 			e.printStackTrace();

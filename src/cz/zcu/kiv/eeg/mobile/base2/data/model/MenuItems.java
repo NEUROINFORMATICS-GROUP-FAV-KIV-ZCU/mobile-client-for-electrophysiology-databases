@@ -12,6 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class MenuItems {
 
 	public static final String TABLE_NAME = "menu_items";
+	public static final String FK_ID_MENU_ITEM = "menu_item_parent_id";
 	public static final String FK_ID_LAYOUT = "layout_id";
 	public static final String FK_ID_FIELD = "field_id";
 	public static final String FK_ID_FIELD_TMP = "field_id_tmp";
@@ -19,48 +20,63 @@ public class MenuItems {
 	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
 	public static final String FK_ID_FORM = "form_id";
 	public static final String INDEX_NAME = "menu_items_name_idx";
+	public static final String ROOT_MENU = "root_menu";
 
 	@DatabaseField(generatedId = true)
 	private int id;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_MENU_ITEM)
+	private MenuItems parentId;
 
-	@DatabaseField(uniqueIndexName = INDEX_NAME)
+	//@DatabaseField(uniqueIndexName = INDEX_NAME)
+	@DatabaseField
 	private String name;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT)
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_LAYOUT)
 	private Layout layout;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FORM)
 	private Form rootForm;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
+	/*@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
 	private Field fieldID;
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_TMP)
-	private Field fieldTmp;
+	private Field fieldTmp;*/
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
 	private Field previewMajor;
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
 	private Field previewMinor;
+	
+	@DatabaseField
+	private String icon;
 
 	public MenuItems() {
 		super();
 	}
 
-	public MenuItems(String name, Layout layout, Form rootForm, Field fieldDescription1, Field fieldDescription2) {
+	public MenuItems(String name, Layout layout, Form rootForm, Field previewMajor, Field previewMinor, MenuItems parentId) {
 		super();
 		this.name = name;
 		this.layout = layout;
-		this.previewMajor = fieldDescription1;
-		this.previewMinor = fieldDescription2;
+		this.previewMajor = previewMajor;
+		this.previewMinor = previewMinor;
 		this.rootForm = rootForm;
+		this.parentId = parentId;
 	}
 
 	public MenuItems(String name, Layout layout) {
 		super();
 		this.name = name;
 		this.layout = layout;
+	}
+	
+	public MenuItems(String name, String icon) {
+		super();
+		this.name = name;
+		this.icon = icon;
 	}
 
 	public int getId() {
@@ -95,21 +111,21 @@ public class MenuItems {
 		this.rootForm = rootForm;
 	}
 
-	public Field getFieldID() {
+	/*public Field getFieldID() {
 		return fieldID;
 	}
 
 	public void setFieldID(Field fieldID) {
 		this.fieldID = fieldID;
-	}
+	}*/
 
-	public Field getFieldTmp() {
+	/*public Field getFieldTmp() {
 		return fieldTmp;
 	}
 
 	public void setFieldTmp(Field fieldTmp) {
 		this.fieldTmp = fieldTmp;
-	}
+	}*/
 
 	public Field getPreviewMajor() {
 		return previewMajor;
@@ -125,5 +141,21 @@ public class MenuItems {
 
 	public void setPreviewMinor(Field previewMinor) {
 		this.previewMinor = previewMinor;
+	}
+
+	public MenuItems getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(MenuItems parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 }

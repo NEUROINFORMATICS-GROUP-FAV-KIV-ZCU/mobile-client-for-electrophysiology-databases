@@ -52,21 +52,31 @@ public class Values {
 	//INTENT
 	public static final int PICK_FIELD_ID_REQUEST = 1;
 	public static final int PICK_SUBFORM_ID = 2;
+	public static final int NEW_FORM_REQUEST = 3;
 	public static final String USED_FIELD = "usedFields";
 	
 	// ViewBuilder
+	public static final String FORM = "form";
+	
 	public static final int NODE_ID = 1;
 	public static final int NEW_DATA = -1;
-	
+		
 	public static final int FORM_NEW_DATA = 1;
 	public static final int FORM_NEW_SUBFORM = 2;
 	public static final int FORM_EDIT_DATA = 3;
 	public static final int FORM_EDIT_LAYOUT = 4;
 	public static final String FORM_EMPTY = "Empty";
+	
+	// FORM
+	public static final int TYPE_MODE = 1;
+	public static final int LAYOUT_MODE = 2;
 
 	//MENU
 	public static final String MENU_ITEM_ID = "menuItem_id";
 	public static final String MENU_ITEM_NAME = "menuItem_name";
+	public static final String ICON_FOLDER = "ic_action_collection";
+	public static final String ICON_COPY = "ic_action_copy_dark";
+	public static final String ICON_FOLDER_UP = "ic_action_collection_up";
 
 	// ODML
 	public static final String ODML_STRING_TYPE = "string";

@@ -13,6 +13,7 @@ import java.util.Vector;
 //import odml.core.Reader;
 //import odml.core.Section;
 
+
 import odml.core.Reader;
 import odml.core.Section;
 import odml.core.Writer;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 
 import android.content.Context;
 import android.util.Log;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
@@ -41,10 +43,6 @@ public class FormBuilder {
 	private Section odmlForm;
 	private Section odmlRoot;
 
-	private static final String LAYOUT_NAME = "layoutName";
-	private static final String ELEMENT_FORM = "form";
-	private static final String ELEMENT_SET = "set";
-
 	public FormBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
 		this.daoFactory = daoFactory;
 
@@ -63,16 +61,17 @@ public class FormBuilder {
 	}
 
 	public void start() {
-		if (odmlForm.getType().equalsIgnoreCase(ELEMENT_FORM)) {
+		if (odmlForm.getType().equalsIgnoreCase(Values.FORM)) {
 			Form rootForm = saveForm(odmlForm);
-			Layout layout = saveLayout(getLayoutName(odmlForm), null, rootForm);
+			Layout layout = saveLayout(getLayoutName(odmlForm), rootForm);
+			saveFormLayouts(rootForm, layout);
 			createFields(odmlForm.getSections(), rootForm, layout);
 		}
 	}
 
 	public void createFields(Vector<Section> sections, Form form, Layout layout) {
 		for (Section section : sections) {
-			if (section.getType().equalsIgnoreCase(ELEMENT_FORM)) {
+			if (section.getType().equalsIgnoreCase(Values.FORM)) {
 				Form subform = saveForm(section);
 
 				Writer writer = new Writer(section);
@@ -80,7 +79,8 @@ public class FormBuilder {
 				writer.write(stream);
 				xmlData = stream.toString();
 
-				Layout subLayout = saveLayout(getLayoutName(section), layout, subform);
+				Layout subLayout = saveLayout(getLayoutName(section), subform);
+				//Layout subLayout = saveLayout(getLayoutName(section), layout, subform);
 				saveField(section, form, subform, layout, subLayout);
 				createFields(section.getSections(), subform, subLayout);
 			} else {
@@ -88,17 +88,22 @@ public class FormBuilder {
 			}
 		}
 	}
-
+	
 	private Form saveForm(Section formSection) {
 		return daoFactory.getFormDAO().saveOrUpdate(formSection.getReference(), odmlRoot.getDocumentDate());
 	}
 
-	private Layout saveLayout(String name, Layout rootLayout, Form form) {
-		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, rootLayout, xmlData, form);
+	private Layout saveLayout(String name, Form form) {
+	//private Layout saveLayout(String name, Layout rootLayout, Form form) {
+		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, xmlData, form);
 		if (layout == null) {
 			layout = daoFactory.getLayoutDAO().getLayout(name);
 		}
 		return layout;
+	}
+	
+	private void saveFormLayouts(Form form, Layout layout){
+		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
 	}
 
 	private void saveField(Section fieldSection, Form form, Form subForm, Layout layout, Layout subLayout) {
@@ -171,7 +176,7 @@ public class FormBuilder {
 	}
 
 	private String getLayoutName(Section form) {
-		return form.getProperty(LAYOUT_NAME).getText();
+		return form.getProperty(Layout.LAYOUT_NAME).getText();
 	}
 
 	private static String getStringFromInputStream(InputStream is) {

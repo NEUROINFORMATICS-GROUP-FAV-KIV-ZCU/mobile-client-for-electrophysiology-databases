@@ -36,10 +36,9 @@ public class FormActivity extends TaskFragmentActivity {
 		daoFactory = new DAOFactory(this);
 		ActionBar actionBar = getActionBar();
 		actionBar.setIcon(R.drawable.ic_action_event);
-
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
 		ActionBar.Tab mine = actionBar
 				.newTab()
 				.setText("Mine")

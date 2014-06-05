@@ -6,6 +6,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.dao.DataDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.DatasetDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.DatabaseHelper;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldDAO;
+import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldLayoutsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldValueDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormLayoutsDAO;
@@ -26,6 +27,7 @@ public class DAOFactory {
 	private FieldDAO fieldDao;
 	private LayoutDAO layoutDao;
 	private FormLayoutsDAO formLayoutsDao;
+	private FieldLayoutsDAO fieldLayoutsDao;
 	private MenuItemsDAO menuItemDao;
 	private DatasetDAO datasetDao;
 	private DataDAO dataDao;
@@ -65,6 +67,13 @@ public class DAOFactory {
 			formLayoutsDao = new FormLayoutsDAO(databaseHelper);
 		}
 		return formLayoutsDao;
+	}
+	
+	public FieldLayoutsDAO getFieldLayoutsDAO() {
+		if (fieldLayoutsDao == null) {
+			fieldLayoutsDao = new FieldLayoutsDAO(databaseHelper);
+		}
+		return fieldLayoutsDao;
 	}
 
 	public MenuItemsDAO getMenuItemDAO() {

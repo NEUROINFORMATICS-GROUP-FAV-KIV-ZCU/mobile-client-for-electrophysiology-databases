@@ -7,7 +7,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
 
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
@@ -66,6 +65,28 @@ public class MenuItemsDAO {
 	public MenuItems getMenu(int id){
 		try {
 			return getMenuItemDao().queryForId(id);		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<MenuItems> getMenu(MenuItems parent){
+		try {
+			QueryBuilder<MenuItems, Integer> queryBuilder = getMenuItemDao().queryBuilder();
+			queryBuilder.where().eq(MenuItems.FK_ID_MENU_ITEM, parent);
+			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<MenuItems> getRootMenu(){
+		try {
+			QueryBuilder<MenuItems, Integer> queryBuilder = getMenuItemDao().queryBuilder();
+			queryBuilder.where().isNull(MenuItems.FK_ID_MENU_ITEM);
+			return queryBuilder.query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

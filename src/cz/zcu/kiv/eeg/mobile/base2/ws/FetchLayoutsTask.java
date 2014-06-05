@@ -23,8 +23,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.FormBuilder;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutList;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
@@ -38,11 +40,11 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 	private static final String TAG = FetchLayoutsTask.class.getSimpleName();
 	private TaskFragment fragment;
-	private LayoutSpinnerAdapter layoutAdapter;
+	private FormTypeSpinnerAdapter formAdapter;
 
-	public FetchLayoutsTask(TaskFragment fragment, LayoutSpinnerAdapter layoutAdapter) {
+	public FetchLayoutsTask(TaskFragment fragment, FormTypeSpinnerAdapter formAdapter) {
 		this.fragment = fragment;
-		this.layoutAdapter = layoutAdapter;
+		this.formAdapter = formAdapter;
 	}
 
 	@Override
@@ -89,11 +91,14 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 	protected void onPostExecute(Void v) {
 		fragment.setState(DONE);
 
-		layoutAdapter.clear();
-		for (Layout layout : (ArrayList<Layout>) fragment.getDaoFactory().getLayoutDAO().getLayouts()) {
-			layoutAdapter.add(layout);
+		formAdapter.clear();
+		for (Form form : (ArrayList<Form>) fragment.getDaoFactory().getFormDAO().getForms()) {
+			formAdapter.add(form);
 		}
-		layoutAdapter.notifyDataSetChanged();
+		//formAdapter = new FormTypeSpinnerAdapter(fragment.getActivity(), R.layout.spinner_row_simple, (ArrayList<Form>) fragment.getDaoFactory().getFormDAO().getForms());
+		
+		
+		//formAdapter.notifyDataSetChanged();
 
 		// TODO napsat kolik sem jich naimportoval
 		// //Toast.makeText(fragment.activity, R.string.settings_saved,

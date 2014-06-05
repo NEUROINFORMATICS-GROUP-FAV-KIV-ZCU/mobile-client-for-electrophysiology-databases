@@ -79,7 +79,7 @@ public class ViewNode {
 			label.setText(property.getLabel());
 			label.setTag(R.id.NODE_ID, property.getIdNode());
 
-			if (field.getType().equals("form")) {
+			if (field.getType().equals(Values.FORM)) {
 				RelativeLayout labelLayout = new RelativeLayout(ctx);
 
 				label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -112,7 +112,7 @@ public class ViewNode {
 						LinearLayout spinnerLayout = (LinearLayout) node;
 						int size = spinnerLayout.getChildCount();
 						Spinner emptyItem = (Spinner)spinnerLayout.getChildAt(size - 1);
-						Spinner newItem = vb.createItem(property, subLayout, field, spinnerLayout, menuItem, "");
+						Spinner newItem = vb.createSubformItem(property, subLayout, field, spinnerLayout, menuItem, "");
 						emptyItem.setVisibility(View.VISIBLE);				
 						spinnerLayout.addView(newItem, size - 1);					
 					}

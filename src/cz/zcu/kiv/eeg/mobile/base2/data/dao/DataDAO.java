@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
@@ -75,6 +76,22 @@ public class DataDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void delete(final Dataset dataset, final Field field, final String data) {
+		try {
+			DeleteBuilder<Data, Integer> deleteBuilder = getDataDao().deleteBuilder();
+			Where<Data, Integer> where = deleteBuilder.where();
+			where.eq("dataset_id", dataset);
+			where.and();
+			where.eq("field_id", field);
+			where.and();
+			where.eq("data", data);
+			deleteBuilder.delete();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public Data getData(final Dataset dataset, final Field field) {
 		try {
@@ -90,7 +107,7 @@ public class DataDAO {
 		}
 		return null;
 	}
-	
+
 	public Data getData(final int datasetId, final int fieldId) {
 		try {
 			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
@@ -98,6 +115,23 @@ public class DataDAO {
 			where.eq("dataset_id", datasetId);
 			where.and();
 			where.eq("field_id", fieldId);
+			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
+			return getDataDao().queryForFirst(preparedQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Data getData(final Dataset dataset, final Field field, final String data) {
+		try {
+			QueryBuilder<Data, Integer> queryBuilder = getDataDao().queryBuilder();
+			Where<Data, Integer> where = queryBuilder.where();
+			where.eq("dataset_id", dataset);
+			where.and();
+			where.eq("field_id", field);
+			where.and();
+			where.eq("data", data);
 			PreparedQuery<Data> preparedQuery = queryBuilder.prepare();
 			return getDataDao().queryForFirst(preparedQuery);
 		} catch (SQLException e) {
@@ -120,7 +154,7 @@ public class DataDAO {
 		}
 		return null;
 	}
-	
+
 	// todo odstranit
 	public String[] getData() {
 		try {

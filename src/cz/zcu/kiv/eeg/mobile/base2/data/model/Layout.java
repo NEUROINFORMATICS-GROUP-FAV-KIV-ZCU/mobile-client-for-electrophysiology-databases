@@ -29,8 +29,8 @@ public class Layout {
 	@Element(name = LAYOUT_NAME)
 	private String name;
 	
-	@DatabaseField(foreign = true, columnName = FK_ID_ROOT_LAYOUT)
-	private Layout rootLayout;
+	/*@DatabaseField(foreign = true, columnName = FK_ID_ROOT_LAYOUT)
+	private Layout rootLayout;*/
 	
 	@DatabaseField(foreign = true, columnName = FK_ID_FORM)
 	private Form rootForm;
@@ -56,21 +56,21 @@ public class Layout {
 		this.name = name;
 	}
 
-	public Layout(String name, String xmlData, Layout rootLayout, Form rootForm) {
+	public Layout(String name, String xmlData, Form rootForm) {
 		super();
 		this.name = name;
 		this.xmlData = xmlData;
-		this.rootLayout = rootLayout;
+		//this.rootLayout = rootLayout;
 		this.rootForm = rootForm;
 	}
 
-	public Layout getRootLayout() {
+	/*public Layout getRootLayout() {
 		return rootLayout;
 	}
 
 	public void setRootLayout(Layout rootLayout) {
 		this.rootLayout = rootLayout;
-	}
+	}*/
 
 	public String getName() {
 		return name;

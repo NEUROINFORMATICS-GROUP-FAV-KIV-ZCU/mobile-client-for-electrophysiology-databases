@@ -7,7 +7,7 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
  */
 public class FormRow {
 
-	private int id; // TODO ID datasetu (zatím))
+	private int id; // TODO ID datasetu (zatím)) - předělám to na String -> Person35
 	private String name;
 	private String description;
 	private String mine;
