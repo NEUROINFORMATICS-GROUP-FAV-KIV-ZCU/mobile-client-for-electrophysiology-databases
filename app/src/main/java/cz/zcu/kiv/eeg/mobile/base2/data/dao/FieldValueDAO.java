@@ -1,18 +1,13 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.QueryBuilder;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
-
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
 /**
  * 
@@ -29,7 +24,7 @@ public class FieldValueDAO {
 	}
 
 	private Dao<FieldValue, Integer> getFieldValueDao() throws SQLException {
-		return databaseHelper.getFieldValueDao();
+		return null;
 	}
 
 	public FieldValue create (final FieldValue fieldValue) {
@@ -55,7 +50,6 @@ public class FieldValueDAO {
 	public List<FieldValue> getFieldValue(final int fieldId) {
 		try {
 			QueryBuilder<FieldValue, Integer> queryBuilder = getFieldValueDao().queryBuilder();
-			queryBuilder.where().eq(FieldValue.FK_ID_FIELD, fieldId);
 			return queryBuilder.query();
 		} catch (SQLException e) {
 			e.printStackTrace();

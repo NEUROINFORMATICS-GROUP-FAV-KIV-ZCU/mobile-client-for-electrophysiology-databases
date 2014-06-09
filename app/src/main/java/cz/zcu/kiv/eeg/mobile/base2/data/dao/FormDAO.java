@@ -1,10 +1,10 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-import java.util.Date;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+
+import java.sql.SQLException;
+import java.util.Date;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
@@ -23,7 +23,7 @@ public class FormDAO {
 	}
 
 	private Dao<Form, String> getFormDao() throws SQLException {
-		return databaseHelper.getFormDao();
+		return null;
 	}
 
 	public CreateOrUpdateStatus saveOrUpdate(final Form form) {

@@ -1,17 +1,14 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import java.sql.SQLException;
+import java.util.List;
+
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
@@ -30,7 +27,7 @@ public class FieldDAO {
 	}
 
 	private Dao<Field, Integer> getFieldDao() throws SQLException {
-		return databaseHelper.getFieldDao();
+		return null;
 	}
 
 	public Field create(final Field field) {

@@ -1,19 +1,20 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.factories;
 
+import android.content.Context;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.DataDAO;
-import cz.zcu.kiv.eeg.mobile.base2.data.dao.DatasetDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.DatabaseHelper;
+import cz.zcu.kiv.eeg.mobile.base2.data.dao.DatasetDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldValueDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormLayoutsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.LayoutDAO;
-import cz.zcu.kiv.eeg.mobile.base2.data.dao.MenuItemsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.LayoutPropertyDAO;
+import cz.zcu.kiv.eeg.mobile.base2.data.dao.MenuItemsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.UserDAO;
-import android.content.Context;
 
 /**
  * 
@@ -36,7 +37,6 @@ public class DAOFactory {
 
 	public DAOFactory(final Context context) {
 		this.context = context;
-		databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
 	}
 
 	public FormDAO getFormDAO() {

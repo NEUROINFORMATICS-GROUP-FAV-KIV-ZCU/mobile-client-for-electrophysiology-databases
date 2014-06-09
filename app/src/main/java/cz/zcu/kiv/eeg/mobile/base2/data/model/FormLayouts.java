@@ -1,27 +1,21 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ *
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
+ *
  */
-@DatabaseTable(tableName = FormLayouts.TABLE_NAME)
-public class FormLayouts {
-	public static final String TABLE_NAME = "form_layouts";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String INDEX_NAME = "form_layouts_formlayout_idx";
+public class FormLayouts implements NoSQLData{
 
-	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
 	private Form form;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
 	private Layout layout;
 
 	public FormLayouts() {
@@ -57,4 +51,13 @@ public class FormLayouts {
 	public void setLayout(Layout layout) {
 		this.layout = layout;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("form",form.get());
+        m.put("layout", layout.get());
+        return m;
+    }
 }

@@ -1,13 +1,12 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
 
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import java.sql.SQLException;
+import java.util.List;
+
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
@@ -25,7 +24,7 @@ public class MenuItemsDAO {
 	}
 
 	private Dao<MenuItems, Integer> getMenuItemDao() throws SQLException {
-		return databaseHelper.getMenuItemDao();
+		return null;
 	}
 	
 	public CreateOrUpdateStatus saveOrUpdate(final MenuItems item) {

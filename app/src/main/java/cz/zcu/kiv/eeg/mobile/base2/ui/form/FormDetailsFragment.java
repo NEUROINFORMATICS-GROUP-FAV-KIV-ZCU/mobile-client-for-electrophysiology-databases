@@ -79,7 +79,7 @@ public class FormDetailsFragment extends Fragment {
 		datasetId = extras.getInt(Dataset.DATASET_ID);
 		datasetRootId = extras.getInt(Dataset.DATASET_ROOT_ID);
 		rootField = extras.getInt(Field.FIELD_ID);
-		
+
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 
 		if (layoutName != null) {// jedno asi při přidávání pole
@@ -126,10 +126,10 @@ public class FormDetailsFragment extends Fragment {
 		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
 		startActivityForResult(intent, Values.PICK_FIELD_ID_REQUEST);
 	}
-	
+
 	public void showSubform(int formMode, int datasetId ,MenuItems item, int fieldId){
 		Intent intent = new Intent(getActivity(), FormDetailsActivity.class);
-		
+
 		intent.putExtra(Form.FORM_MODE, formMode);
 		intent.putExtra(Field.FIELD_ID, fieldId);
 		intent.putExtra(Dataset.DATASET_ROOT_ID, saveData());

@@ -1,10 +1,10 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+
+import java.sql.SQLException;
+import java.util.List;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
@@ -24,7 +24,7 @@ public class LayoutDAO {
 	}
 
 	public Dao<Layout, String> getLayoutDao() throws SQLException {
-		return databaseHelper.getLayoutDao();
+		return null;
 	}
 
 	public CreateOrUpdateStatus saveOrUpdate(Layout layout) {

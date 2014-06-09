@@ -1,32 +1,24 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
- * zatím pouze pro uložení hodnot comboboxu
- * 
+ *
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
+ *
+ * cz: zatím pouze pro uložení hodnot comboboxu
+ * en: not only to store values ​​combobox
+ *
  */
-@DatabaseTable(tableName = FieldValue.TABLE_NAME)
-public class FieldValue {
+public class FieldValue implements NoSQLData {
 
-	public static final String TABLE_NAME = "field_values";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String INDEX_NAME = "field_values_value_field_idx";
-
-	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(uniqueIndexName = INDEX_NAME)
 	private String value;
 
-
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FIELD, uniqueIndexName = INDEX_NAME)
 	private Field field;
 
 	public FieldValue() {
@@ -62,4 +54,13 @@ public class FieldValue {
 	public void setField(Field field) {
 		this.field = field;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("value", value);
+        m.put("field", field.get());
+        return m;
+    }
 }

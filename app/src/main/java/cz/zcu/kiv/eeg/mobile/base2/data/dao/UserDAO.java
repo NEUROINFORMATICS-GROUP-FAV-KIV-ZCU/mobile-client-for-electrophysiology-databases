@@ -1,9 +1,9 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+
+import java.sql.SQLException;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
@@ -22,7 +22,7 @@ public class UserDAO {
 	}
 
 	private Dao<User, Integer> getUserDao() throws SQLException {
-		return databaseHelper.getUserDao();
+		return null;
 	}
 
 	public CreateOrUpdateStatus saveOrUpdate(final User user) {

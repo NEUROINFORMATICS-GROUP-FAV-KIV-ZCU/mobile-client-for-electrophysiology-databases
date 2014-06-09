@@ -26,16 +26,23 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
  * Data container for holding layout collection.
  * 
  * @author Jaroslav Hošek
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  * 
  */
 @Root(name = LayoutList.XML_ROOT)
-public class LayoutList {
+public class LayoutList implements NoSQLData{
 	public static final String XML_ROOT = "layouts";
 
 	@ElementList(inline = true, required = false)
@@ -59,4 +66,13 @@ public class LayoutList {
 	public int size() {
 		return layouts.size();
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        List<Map<String, Object> > list = new ArrayList<Map<String, Object> >();
+        for(Layout layout: layouts) list.add(layout.get());
+        m.put("layouts", list);
+        return m;
+    }
 }

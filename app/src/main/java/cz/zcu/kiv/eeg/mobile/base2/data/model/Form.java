@@ -1,26 +1,19 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
+ *
  * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = Form.TABLE_NAME)
-public class Form {
-	public static final String TABLE_NAME = "forms";
-	public static final String FORM_TYPE = "formType";
-	public static final String FORM_MODE = "formMode";
-
-	@DatabaseField(id = true, columnName = "type_id")
+public class Form implements NoSQLData{
 	private String type;
 
-	@DatabaseField(dataType = DataType.DATE_LONG)
 	private Date date;
 
 	public Form() {
@@ -53,4 +46,12 @@ public class Form {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("type", type);
+        m.put("date", date);
+        return m;
+    }
 }

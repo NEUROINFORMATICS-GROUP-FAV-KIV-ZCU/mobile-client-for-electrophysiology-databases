@@ -1,47 +1,26 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 /**
- * 
+ *
  * @author Jaroslav Hošek
- * 
+ *
  */
-@DatabaseTable(tableName = MenuItems.TABLE_NAME)
 public class MenuItems {
 
-	public static final String TABLE_NAME = "menu_items";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String FK_ID_FIELD_TMP = "field_id_tmp";
-	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
-	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String INDEX_NAME = "menu_items_name_idx";
-
-	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(uniqueIndexName = INDEX_NAME)
 	private String name;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT)
 	private Layout layout;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
 	private Form rootForm;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
 	private Field fieldID;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_TMP)
 	private Field fieldTmp;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
 	private Field previewMajor;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
 	private Field previewMinor;
 
 	public MenuItems() {

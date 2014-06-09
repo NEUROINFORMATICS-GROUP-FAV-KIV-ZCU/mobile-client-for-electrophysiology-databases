@@ -11,11 +11,10 @@ import com.couchbase.lite.android.AndroidContext;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
 public class DummyDatabase{
 
@@ -38,13 +37,10 @@ public class DummyDatabase{
             Calendar calendar = GregorianCalendar.getInstance();
             String currentTimeString = dateFormatter.format(calendar.getTime());
 
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("type", "list");
-            properties.put("title", "Hello");
-            properties.put("created_at", currentTimeString);
-            properties.put("owner", "profile:1");
-            properties.put("members", new ArrayList<String>());
-            document.putProperties(properties);
+
+            User u = new User("Rahul", "Kadyan", "no rights");
+
+            document.putProperties(u.get());
         } catch (CouchbaseLiteException e) {
             Log.e(TAG, "Cannot get database");
 //            e.printStackTrace();

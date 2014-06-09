@@ -2,9 +2,7 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ActionMode;
@@ -20,16 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutTouchListener;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
-import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
-import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 
 /**
  * 
@@ -43,7 +38,7 @@ public class ViewNode {
 	private LayoutProperty property;
 	private View node;
 	private TextView label;
-	private LinearLayout layout; // obaluje label a node
+	private LinearLayout layout; // obaluje (en: wraps) label a node
 	private Drawable background;
 	private Drawable editShape;
 	private ActionMode mActionMode;

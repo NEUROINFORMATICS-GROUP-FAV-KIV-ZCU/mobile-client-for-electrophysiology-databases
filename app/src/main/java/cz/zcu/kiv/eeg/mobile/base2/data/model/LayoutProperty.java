@@ -1,63 +1,45 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
+ *
  * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
+ *
  */
-@DatabaseTable(tableName = LayoutProperty.TABLE_NAME)
-public class LayoutProperty {
-	public static final String TABLE_NAME = "properties";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String FK_ID_SUBLAYOUT = "sublayout_id";
-	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
-	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
-	public static final String INDEX_NAME = "property_field_layout_idx";
 
-	@DatabaseField(generatedId = true)
+public class LayoutProperty implements NoSQLData{
+
 	private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FIELD, uniqueIndexName = INDEX_NAME)
 	private Field field;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
 	private Layout layout;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_SUBLAYOUT)
+
 	private Layout subLayout;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
+
 	private Field previewMajor;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
+
 	private Field previewMinor;
-	
-	@DatabaseField
+
 	private String label;
-	
-	@DatabaseField
+
 	private int idNode;
-	
-	@DatabaseField
+
 	private int idTop;
-	
-	@DatabaseField
+
 	private int idBottom;
-	
-	@DatabaseField
+
 	private int idLeft;
-	
-	@DatabaseField
+
 	private int idRight;
-	
-	@DatabaseField
+
 	private int weight;
-		
-	@DatabaseField
+
 	private int cardinality;
 
 	public LayoutProperty() {
@@ -182,4 +164,24 @@ public class LayoutProperty {
 	public void setCardinality(int cardinality) {
 		this.cardinality = cardinality;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("field", field.get());
+        m.put("layout", layout.get());
+        m.put("subLayout", subLayout.get());
+        m.put("previewMajor", previewMajor.get());
+        m.put("previewMinor", previewMinor.get());
+        m.put("label", label);
+        m.put("idNode", idNode);
+        m.put("idTop", idTop);
+        m.put("idBottom", idBottom);
+        m.put("idLeft", idLeft);
+        m.put("idRight", idRight);
+        m.put("weight", weight);
+        m.put("cardinality", cardinality);
+        return m;
+    }
 }

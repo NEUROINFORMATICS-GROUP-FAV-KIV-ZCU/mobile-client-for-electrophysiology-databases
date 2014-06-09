@@ -1,17 +1,11 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+
 import java.sql.SQLException;
 import java.util.List;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
-
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
 /**
@@ -29,7 +23,7 @@ public class LayoutPropertyDAO {
 	}
 
 	private Dao<LayoutProperty, Integer> getLayoutPropertyDao() throws SQLException {
-		return databaseHelper.getLayoutPropertyDao();
+		return null;
 	}
 
 	public LayoutProperty create(final LayoutProperty property) {
@@ -54,21 +48,6 @@ public class LayoutPropertyDAO {
 	public LayoutProperty getProperty(final int id) {
 		try {
 			return getLayoutPropertyDao().queryForId(id);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public LayoutProperty getProperty(final int fieldId, final String layoutId) {
-		try {
-			QueryBuilder<LayoutProperty, Integer> queryBuilder = getLayoutPropertyDao().queryBuilder();
-			Where<LayoutProperty, Integer> where = queryBuilder.where();
-			where.eq(LayoutProperty.FK_ID_FIELD, fieldId);
-			where.and();
-			where.eq(LayoutProperty.FK_ID_LAYOUT, layoutId);
-			PreparedQuery<LayoutProperty> preparedQuery = queryBuilder.prepare();
-			return getLayoutPropertyDao().queryForFirst(preparedQuery);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

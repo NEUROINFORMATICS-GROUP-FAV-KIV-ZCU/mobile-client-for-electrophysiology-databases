@@ -1,13 +1,20 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
+
 /**
  * 
- * @author Jaroslav Hošek
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  * 
  */
-public class FormRow {
+public class FormRow implements NoSQLData {
 
-	private int id; // TODO ID datasetu (zatím))
+	private int id; // TODO
+	// cz: ID datasetu (zatím))
+    // en: ID Dataset (yet))
 	private String name;
 	private String description;
 	private String mine;
@@ -51,4 +58,14 @@ public class FormRow {
 	public void setMine(String mine) {
 		this.mine = mine;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("name", name);
+        m.put("description", description);
+        m.put("mine", mine);
+        return m;
+    }
 }

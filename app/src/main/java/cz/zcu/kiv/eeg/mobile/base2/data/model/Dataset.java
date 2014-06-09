@@ -1,28 +1,20 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ *
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = Dataset.TABLE_NAME)
-public class Dataset {
+public class Dataset implements NoSQLData {
 
-	public static final String TABLE_NAME = "datasets";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String DATASET_ID = "dataset_id";
-	public static final String DATASET_ROOT_ID = "dataset_root_id";
-
-	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
 	private Form form;
-	
-	@DatabaseField
+
 	private String recordId;
 
 	public Dataset() {
@@ -57,4 +49,13 @@ public class Dataset {
 	public void setRecordId(String recordId) {
 		this.recordId = recordId;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("form", form);
+        m.put("recordId", recordId);
+        return m;
+    }
 }

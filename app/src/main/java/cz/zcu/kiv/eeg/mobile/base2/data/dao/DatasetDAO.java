@@ -1,11 +1,11 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.QueryBuilder;
+
+import java.sql.SQLException;
+import java.util.List;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
@@ -25,7 +25,7 @@ public class DatasetDAO {
 	}
 
 	public Dao<Dataset, Integer> getDataSetDao() throws SQLException {
-		return databaseHelper.getDataSetDao();
+		return null;
 	}
 
 	public CreateOrUpdateStatus saveOrUpdate(Dataset dataset) {

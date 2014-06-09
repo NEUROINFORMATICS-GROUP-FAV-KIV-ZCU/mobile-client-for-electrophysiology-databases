@@ -1,8 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -19,6 +16,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.DrawerAdapter;
@@ -27,6 +28,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
+import cz.zcu.kiv.eeg.mobile.base2.ws.DummyDatabase;
 
 /**
  * 
@@ -89,6 +91,8 @@ public class DashboardActivity extends Activity {
 		if (savedInstanceState != null) {
 			previousFragment = savedInstanceState.getInt("previousFragment", -1);
 		}
+        Toast.makeText(this, "Trying new database", Toast.LENGTH_SHORT).show();
+        DummyDatabase database = new DummyDatabase(getApplicationContext());
 	}
 
 	protected void onResume() {

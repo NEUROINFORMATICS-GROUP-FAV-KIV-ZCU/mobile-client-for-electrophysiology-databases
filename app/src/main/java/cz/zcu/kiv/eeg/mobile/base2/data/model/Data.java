@@ -1,86 +1,78 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = Data.TABLE_NAME)
-public class Data {
+public class Data implements NoSQLData {
+    private int id;
 
-	public static final String TABLE_NAME = "data";
-	public static final String FK_ID_DataSet = "dataset_id";
-	public static final String FK_ID_Field = "field_id";
+    private String data;
 
-	@DatabaseField(generatedId = true)
-	private int id;
+    private Dataset dataset;
 
-	@DatabaseField
-	private String data;
+    private Field field;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_DataSet)
-	private Dataset dataset;
+    public Data() {
+        super();
+    }
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_Field)
-	private Field field;
+    public Data(Dataset dataset, Field field, String data) {
+        super();
+        this.dataset = dataset;
+        this.field = field;
+        this.data = data;
+    }
 
-	public Data() {
-		super();
-	}
+    public Data(Map<String, Object> d) {
+        id = (Integer) d.get("id");
+        data = (String) d.get("data");
+        dataset = (Dataset) d.get("dataset");
+        field = (Field) d.get("field");
+    }
 
-	/*public Data(int id, String data) {
-		super();
-		this.id = id;
-		this.data = data;
-	}*/
+    public Map<String, Object> get() {
+        Map<String, Object> d = new HashMap<String, Object>();
+        d.put("id", id);
+        d.put("data", data);
+        d.put("dataset", dataset.get());
+        d.put("field", field.get());
+        return d;
+    }
 
-	/*public Data(int id, Dataset dataset, Field field, String data) {
-		super();
-		this.id = id;
-		this.dataset = dataset;
-		this.field = field;
-		this.data = data;
-	}*/
+    public int getId() {
+        return id;
+    }
 
-	public Data(Dataset dataset, Field field, String data) {
-		super();
-		this.dataset = dataset;
-		this.field = field;
-		this.data = data;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public Dataset getDataset() {
+        return dataset;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setDataset(Dataset dataset) {
+        this.dataset = dataset;
+    }
 
-	public Dataset getDataset() {
-		return dataset;
-	}
+    public Field getField() {
+        return field;
+    }
 
-	public void setDataset(Dataset dataset) {
-		this.dataset = dataset;
-	}
-
-	public Field getField() {
-		return field;
-	}
-
-	public void Field(Field field) {
-		this.field = field;
-	}
+    public void Field(Field field) {
+        this.field = field;
+    }
 }
