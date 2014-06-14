@@ -35,6 +35,21 @@ public class MenuItemsStore extends Store {
         return list;
     }
 
+    public List<MenuItems> getMenu(MenuItems parent) {
+        Query query = getQuery();
+        List<MenuItems> list = new ArrayList<MenuItems>();
+        try {
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                MenuItems menuItems = new MenuItems(it.next().getDocumentProperties());
+                if (menuItems.getParentId() != null && menuItems.getParentId().getId() == parent.getId())
+                    list.add(menuItems);
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public String[] getMenuNames() {
         List<MenuItems> items = getMenu();
         String[] names = new String[items.size()];
@@ -47,7 +62,7 @@ public class MenuItemsStore extends Store {
 
     public MenuItems getMenu(int id) {
         Document document = getDocument(id);
-        if(null != document) return new MenuItems(document.getProperties());
+        if (null != document) return new MenuItems(document.getProperties());
         return null;
     }
 
@@ -64,5 +79,20 @@ public class MenuItemsStore extends Store {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<MenuItems> getRootMenu() {
+        Query query = getQuery();
+        List<MenuItems> list = new ArrayList<MenuItems>();
+        try {
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                MenuItems menuItems = new MenuItems(it.next().getDocumentProperties());
+                if (menuItems.getParentId() == null)
+                    list.add(menuItems);
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

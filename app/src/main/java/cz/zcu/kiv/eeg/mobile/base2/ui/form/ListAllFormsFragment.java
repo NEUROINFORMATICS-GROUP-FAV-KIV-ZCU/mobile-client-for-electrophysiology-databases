@@ -1,8 +1,12 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ListFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -13,19 +17,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
-import java.util.ArrayList;
-
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
 /**
@@ -39,7 +41,7 @@ public class ListAllFormsFragment extends ListFragment {
 	// public static FormAdapter adapter;
 	// TODO podpora pro adaptéry ze všech formulářů
 	private static SparseArray<FormAdapter> adapters = new SparseArray<FormAdapter>();
-	private StoreFactory daoFactory;
+	private DAOFactory daoFactory;
 	private MenuItems menu;
 	private TaskFragment mTaskFragment;
 
@@ -47,7 +49,7 @@ public class ListAllFormsFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true); // povolí action bar
-		daoFactory = new StoreFactory(getActivity());
+		daoFactory = new DAOFactory(getActivity());
 
 		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag("taskFragment");
@@ -59,7 +61,8 @@ public class ListAllFormsFragment extends ListFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.form_list, container, false);
+		View view = inflater.inflate(R.layout.form_list, container, false);
+		return view;
 	}
 
 	@Override
@@ -75,7 +78,7 @@ public class ListAllFormsFragment extends ListFragment {
 		setListAdapter(getStaticAdapter(getActivity(), menu,daoFactory));
 	}
 
-	public static FormAdapter getStaticAdapter(Activity activity, MenuItems menu, StoreFactory store) {
+	public static FormAdapter getStaticAdapter(Activity activity, MenuItems menu, DAOFactory daoFactory) {
 		FormAdapter adapter = adapters.get(menu.getId());
 
 		if (adapter == null) {
@@ -83,23 +86,23 @@ public class ListAllFormsFragment extends ListFragment {
 
 			// podle čeho hledám
 			String id = "id";// menu.getFieldID().getName(); //ID DATASETU
-			Field previewMajor = store.getFieldStore().getField(menu.getPreviewMajor().getId());
-			Field PreviewMinor = store.getFieldStore().getField(menu.getPreviewMinor().getId());
-			Form form = store.getFormStore().getFormByType(previewMajor.getForm().getType());
+			Field previewMajor = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
+			Field PreviewMinor = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
+			Form form = daoFactory.getFormDAO().getForm(previewMajor.getForm().getType());
 
-			for (Dataset dataset : store.getDatasetStore().getDataSet(form)) {
+			for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
 				int dataset_id = dataset.getId();
 				String descriptionData1 = null;
 				String descriptionData2 = null;
 
 				if (previewMajor != null) {
-					Data description1 = store.getDataStore().getData(dataset.getId(), previewMajor.getId());
+					Data description1 = daoFactory.getDataDAO().getData(dataset.getId(), previewMajor.getId());
 					if (description1 != null) {
 						descriptionData1 = description1.getData();
 					}
 				}
 				if (PreviewMinor != null) {
-					Data description2 = store.getDataStore().getData(dataset.getId(), PreviewMinor.getId());
+					Data description2 = daoFactory.getDataDAO().getData(dataset.getId(), PreviewMinor.getId());
 					if (description2 != null) {
 						descriptionData2 = description2.getData();
 					}
@@ -162,16 +165,30 @@ public class ListAllFormsFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.form_refresh:
-			clearAdapter(menu.getId());
+			showAlert("Not implemented yet", false);
+			
+			/*clearAdapter(menu.getId());
 			String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType();
 			// mTaskFragment.startData(url, getAdapter(menu.getId()), menu);
 			
 			  mTaskFragment.startData(url, getStaticAdapter(getActivity(), menu,
-			  daoFactory), menu);
+			  daoFactory), menu);*/
 			 
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	//todo pouze kvuli not implemented
+	public void showAlert(final String alert, final boolean closeActivity) {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage(alert).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();				
+			}
+		});
+		builder.create().show();
 	}
 
 	@Override

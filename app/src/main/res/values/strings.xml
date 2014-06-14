@@ -46,29 +46,50 @@
     <string name="settings_login">Login</string>
 
     <!-- Form management -->
-    <string name="form_plus">+</string>
+    <string name="form_section">Form</string>
+    <string name="form_layout_section">Layout</string>
+    <string name="form_fields_section">Fields</string>
+    <string name="form_preview_section">Form preview</string>
+    <string name="form_plus">Add...</string>
     <string name="form_label">Label</string>
     <string name="form_add">Add form</string>
+    <string name="form_save">Save form</string>
     <string name="form_new">New Form</string>
-    <string name="form_new_field">New Field</string>
-    <string name="form_refresh">Fetch data</string>
+    <string name="form_new_field">Add field</string>
+    <string name="form_refresh">Download forms and layouts</string>
     <string name="form_edit_layout">Edit layout</string>
     <string name="form_save_layout">Save layout</string>
+    <string name="form_create_layout">Create new layout ...</string>
+    <string name="form_add_fields_to_layout">Add fields to layout ...</string>
+    <string name="form_edit_layout_dialog">Edit layout ...</string>
+    <string name="form_duplicate_layout">Duplicate selected layout</string>
+    <string name="form_create_layout_title">Create new layout</string>
     <string name="form_move">Move fields</string>
-    <string name="form_name">Name</string>
+    <string name="form_name">Form Name</string>
     <string name="form_layouts">Select Layout</string>
+    <string name="form_type">Select Form Type (Database entity)</string>
+    <string name="form_create_type">Create new form type ...</string>
+    <string name="form_create_fields">Create fields ...</string>
+    <string name="form_edit_field">Edit field</string>
+    <string name="form_create_type_title">Create New Form Type</string>
     <string name="form_fields">Select field</string>
-    <string name="form_description1">Description 1</string>
-    <string name="form_description2">Description 2</string>
-    
-     <!-- Field management -->
+    <string name="form_list_of_fields">List Of Fields</string>
+    <string name="form_previewMajor">Preview Major</string>
+    <string name="form_previewMinor">Preview Minor</string>
+
+    <!-- Field management -->
     <string name="field_label">Label</string>
     <string name="field_add">Add field</string>
     <string name="field_name">Field Name</string>
     <string name="field_type">Type</string>
+    <string name="field_options">Options</string>
+    <string name="field_addToLayout">Add to layout</string>
+    <string name="field_createField">Create field</string>
     <string name="field_save">Save field</string>
+    <string name="field_noUnusedFields">No unused fields</string>
     <string name="field_exists">The field name already exists</string>
-    <string name="field_empty_name">Empty field name</string>
+    <string name="field_was_created">The field was created</string>
+    
 
     <!-- person management -->
     <string name="person_add">Add person</string>
@@ -85,6 +106,10 @@
     <string name="person_age">Age</string>
     <string name="mandatory">Mandatory</string>
     <string name="optional">Optionable</string>
+
+    <!-- drawer management -->
+    <string name="drawer_createNewfolder">Create New Folder</string>
+    <string name="drawer_newfolder">New Folder</string>
 
     <color name="red">#FFFF0000</color>
 
@@ -113,7 +138,7 @@
     <string name="error_no_group_selected">No research group selected!</string>
     <string name="error_invalid_mail_format">Invalid mail format!</string>
     <string name="error_invalid_date_format">Invalid date format!</string>
-    <string name="error_empty_field">Field must be filled</string>
+    
     <string name="error_ssl">SSL connection fell apart. Try again.</string>
     <string name="error_no_type_selected">No electrode type selected!</string>
     <string name="error_no_fix_selected">No electrode fix selected!</string>
@@ -125,6 +150,16 @@
     <string name="error_no_electrode_location_selected">No electrode location selected!</string>
     <string name="error_no_weather_selected">No weather selected!</string>
     <string name="error_time_start_after_end">Time of start cannot be after the end time!</string>
+    
+    
+    <string name="error_form_type_exists">The form type already exists</string>
+    <string name="error_layout_name_exists">The layout name already exists</string>
+    <string name="error_empty_field">Field must be filled</string>
+    <string name="error_empty_layout">Layout must be filled</string>
+    <string name="error_empty_type">Form type must be filled</string>
+    <string name="error_empty_form_name">Form name must be filled</string>
+    <string name="error_layout_no_fields">Add fields to layout (Press "Edit layout button ...")</string>
+    <string name="field_empty_name">Empty field name</string>
 
     <!-- Working -->
     <string name="working_ws_credentials">Verifying login information…</string>
@@ -133,4 +168,5 @@
     <!-- Spinners -->
     <string name="spinner_layout">[Select layout...]</string>
     <string name="spinner_field">[Select field...]</string>
+
 </resources>

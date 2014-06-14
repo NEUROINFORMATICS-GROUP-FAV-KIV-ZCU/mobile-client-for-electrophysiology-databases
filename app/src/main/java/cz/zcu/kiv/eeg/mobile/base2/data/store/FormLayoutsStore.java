@@ -1,5 +1,12 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Query;
+import com.couchbase.lite.QueryEnumerator;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
@@ -17,5 +24,21 @@ public class FormLayoutsStore extends Store {
     public Boolean saveOrUpdate(Form form, Layout layout) {
         FormLayouts data = new FormLayouts(form, layout);
         return saveOrUpdate(data);
+    }
+
+    public List<Layout> getLayout(Form form) {
+        Query query = getQuery();
+        List<Layout> list =new ArrayList<Layout>();
+        try {
+            for(QueryEnumerator it = query.run(); it.hasNext();) {
+                Layout layout = new Layout(it.next().getDocumentProperties());
+                if(form.getId() == layout.getRootForm().getId()) {
+                    list.add(layout);
+                }
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

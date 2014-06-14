@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
@@ -38,7 +39,7 @@ public class ViewNode {
 	private LayoutProperty property;
 	private View node;
 	private TextView label;
-	private LinearLayout layout; // obaluje (en: wraps) label a node
+	private LinearLayout layout; // obaluje label a node
 	private Drawable background;
 	private Drawable editShape;
 	private ActionMode mActionMode;
@@ -74,7 +75,7 @@ public class ViewNode {
 			label.setText(property.getLabel());
 			label.setTag(R.id.NODE_ID, property.getIdNode());
 
-			if (field.getType().equals("form")) {
+			if (field.getType().equals(Values.FORM)) {
 				RelativeLayout labelLayout = new RelativeLayout(ctx);
 
 				label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -97,7 +98,7 @@ public class ViewNode {
 				button_param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 				button_param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		
-				final Layout subLayout = vb.getStore().getLayoutStore().getLayout(property.getSubLayout().getName());
+				final Layout subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
 				menuItem = vb.getSubmenuItem(property, subLayout);
 
 				button.setOnClickListener(new OnClickListener() {
@@ -107,7 +108,7 @@ public class ViewNode {
 						LinearLayout spinnerLayout = (LinearLayout) node;
 						int size = spinnerLayout.getChildCount();
 						Spinner emptyItem = (Spinner)spinnerLayout.getChildAt(size - 1);
-						Spinner newItem = vb.createItem(property, subLayout, field, spinnerLayout, menuItem, "");
+						Spinner newItem = vb.createSubformItem(property, subLayout, field, spinnerLayout, menuItem, "");
 						emptyItem.setVisibility(View.VISIBLE);				
 						spinnerLayout.addView(newItem, size - 1);					
 					}

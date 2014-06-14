@@ -21,8 +21,8 @@ public class LayoutStore extends Store {
         super(databaseHelper, VIEW_NAME, DOC_TYPE_VALUE);
     }
 
-    public Layout saveOrUpdate(String layoutName, Layout rootLayout, String xmlData, Form rootForm) {
-        Layout data = new Layout(layoutName, xmlData, rootLayout, rootForm);
+    public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm) {
+        Layout data = new Layout(layoutName, xmlData, rootForm);
         return saveOrUpdate(data) ? data : null;
     }
 
@@ -54,5 +54,10 @@ public class LayoutStore extends Store {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Layout create(String name, String xmlData, Form form) {
+        Layout layout = new Layout(name, xmlData, form);
+        return saveOrUpdate(layout) ? layout : null;
     }
 }

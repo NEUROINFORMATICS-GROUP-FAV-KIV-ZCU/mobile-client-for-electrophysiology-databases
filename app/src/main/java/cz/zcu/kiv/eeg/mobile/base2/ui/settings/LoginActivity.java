@@ -7,11 +7,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.util.ValidationUtils;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
@@ -24,7 +23,7 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 public class LoginActivity extends TaskFragmentActivity {
 
 	private static final String TAG = LoginActivity.class.getSimpleName();
-	private StoreFactory store;
+	private DAOFactory daoFactory;
 	private TaskFragment mTaskFragment;
 	private User user;
 	private User backup;
@@ -53,8 +52,8 @@ public class LoginActivity extends TaskFragmentActivity {
 		passwordField = (TextView) findViewById(R.id.settings_password);
 		urlField = (TextView) findViewById(R.id.settings_url);
 
-		store = new StoreFactory(getApplicationContext());
-		user = store.getUserStore().getUser();
+		daoFactory = new DAOFactory(this);
+		user = daoFactory.getUserDAO().getUser();
 		if (user != null) {
 			usernameField.setText(user.getUsername());
 			passwordField.setText(user.getPassword());
@@ -73,7 +72,7 @@ public class LoginActivity extends TaskFragmentActivity {
 		String error = ValidationUtils.isUserValid(this, user);
 		
 		if (error.toString().isEmpty()) {				
-			store.getUserStore().saveOrUpdate(user);
+			daoFactory.getUserDAO().saveOrUpdate(user);  
 			mTaskFragment.startLogin();
 		} else {
 			showAlert(error.toString());
@@ -103,6 +102,6 @@ public class LoginActivity extends TaskFragmentActivity {
 	@Override
 	public void onDestroy() {			
 		super.onDestroy();
-		store.releaseHelper();
+		daoFactory.releaseHelper();
 	}
 }

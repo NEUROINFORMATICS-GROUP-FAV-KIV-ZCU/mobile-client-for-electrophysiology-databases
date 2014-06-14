@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
@@ -52,6 +53,7 @@ public class DrawerAdapter extends ArrayAdapter<MenuItems> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LinearLayout todoView;
+		MenuItems item = getItem(position);
 
 		if (convertView == null) {
 			todoView = new LinearLayout(getContext());
@@ -62,7 +64,14 @@ public class DrawerAdapter extends ArrayAdapter<MenuItems> {
 			todoView = (LinearLayout) convertView;
 		}
 
+		ImageView iconView = (ImageView) todoView.findViewById(R.id.menu_icon);
 		TextView label = (TextView) todoView.findViewById(R.id.menu_label);
+
+		if (item.getIcon() != null) {
+			iconView.setImageResource(todoView.getResources().getIdentifier(item.getIcon(), "drawable",
+					getContext().getPackageName()));
+		}
+
 		label.setText(getItem(position).getName());
 		return todoView;
 	}

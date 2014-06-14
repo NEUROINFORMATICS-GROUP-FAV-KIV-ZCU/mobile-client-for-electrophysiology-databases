@@ -2,18 +2,12 @@ package cz.zcu.kiv.eeg.mobile.base2.ws.ssl;
 
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * SSL HTTP request factory which accepts all SSL certificates.

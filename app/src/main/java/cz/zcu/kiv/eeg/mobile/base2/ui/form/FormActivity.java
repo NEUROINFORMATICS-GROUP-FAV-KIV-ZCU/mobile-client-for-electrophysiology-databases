@@ -1,17 +1,21 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
+import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
 /**
  * 
@@ -24,18 +28,17 @@ public class FormActivity extends TaskFragmentActivity {
 	private static final String SELECTED_TAB = "selected_tab";
 	private MenuItems menu;
 	private int menuItemID = -1;
-	private StoreFactory store;
+	private DAOFactory daoFactory;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		store = new StoreFactory(this);
+		daoFactory = new DAOFactory(this);
 		ActionBar actionBar = getActionBar();
 		actionBar.setIcon(R.drawable.ic_action_event);
-
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
 		ActionBar.Tab mine = actionBar
 				.newTab()
 				.setText("Mine")
@@ -62,7 +65,7 @@ public class FormActivity extends TaskFragmentActivity {
 				menuItemID = extras.getInt(Values.MENU_ITEM_ID, -1);			
 			}
 		}
-		menu = store.getMenuItemStore().getMenu(menuItemID);
+		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 		actionBar.setTitle(menu.getName());
 
 	}
@@ -95,7 +98,7 @@ public class FormActivity extends TaskFragmentActivity {
 			Intent intent = new Intent(this, FormDetailsActivity.class);
 			intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
 			intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
-//			intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
+			intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
 			startActivity(intent);
 			break;
 		
@@ -103,7 +106,7 @@ public class FormActivity extends TaskFragmentActivity {
 			Intent intentEdit = new Intent(this, FormDetailsActivity.class);
 			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getId());
 			intentEdit.putExtra(Values.MENU_ITEM_NAME, menu.getName());
-//			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);
+			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);
 			startActivity(intentEdit);
 			break;
 		}
@@ -120,6 +123,6 @@ public class FormActivity extends TaskFragmentActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		store.releaseHelper();
+		daoFactory.releaseHelper();
 	}
 }

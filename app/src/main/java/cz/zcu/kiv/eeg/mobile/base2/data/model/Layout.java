@@ -23,7 +23,7 @@ public class Layout extends NoSQLData {
     @Element(name = LAYOUT_NAME)
     private String name;
 
-    private Layout rootLayout;
+//    private Layout rootLayout;
 
     private Form rootForm;
 
@@ -48,21 +48,21 @@ public class Layout extends NoSQLData {
         this.name = name;
     }
 
-    public Layout(String name, String xmlData, Layout rootLayout, Form rootForm) {
+    public Layout(String name, String xmlData, Form rootForm) {
         super();
         this.name = name;
         this.xmlData = xmlData;
-        this.rootLayout = rootLayout;
+//        this.rootLayout = rootLayout;
         this.rootForm = rootForm;
     }
 
-    public Layout getRootLayout() {
-        return rootLayout;
-    }
+//    public Layout getRootLayout() {
+//        return rootLayout;
+//    }
 
-    public void setRootLayout(Layout rootLayout) {
-        this.rootLayout = rootLayout;
-    }
+//    public void setRootLayout(Layout rootLayout) {
+//        this.rootLayout = rootLayout;
+//    }
 
     public String getName() {
         return name;
@@ -114,10 +114,7 @@ public class Layout extends NoSQLData {
     public Map<String, Object> get() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("name", name);
-        if (null != rootLayout) properties.put("rootLayout", rootLayout.get());
-        else properties.put("rootLayout", null);
-        if (null == rootLayout) properties.put("rootForm", null);
-        else properties.put("rootForm", rootForm.get());
+        properties.put("rootForm", rootForm != null ? rootForm.get() : null);
         properties.put("xmlData", xmlData);
         properties.put("formName", formName);
         return properties;
@@ -125,14 +122,10 @@ public class Layout extends NoSQLData {
 
     @Override
     public void set(Map<String, Object> properties) {
-        if(null == properties) return;
+        if (null == properties) return;
         name = (String) properties.get("name");
-        Object object = properties.get("rootLayout");
-        if (null == object) rootLayout = null;
-        else rootLayout = new Layout((Map<String, Object>) object);
-        object = properties.get("rootForm");
-        if (null == object) rootForm = null;
-        else rootForm = new Form((Map<String, Object>) object);
+        Object object;
+        rootForm = (object = properties.get("rootForm")) != null ? new Form((Map<String, Object>) object) : null;
         xmlData = (String) properties.get("xmlData");
         formName = (String) properties.get("formName");
     }

@@ -66,7 +66,7 @@ public class DummyTask extends AsyncTask<Void, Integer, Void> {
 		try {
 			ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 			// ResponseEntity<Resource> result = restTemplate.exchange(url, HttpMethod.GET, entity, Resource.class);
-			// new FormBuilder(fragment.getStore(), result).start();
+			// new FormBuilder(fragment.getDaoFactory(), result).start();
 
 			Log.i("test", result.getBody().toString());
 

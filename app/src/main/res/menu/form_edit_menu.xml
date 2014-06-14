@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   
+   <item
         android:id="@+id/form_move_field"
         android:icon="@drawable/ic_action_move_off"
-        app:showAsAction="ifRoom|withText"
-        android:title="@string/form_move"/>
-
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_move">
+    </item>
+    
     <item
         android:id="@+id/form_add_field"
         android:icon="@drawable/ic_action_add"
-        app:showAsAction="ifRoom|withText"
-        android:title="@string/field_add"/>
-
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/field_add">
+    </item>
+    
     <item
         android:id="@+id/form_save_layout"
         android:icon="@drawable/ic_action_save"
-        app:showAsAction="ifRoom|withText"
-        android:title="@string/form_save_layout"/>
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/form_save_layout">
+    </item>
 
 </menu>

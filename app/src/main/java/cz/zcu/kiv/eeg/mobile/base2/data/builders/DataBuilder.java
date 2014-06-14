@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
@@ -26,13 +26,13 @@ import odml.core.Section;
  */
 public class DataBuilder {
 	private static final String TAG = DataBuilder.class.getSimpleName();
-	private StoreFactory store;
+	private DAOFactory daoFactory;
 	private String xmlData;
 	// private Section odmlForm;
 	private Section odmlRoot;
 
-	public DataBuilder(StoreFactory store, ResponseEntity<Resource> data) {
-		this.store = store;
+	public DataBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
+		this.daoFactory = daoFactory;
 
 		Reader reader;
 		try {
@@ -52,11 +52,11 @@ public class DataBuilder {
 			String formType = section.getType();
 			String recordId = section.getName();
 			
-			Dataset dataset = store.getDatasetStore().getDataSet(recordId);
-			Form form = store.getFormStore().getFormByType(formType);
+			Dataset dataset = daoFactory.getDataSetDAO().getDataSet(recordId);
+			Form form = daoFactory.getFormDAO().getForm(formType);
 			
 			if (dataset == null) {
-				dataset = store.getDatasetStore().create(form);
+				dataset = daoFactory.getDataSetDAO().create(form);				
 				Vector<Property> properties = section.getProperties();			
 								
 				
@@ -64,8 +64,8 @@ public class DataBuilder {
 					String name = property.getName();
 					String value = property.getValue().toString();
 	
-					Field field = store.getFieldStore().getField(name, formType);
-					store.getDataStore().create(dataset, field, value);
+					Field field = daoFactory.getFieldDAO().getField(name, formType);				
+					daoFactory.getDataDAO().create(dataset, field, value);
 				}
 			}
 		}

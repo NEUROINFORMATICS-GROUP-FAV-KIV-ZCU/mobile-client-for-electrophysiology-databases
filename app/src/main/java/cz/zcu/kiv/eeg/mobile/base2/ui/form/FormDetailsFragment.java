@@ -19,7 +19,7 @@ import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
@@ -27,7 +27,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
-import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
+import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity;
 
 /**
  * 
@@ -37,9 +37,9 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 public class FormDetailsFragment extends Fragment {
 
 	public final static String TAG = FormDetailsFragment.class.getSimpleName();
-	public final static String DATASET_ID = "datasetID";
-	public final static String LAYOUT_ID = "layoutID";
-	private StoreFactory store;
+	//public final static String DATASET_ID = "datasetID";
+	//public final static String LAYOUT_ID = "layoutID";
+	private DAOFactory daoFactory;
 	private MenuItems menu;
 	private Layout layout;
 
@@ -57,7 +57,7 @@ public class FormDetailsFragment extends Fragment {
 		setHasOptionsMenu(true);
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-		store = new StoreFactory(getActivity());
+		daoFactory = new DAOFactory(getActivity());
 		Bundle extras = getActivity().getIntent().getExtras();
 		int menuItemID = extras.getInt(Values.MENU_ITEM_ID, -1);
 		String layoutName = extras.getString(Layout.LAYOUT_ID, null);
@@ -65,22 +65,22 @@ public class FormDetailsFragment extends Fragment {
 		datasetId = extras.getInt(Dataset.DATASET_ID);
 		datasetRootId = extras.getInt(Dataset.DATASET_ROOT_ID);
 		rootField = extras.getInt(Field.FIELD_ID);
-
-		menu = store.getMenuItemStore().getMenu(menuItemID);
+		
+		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 
 		if (layoutName != null) {// jedno asi při přidávání pole
-			layout = store.getLayoutStore().getLayout(layoutName);
+			layout = daoFactory.getLayoutDAO().getLayout(layoutName);
 		} else {
-			layout = store.getLayoutStore().getLayout(menu.getLayout().getName());
+			layout = daoFactory.getLayoutDAO().getLayout(menu.getLayout().getName());
 		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (formMode == Values.FORM_NEW_SUBFORM) {
-			vb = new ViewBuilder(this, layout, datasetId, Values.FORM_NEW_DATA, menu, store);
+			vb = new ViewBuilder(this, layout, datasetId, Values.FORM_NEW_DATA, menu, daoFactory);
 		} else {
-			vb = new ViewBuilder(this, layout, datasetId, formMode, menu, store);
+			vb = new ViewBuilder(this, layout, datasetId, formMode, menu, daoFactory);
 		}
 
 		View view = vb.getLinearLayout();
@@ -106,16 +106,16 @@ public class FormDetailsFragment extends Fragment {
 	}
 
 	private void addField() {
-		Intent intent = new Intent(getActivity(), FieldAddActivity.class);
-//		intent.putExtra(Form.FORM_TYPE, layout.getRootForm().getType());
+		Intent intent = new Intent(getActivity(), FieldEditorAddActivity.class);
+		intent.putExtra(Form.FORM_TYPE, layout.getRootForm().getType());
 		intent.putExtra(Layout.LAYOUT_NAME, layout.getName());
 		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
 		startActivityForResult(intent, Values.PICK_FIELD_ID_REQUEST);
 	}
-
+	
 	public void showSubform(int formMode, int datasetId ,MenuItems item, int fieldId){
 		Intent intent = new Intent(getActivity(), FormDetailsActivity.class);
-
+		
 		intent.putExtra(Form.FORM_MODE, formMode);
 		intent.putExtra(Field.FIELD_ID, fieldId);
 		intent.putExtra(Dataset.DATASET_ROOT_ID, saveData());
@@ -144,7 +144,8 @@ public class FormDetailsFragment extends Fragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
 			if (requestCode == Values.PICK_FIELD_ID_REQUEST) {
-				vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
+				//vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
+				vb.addFieldsToForm(data.getIntegerArrayListExtra(Field.FIELD_ID), isEnabledMove, getActivity());
 			} else if (requestCode == Values.PICK_SUBFORM_ID) {
 				Intent intent = getActivity().getIntent();
 				getActivity().finish();
@@ -153,10 +154,8 @@ public class FormDetailsFragment extends Fragment {
 		}
 	}
 
-
-
 	private int saveData() {
-		int newDataset = vb.saveOrUpdateData(datasetId);
+		int newDataset = vb.saveFormData(datasetId);
 		SparseArray<FormAdapter> adapters = ListAllFormsFragment.getAdaptersForUpdate();
 
 		for (int i = 0; i < adapters.size(); i++) {
@@ -167,20 +166,20 @@ public class FormDetailsFragment extends Fragment {
 			// musím projít všechny adaptéry odpovídajícího typu, abych jim aktualizoval řádek v listview
 			if (adapter != null && aMenu.getRootForm().getType().equalsIgnoreCase(menu.getRootForm().getType())) {
 				String id = "id";
-				Field description1Field = store.getFieldStore().getField(aMenu.getPreviewMajor().getId());
-				Field description2Field = store.getFieldStore().getField(aMenu.getPreviewMinor().getId());
+				Field description1Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMajor().getId());
+				Field description2Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMinor().getId());
 
 				String descriptionData1 = null;
 				String descriptionData2 = null;
 
 				if (description1Field != null) {
-					Data description1 = store.getDataStore().getData(newDataset, description1Field.getId());
+					Data description1 = daoFactory.getDataDAO().getData(newDataset, description1Field.getId());
 					if (description1 != null) {
 						descriptionData1 = description1.getData();
 					}
 				}
 				if (description2Field != null) {
-					Data description2 = store.getDataStore().getData(newDataset, description2Field.getId());
+					Data description2 = daoFactory.getDataDAO().getData(newDataset, description2Field.getId());
 					if (description2 != null) {
 						descriptionData2 = description2.getData();
 					}
@@ -205,9 +204,9 @@ public class FormDetailsFragment extends Fragment {
 		}
 
 		if (formMode == Values.FORM_NEW_SUBFORM) {		
-			Field field = store.getFieldStore().getField(rootField);
-			Dataset rootDataset = store.getDatasetStore().getDataSet(datasetRootId);
-			store.getDataStore().create(rootDataset, field, Integer.toString(newDataset));
+			Field field = daoFactory.getFieldDAO().getField(rootField);	
+			Dataset rootDataset = daoFactory.getDataSetDAO().getDataSet(datasetRootId);
+			daoFactory.getDataDAO().create(rootDataset, field, Integer.toString(newDataset));
 			
 			getActivity().setResult(Activity.RESULT_OK);
 		}
@@ -260,6 +259,6 @@ public class FormDetailsFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		store.releaseHelper();
+		daoFactory.releaseHelper();
 	}
 }

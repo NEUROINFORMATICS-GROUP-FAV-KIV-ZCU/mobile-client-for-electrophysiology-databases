@@ -30,7 +30,7 @@ public class FormStore extends Store {
         return saveOrUpdate(form, getDocument(form.getId())) ? form : null;
     }
 
-    public Form getFormByType(String type) {
+    public Form getForm(String type) {
         Query query = getQuery("type");
         List<Object> keys = new ArrayList<Object>();
         keys.add(type);
@@ -43,5 +43,23 @@ public class FormStore extends Store {
             Log.i(TAG, "Error running query", e);
         }
         return null;
+    }
+
+    public List<Form> getForms() {
+        Query query = getQuery();
+        List<Form> list = new ArrayList<Form>();
+        try {
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                list.add(new Form(it.next().getDocumentProperties()));
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Form create(String type) {
+        Form form = new Form(type);
+        return saveOrUpdate(form) ? form : null;
     }
 }

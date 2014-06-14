@@ -5,8 +5,10 @@ import android.content.Context;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.DataStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.DatabaseHelper;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.DatasetStore;
+import cz.zcu.kiv.eeg.mobile.base2.data.store.FieldLayoutsStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.FieldStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.FieldValueStore;
+import cz.zcu.kiv.eeg.mobile.base2.data.store.FormLayoutsStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.FormStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.LayoutPropertyStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.LayoutStore;
@@ -25,6 +27,8 @@ public class StoreFactory {
     private DataStore dataStore;
     private LayoutPropertyStore layoutPropertyStore;
     private FieldValueStore fieldValueStore;
+    private FieldLayoutsStore fieldLayoutsStore;
+    private FormLayoutsStore formLayoutsStore;
 
     public StoreFactory(Context context) {
         this.context = context;
@@ -88,5 +92,15 @@ public class StoreFactory {
     public FieldValueStore getFieldValueStore() {
         if (null == fieldValueStore) fieldValueStore = new FieldValueStore(databaseHelper);
         return fieldValueStore;
+    }
+
+    public FieldLayoutsStore getFieldLayoutsStore() {
+        if (null == fieldLayoutsStore) fieldLayoutsStore = new FieldLayoutsStore(databaseHelper);
+        return fieldLayoutsStore;
+    }
+
+    public FormLayoutsStore getFormLayoutsStore() {
+        if (null == formLayoutsStore) formLayoutsStore = new FormLayoutsStore(databaseHelper);
+        return formLayoutsStore;
     }
 }

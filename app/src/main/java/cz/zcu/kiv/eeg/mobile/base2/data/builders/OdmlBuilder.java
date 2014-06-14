@@ -1,20 +1,19 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.builders;
 
-import android.util.Log;
-import android.util.SparseArray;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
+import odml.core.Property;
+import odml.core.Section;
+import odml.core.Writer;
+import android.util.Log;
+import android.util.SparseArray;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import odml.core.Property;
-import odml.core.Section;
-import odml.core.Writer;
 
 /**
  * 
@@ -25,7 +24,7 @@ public class OdmlBuilder {
 	private static final String TAG = OdmlBuilder.class.getSimpleName();
 	// odml z view
 
-	public static void createODML(SparseArray<ViewNode> nodes, Layout layout, StoreFactory store) {
+	public static void createODML(SparseArray<ViewNode> nodes, Layout layout, DAOFactory daoFactory) {
 		Section rootSection;
 		try {
 			String formType = layout.getRootForm().getType();
@@ -37,8 +36,8 @@ public class OdmlBuilder {
 
 			for (int i = 1; i <= nodes.size(); i++) {
 				ViewNode node = nodes.get(i);
-				//Field field = store.getFieldDAO().getField(node.getName(), formType);
-				//LayoutProperty propertyDB = store.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
+				//Field field = daoFactory.getFieldDAO().getField(node.getName(), formType);
+				//LayoutProperty propertyDB = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
 				Field field = node.getField();
 				LayoutProperty layoutProperty = node.getProperty();
 				
@@ -66,11 +65,11 @@ public class OdmlBuilder {
 					section.add(bottom);
 				}		
 				rootSection.add(section);
-				//LayoutProperty test = store.getLayoutPropertyDAO().getProperty(layoutProperty.getId());
+				//LayoutProperty test = daoFactory.getLayoutPropertyDAO().getProperty(layoutProperty.getId());
 				//if(test != null){
-					store.getLayoutPropertyStore().saveOrUpdate(layoutProperty);
+					daoFactory.getLayoutPropertyDAO().saveOrUpdate(layoutProperty);
 				//}else{
-					//store.getLayoutPropertyDAO().create(layoutProperty);
+					//daoFactory.getLayoutPropertyDAO().create(layoutProperty);
 				//}
 				
 			}
@@ -80,7 +79,7 @@ public class OdmlBuilder {
 			writer.write(stream);
 			String result = stream.toString();
 			layout.setXmlData(result);
-			store.getLayoutStore().saveOrUpdate(layout);
+			daoFactory.getLayoutDAO().saveOrUpdate(layout);		
 			System.out.println("result: " + result);
 			
 			

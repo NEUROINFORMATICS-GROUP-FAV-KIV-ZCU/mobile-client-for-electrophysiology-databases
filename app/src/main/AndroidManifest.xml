@@ -35,6 +35,9 @@
             android:name=".ui.form.FormDetailsActivity"
             android:label="@string/app_settings" />
         <activity
+            android:name="cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity"
+            android:label="@string/form_new_field" />
+        <activity
             android:name="cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity"
             android:label="@string/form_new_field" />
     </application>

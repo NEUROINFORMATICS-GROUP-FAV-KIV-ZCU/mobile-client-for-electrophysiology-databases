@@ -1,9 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.ws;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.os.Bundle;
-import android.util.Log;
+import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.INACTIVE;
+import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.RUNNING;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -11,16 +9,18 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
-
-import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.INACTIVE;
-import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.RUNNING;
 
 /**
  * This Fragment manages a single background task and retains itself across configuration changes.
@@ -36,7 +36,7 @@ public class TaskFragment extends Fragment {
 	private TestCreditialsTask mTaskLogin;
 	private FetchLayoutsTask mTaskLayouts;
 	private FetchDataTask mTaskData;
-	private StoreFactory store;
+	private DAOFactory daoFactory;
 	public TaskState state = INACTIVE;
 
 	@Override
@@ -50,7 +50,7 @@ public class TaskFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
-		store = new StoreFactory(activity.getApplicationContext());
+		daoFactory = new DAOFactory(activity);
 		setRetainInstance(true);
 	}
 
@@ -62,7 +62,7 @@ public class TaskFragment extends Fragment {
 	public void onDestroy() {
 		Log.i(TAG, "onDestroy()");
 		super.onDestroy();
-		store.releaseHelper();
+		daoFactory.releaseHelper();
 		cancel();
 	}
 
@@ -94,9 +94,9 @@ public class TaskFragment extends Fragment {
 		}
 	}
 	
-	public void startFetchLayouts(LayoutSpinnerAdapter layoutAdapter) {
+	public void startFetchLayouts(FormTypeSpinnerAdapter formAdapter) {
 		if (state != RUNNING) {
-			mTaskLayouts = new FetchLayoutsTask(this, layoutAdapter);
+			mTaskLayouts = new FetchLayoutsTask(this, formAdapter);
 			mTaskLayouts.execute();
 		}
 	}
@@ -112,8 +112,8 @@ public class TaskFragment extends Fragment {
 		}
 	}
 
-	public StoreFactory getStore() {
-		return store;
+	public DAOFactory getDaoFactory() {
+		return daoFactory;
 	}
 
 	/**
@@ -121,7 +121,9 @@ public class TaskFragment extends Fragment {
 	 * 
 	 * @param state
 	 *            new service state
-     */
+	 * @param messageCode
+	 *            android string identifier
+	 */	
 	protected void setState(final TaskState state) {
 		this.state = state;
 		activity.changeProgress(state, null);

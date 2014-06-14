@@ -1,57 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="5dp" >
+    android:paddingLeft="0dp" >
 
-    <TextView
-        android:id="@+id/form_labelName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/form_name" />
-
-    <EditText
-        android:id="@+id/form_editName"
+    <LinearLayout
+        android:id="@+id/form_addLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" >
+        android:orientation="vertical"
+        android:padding="5dp" >
 
-        <requestFocus />
-    </EditText>
+        <!-- Form name -->
 
-    <TextView
-        android:id="@+id/form_LabelLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/form_layouts" />
+        <TextView
+            android:id="@+id/form_formSection"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:padding="0dp"
+            android:text="@string/form_section"
+            android:textSize="18sp" />
 
-    <Spinner
-        android:id="@+id/form_spinnerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/form_labelName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_name" />
 
-    <TextView
-        android:id="@+id/form_labelDesc1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/form_description1" />
+        <EditText
+            android:id="@+id/form_editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textCapSentences" >
 
-    <Spinner
-        android:id="@+id/form_spinnerDesc1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <requestFocus />
+        </EditText>
 
-    <TextView
-        android:id="@+id/form_labelDesc2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/form_description2" />
-    
-    <Spinner
-        android:id="@+id/form_spinnerLayoutDesc2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <!-- Form type -->
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/form_LabelType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_type" />
+
+        <Spinner
+            android:id="@+id/form_spinnerType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/form_createType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="createType"
+            android:text="@string/form_create_type" />
+
+        <!-- Fields -->
+
+        <TextView
+            android:id="@+id/form_fieldsSection"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="0dp"
+            android:text="@string/form_fields_section"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/form_LabelListOfFields"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_list_of_fields" />
+        
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:weightSum="5"
+                >
+            
+            <Spinner
+                android:id="@+id/form_spinnerFields"       
+                android:layout_height="match_parent" 
+                android:layout_width="0dp"
+                android:layout_weight="4"/>
+         
+            <ImageButton
+                android:id="@+id/form_editField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_edit_dark" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/form_createFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="createFields"
+            android:text="@string/form_create_fields" />
+
+        <!-- Layout -->
+
+        <TextView
+            android:id="@+id/form_layoutSection"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="0dp"
+            android:text="@string/form_layout_section"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/form_LabelLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_layouts" />
+
+        <Spinner
+            android:id="@+id/form_spinnerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/form_duplicateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="duplicateLayout"
+            android:text="@string/form_duplicate_layout" />
+
+        <Button
+            android:id="@+id/form_createLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="createLayout"
+            android:text="@string/form_create_layout" />
+        
+        <Button
+            android:id="@+id/form_editLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="editLayout"
+            android:text="@string/form_edit_layout_dialog" />
+             
+        <!-- Minor x Major -->
+
+        <TextView
+            android:id="@+id/form_previewSection"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="0dp"
+            android:text="@string/form_preview_section"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/form_labelPreviewMajor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_previewMajor" />
+
+        <Spinner
+            android:id="@+id/form_spinnerPreviewMajor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/form_labelPreviewMinor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_previewMinor" />
+
+        <Spinner
+            android:id="@+id/form_spinnerPreviewMinor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</ScrollView>

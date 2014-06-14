@@ -17,24 +17,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/field_label_selectField"
-        android:layout_toLeftOf="@+id/field_buttonNewField" />
-
-    <Button
-        android:id="@+id/field_buttonNewField"
+        android:layout_below="@+id/field_label_selectField" />
+    
+    <TextView
+        android:id="@+id/field_noUnusedFields"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/field_spinnerField"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/field_label_selectField"
-        android:text="@string/form_plus" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/field_spinnerField"
+        android:padding="5dp"
+        android:text="@string/field_noUnusedFields"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/field_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/field_spinnerField"
+        android:layout_below="@+id/field_noUnusedFields"
         android:text="@string/field_label" />
 
     <EditText
@@ -45,4 +45,22 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/field_label"
         android:ems="10" />
+
+    <Button
+        android:id="@+id/field_add_unused_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/field_edit_Label"
+        android:layout_alignRight="@+id/field_edit_Label"
+        android:layout_below="@+id/field_edit_Label"
+        android:text="@string/field_addToLayout" />
+
+    <TextView
+        android:id="@+id/field_options_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/field_add_unused_button"
+        android:layout_below="@+id/field_add_unused_button"
+        android:text="@string/field_options" />
+    
 </RelativeLayout>

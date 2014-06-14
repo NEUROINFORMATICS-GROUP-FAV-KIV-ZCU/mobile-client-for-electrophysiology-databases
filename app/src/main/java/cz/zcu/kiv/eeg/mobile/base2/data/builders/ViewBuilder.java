@@ -28,12 +28,13 @@ import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.SubformActionMode;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
@@ -50,14 +51,10 @@ import odml.core.Section;
  */
 public class ViewBuilder {
 	private static final String TAG = ViewBuilder.class.getSimpleName();
-	// todo přesunout
-	private static final String LAYOUT_NAME = "layoutName";
-	private static final String ELEMENT_FORM = "form";
-	private static final String ELEMENT_SET = "set";
 	public SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná HashMap<Integer, ?>,
 
 	private ArrayList<LinearLayout> newColumn = new ArrayList<LinearLayout>();
-	private StoreFactory store;
+	private DAOFactory daoFactory;
 
 	private LinearLayout rootLayout;
 	private LinearLayout formLayout;
@@ -75,30 +72,32 @@ public class ViewBuilder {
 	private boolean isRootForm = true;
 
 	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetId, int formMode, MenuItems menu,
-			StoreFactory store) {
+			DAOFactory daoFactory) {
 		super();
 		this.fragment = fragment;
 		this.layout = layout;
-		this.store = store;
+		this.daoFactory = daoFactory;
 		// this.datasetId = datasetId;
 		this.formMode = formMode;
 		this.menu = menu;
 
 		this.ctx = fragment.getActivity();
 		form = layout.getRootForm();
-		dataset = store.getDatasetStore().getDataSet(datasetId);
+		dataset = daoFactory.getDataSetDAO().getDataSet(datasetId);
 	}
 
 	public LinearLayout getLinearLayout() {
-		String data = layout.getXmlData();
+		String layoutData = layout.getXmlData();
 		Reader reader;
 		try {
-			reader = new Reader();
-			Section odmlRoot = reader.load(new ByteArrayInputStream(data.getBytes()));
-			Section odmlForm = odmlRoot.getSection(0);
-			loadViews(odmlForm.getSections(), odmlForm.getReference());
-			recountPositions();
-			System.out.println("test");
+			if(layoutData != null){
+				reader = new Reader();
+				Section odmlRoot = reader.load(new ByteArrayInputStream(layoutData.getBytes()));
+				Section odmlForm = odmlRoot.getSection(0);
+				loadViews(odmlForm.getSections(), odmlForm.getReference());
+				recountPositions();
+				System.out.println("test");
+			}		
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 		}
@@ -113,8 +112,8 @@ public class ViewBuilder {
 	}
 
 	public ViewNode createView(String name, String reference, boolean asTemplate) {
-		Field field = store.getFieldStore().getField(name, reference);
-		LayoutProperty property = store.getLayoutPropertyStore().getProperty(field.getId(), layout.getName());
+		Field field = daoFactory.getFieldDAO().getField(name, reference);
+		LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
 
 		if (asTemplate) {
 			property.setIdNode(evailabelId);
@@ -133,7 +132,7 @@ public class ViewBuilder {
 			view = getSpinner(data[0], field);
 		} else if (type.equalsIgnoreCase("choice")) {
 			view = new EditText(ctx);
-		} else if (type.equalsIgnoreCase("form")) {
+		} else if (type.equalsIgnoreCase(Values.FORM)) {
 			view = createSubform(data, field, property);
 		}
 
@@ -148,7 +147,7 @@ public class ViewBuilder {
 	private String[] getData(Field field) {
 		String[] data = null;
 		if (formMode == Values.FORM_EDIT_DATA) {
-			List<Data> dataList = store.getDataStore().getAllData(dataset.getId(), field.getId());
+			List<Data> dataList = daoFactory.getDataDAO().getAllData(dataset.getId(), field.getId());
 			data = new String[dataList.size()];
 			int i = 0;
 			for (Data dataF : dataList) {
@@ -175,7 +174,7 @@ public class ViewBuilder {
 		Spinner combobox = new Spinner(ctx);
 		ArrayList<String> itemList = new ArrayList<String>();
 
-		List<FieldValue> values = store.getFieldValueStore().getFieldValue(field.getId());
+		List<FieldValue> values = daoFactory.getFieldValueDAO().getFieldValue(field.getId());
 		for (FieldValue fieldValue : values) {
 			itemList.add(fieldValue.getValue());
 		}
@@ -199,33 +198,34 @@ public class ViewBuilder {
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
 		if (formMode == Values.FORM_EDIT_DATA) {
-			Layout sublayout = getStore().getLayoutStore().getLayout(property.getSubLayout().getName());
-			final MenuItems menuItem = getSubmenuItem(property, sublayout);		
-			boolean isVisible = false;
-			
-			if(data[0].equalsIgnoreCase("")){
+			Layout sublayout = getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
+			final MenuItems menuItem = getSubmenuItem(property, sublayout);
+			boolean isVisible = false; //todo isVisibleEmptyField
+
+			if (data[0].equalsIgnoreCase("")) {
 				isVisible = true;
 			}
-			
-			for (String dataset : data) {		
-				wrapLayout.addView(createItem(property, sublayout, field, wrapLayout, menuItem, dataset));
+
+			for (String dataset : data) {
+				wrapLayout.addView(createSubformItem(property, sublayout, field, wrapLayout, menuItem, dataset));
 			}
 			wrapLayout.addView(createEmptyItem(wrapLayout, field, menuItem, isVisible));
 		}
 		return wrapLayout;
 	}
-	
-	public Spinner createItem(LayoutProperty property, Layout sublayout, final Field field, final LinearLayout wrapLayout, final MenuItems menuItem, String dataset){
+
+	public Spinner createSubformItem(LayoutProperty property, Layout sublayout, final Field field,
+			final LinearLayout wrapLayout, final MenuItems menuItem, String subformDataset) {
+
 		final Spinner spinner = new Spinner(ctx);
 		final ViewBuilder vb = this;
 		FormAdapter adapter = ListAllFormsFragment.getStaticAdapter(ctx, getSubmenuItem(property, sublayout),
-                store);
-		final int datasetId = (dataset.equalsIgnoreCase("")) ? -1 : Integer.valueOf(dataset);
+				daoFactory);
+		final int datasetId = (subformDataset.equalsIgnoreCase("")) ? -1 : Integer.valueOf(subformDataset);
 		spinner.setAdapter(adapter);
 
 		if (datasetId == -1) {
 			spinner.setVisibility(View.GONE);
-			//isVisible = true;
 		} else {
 			spinner.setSelection(adapter.getDatasetPosition(datasetId));
 		}
@@ -237,31 +237,34 @@ public class ViewBuilder {
 					return false;
 				}
 				// Start the CAB using the ActionMode.Callback defined above
-				mActionMode = ctx.startActionMode(new SubformActionMode(fragment, vb, wrapLayout, spinner,
-						field, menuItem, datasetId)); // todo předávat ID datasetu, to potom přidám do pole
-														// obsahující seznam co chci smazat
+				mActionMode = ctx.startActionMode(new SubformActionMode(fragment, vb, wrapLayout, spinner, field,
+						menuItem, datasetId)); // todo předávat ID datasetu, to potom přidám do pole obsahující seznam
+												// co chci smazat
 				v.setSelected(true);
 				return true;
 			}
 		});
 		return spinner;
 	}
-	
-	private Spinner createEmptyItem(final LinearLayout wrapLayout, final Field field, final MenuItems menuItem, boolean isVisible){
+
+	// je vytvořena vždy a pak nastavuji pouze viditelnost
+	// přidáno na konec za všechny položky
+	private Spinner createEmptyItem(final LinearLayout wrapLayout, final Field field, final MenuItems menuItem,
+			boolean isVisible) {
 		final ViewBuilder vb = this;
 		final Spinner emptySpinner = new Spinner(ctx);
-		
+
 		ArrayList<String> itemList = new ArrayList<String>();
 		itemList.add(Values.FORM_EMPTY);
 		SpinnerAdapter emptySpinnerAdapter = new SpinnerAdapter(ctx, R.layout.spinner_row_simple, itemList);
 		emptySpinner.setAdapter(emptySpinnerAdapter);
-		
-		if(isVisible){
+
+		if (isVisible) {
 			emptySpinner.setVisibility(View.VISIBLE);
-		}else{
+		} else {
 			emptySpinner.setVisibility(View.GONE);
 		}
-		
+
 		emptySpinner.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -286,23 +289,23 @@ public class ViewBuilder {
 				// Start the CAB using the ActionMode.Callback defined above
 				mActionMode = ctx.startActionMode(new SubformActionMode(fragment, vb, wrapLayout, emptySpinner, field,
 						menuItem, -1)); // todo předávat ID datasetu, to potom přidám do pole obsahující
-												// seznam co chci smazat
+										// seznam co chci smazat
 				v.setSelected(true);
 				return true;
 			}
 		});
-		
+
 		return emptySpinner;
 	}
 
 	public MenuItems getSubmenuItem(LayoutProperty property, Layout subLayout) {
 		MenuItems menuItem;
-		if (getStore().getMenuItemStore().getMenu(property.getLabel()) == null) {
+		if (getDaoFactory().getMenuItemDAO().getMenu(property.getLabel()) == null) {
 			menuItem = new MenuItems(property.getLabel(), subLayout, subLayout.getRootForm(),
-					property.getPreviewMajor(), property.getPreviewMinor());
-			getStore().getMenuItemStore().saveOrUpdate(menuItem);
+					property.getPreviewMajor(), property.getPreviewMinor(), null);
+			getDaoFactory().getMenuItemDAO().saveOrUpdate(menuItem);
 		} else {
-			menuItem = getStore().getMenuItemStore().getMenu(property.getLabel());
+			menuItem = getDaoFactory().getMenuItemDAO().getMenu(property.getLabel());
 		}
 		return menuItem;
 	}
@@ -325,63 +328,70 @@ public class ViewBuilder {
 		rootLayout.addView(scroller);
 
 		int nodeId = rootID;
+		
 		// průchod grafem
-		while (true) {
-			// vytvořím nový řádek
-			LinearLayout rowLayout = new LinearLayout(ctx);
-			rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-			rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-					LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
+		if(nodes.size() > 0){
+			while (true) {
+				// vytvořím nový řádek
+				LinearLayout rowLayout = new LinearLayout(ctx);
+				rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+				rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+						LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
 
-			ViewNode node = getViewNode(nodeId);
-			node.setDiffWeight(10);
-			View view = node.getWrapNode();
-			rowLayout.addView(getNewColumnButton(false));
-			rowLayout.addView(view);
+				ViewNode node = getViewNode(nodeId);
+				node.setDiffWeight(10);
+				View view = node.getWrapNode();
+				rowLayout.addView(getNewColumnButton(false));
+				rowLayout.addView(view);
 
-			// přidání všech položek na řádku
-			while (node.getIdRight() != 0) {
-				node = getViewNode(node.getIdRight());
-				rowLayout.addView(node.getWrapNode());
+				// přidání všech položek na řádku
+				while (node.getIdRight() != 0) {
+					node = getViewNode(node.getIdRight());
+					rowLayout.addView(node.getWrapNode());
+				}
+
+				node.setDiffWeight(10);
+				rowLayout.addView(getNewColumnButton(false));
+				formLayout.addView(rowLayout);
+
+				// řádek níže
+				if (node.getIdBottom() != 0) {
+					nodeId = node.getIdBottom();
+				} else {
+					break;
+				}
 			}
-
-			node.setDiffWeight(10);
-			rowLayout.addView(getNewColumnButton(false));
-			formLayout.addView(rowLayout);
-
-			// řádek níže
-			if (node.getIdBottom() != 0) {
-				nodeId = node.getIdBottom();
-			} else {
-				break;
-			}
-		}
+		}	
 		return rootLayout;
 	}
 
-	public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
-		if (fieldId != 0) {
-			Field field = store.getFieldStore().getField(fieldId);
-			ViewNode node = createView(field.getName(), field.getForm().getType(), true);
+	public void addFieldsToForm(ArrayList<Integer> fields, boolean isEnabledMove, Activity activity) {
+	//public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
+		
+		if (fields != null) {
+			for(int fieldId : fields){
+				Field field = daoFactory.getFieldDAO().getField(fieldId);
+				ViewNode node = createView(field.getName(), field.getForm().getType(), true);
 
-			LinearLayout rowLayout = new LinearLayout(ctx);
-			rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-			rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT));
+				LinearLayout rowLayout = new LinearLayout(ctx);
+				rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+				rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT));
 
-			node.setDiffWeight(10);
-			View view = node.getWrapNode();
-			rowLayout.addView(getNewColumnButton(isEnabledMove));
-			rowLayout.addView(view);
-			node.setDiffWeight(10);
-			rowLayout.addView(getNewColumnButton(isEnabledMove));
+				node.setDiffWeight(10);
+				View view = node.getWrapNode();
+				rowLayout.addView(getNewColumnButton(isEnabledMove));
+				rowLayout.addView(view);
+				node.setDiffWeight(10);
+				rowLayout.addView(getNewColumnButton(isEnabledMove));
 
-			if (isEnabledMove) {
-				node.setEditor(nodes);
-			} else {
-				node.setLocalEdit(this, activity);
-			}
-			formLayout.addView(rowLayout);
+				if (isEnabledMove) {
+					node.setEditor(nodes);
+				} else {
+					node.setLocalEdit(this, activity);
+				}
+				formLayout.addView(rowLayout);
+			}		
 		}
 	}
 
@@ -443,7 +453,7 @@ public class ViewBuilder {
 				newId++;
 			}
 		}
-		OdmlBuilder.createODML(newNodes, layout, store);
+		OdmlBuilder.createODML(newNodes, layout, daoFactory);
 	}
 
 	public void enableEditor() {
@@ -503,54 +513,93 @@ public class ViewBuilder {
 	// načte data do formuláře
 	/*
 	 * public void initData(int datasetID) { //if (datasetID != Values.NEW_DATA) { if (formMode != Values.FORM_NEW_DATA)
-	 * { Form form = layout.getRootForm(); Dataset dataset = store.getDataSetDAO().getDataSet(datasetID);
+	 * { Form form = layout.getRootForm(); Dataset dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
 	 * 
 	 * if (dataset != null) { for (int i = 0; i < nodes.size(); i++) { Field field =
-	 * store.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType()); Data data =
-	 * store.getDataDAO().getData(dataset.getId(), field.getId()); if (data != null) {
+	 * daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType()); Data data =
+	 * daoFactory.getDataDAO().getData(dataset.getId(), field.getId()); if (data != null) {
 	 * nodes.valueAt(i).setData(data.getData()); } } } } }
 	 */
 
 	// slouží k uložení/aktualizace do databáze
-	public int saveOrUpdateData(int datasetID) {
+	//public int saveFormData(int datasetID) {
+	public int saveFormData(int datasetID) {
 		Form form = layout.getRootForm();
 		Dataset dataset;
 		if (formMode != Values.FORM_NEW_DATA) {
-			dataset = store.getDatasetStore().getDataSet(datasetID);
+			dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
 		} else {
 			dataset = new Dataset(form);
-			store.getDatasetStore().saveOrUpdate(dataset);
+			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
 		}
 
 		for (int i = 0; i < nodes.size(); i++) {
-			Field field = store.getFieldStore().getField(nodes.valueAt(i).getName(), form.getType());
-			if(field.getType().equals("form")){
+			Field field = daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType());
+			
+			// položky podformuláře
+			if (field.getType().equalsIgnoreCase(Values.FORM)) {
 				ViewNode node = nodes.valueAt(i);
 				LinearLayout spinnerLayout = (LinearLayout) node.getNode();
-				for(int j = 0; j < spinnerLayout.getChildCount(); j++){
-					//TODO spinner get field
-				}
+				String[] data = getData(field);
 				
-			}else{
-				String data = nodes.valueAt(i).getData();
-				if (data != null && !data.equals("")) {
-					if (formMode == Values.FORM_NEW_DATA) {
-						store.getDataStore().create(dataset, field, data);
-					} else {
-						if (store.getDataStore().getData(dataset, field) == null) {
-							store.getDataStore().create(dataset, field, data);
-						} else {
-							store.getDataStore().update(dataset, field, data);
+				for (int j = 0; j < spinnerLayout.getChildCount(); j++) {				
+					Spinner spinner = (Spinner)spinnerLayout.getChildAt(j);
+					if(spinner.getSelectedItem() instanceof FormRow && spinner.getVisibility() == View.VISIBLE){						
+						FormRow row = (FormRow) spinner.getSelectedItem();
+						boolean exists = false;
+						
+						// kontrola zda je již prvek v databázi
+						for(int k = 0; k < data.length; k++){						
+							if(data[k] != null && data[k].equalsIgnoreCase(Integer.toString(row.getId()))){
+								data[k] = null;
+								exists = true;
+							}
 						}
-					}
+						// uložit do databáze
+						if(!exists){
+							createOrUpdateData(Integer.toString(row.getId()), dataset, field);
+						}											
+					}				
 				}
+				// co zbylo v data je k odstranění z databáze
+				for(String idForRemove : data){		
+					if(idForRemove != null){
+						daoFactory.getDataDAO().delete(dataset, field, idForRemove);
+					}				
+				}
+			
+			} 		
+			// ostatní pole 	
+			else {
+				String data = nodes.valueAt(i).getData();
+				createOrUpdateData(data, dataset, field);
 			}
-			
-			
+
 		}
 		return dataset.getId();
 	}
-
+	
+	private void createOrUpdateData(String data, Dataset dataset, Field field){
+		if (data != null && !data.equals("")) {
+			if(field.getType().equalsIgnoreCase(Values.FORM)){
+				if(daoFactory.getDataDAO().getData(dataset, field, data) == null){
+					daoFactory.getDataDAO().create(dataset, field, data);	
+					daoFactory.getDataDAO().getAllData(dataset.getId(), field.getId());
+				}
+			}
+			// ostatní pole
+			else if (formMode == Values.FORM_NEW_DATA) {
+				daoFactory.getDataDAO().create(dataset, field, data);
+			} else {
+				if (daoFactory.getDataDAO().getData(dataset, field) == null) {
+					daoFactory.getDataDAO().create(dataset, field, data);
+				} else {
+					daoFactory.getDataDAO().update(dataset, field, data);
+				}
+			}
+		}
+	}
+	
 	private void recountPositions() {
 		rootID = Integer.MAX_VALUE;
 
@@ -585,8 +634,8 @@ public class ViewBuilder {
 		return rootLayout;
 	}
 
-	public StoreFactory getStore() {
-		return store;
+	public DAOFactory getDaoFactory() {
+		return daoFactory;
 	}
 
 	public Dataset getDataset() {

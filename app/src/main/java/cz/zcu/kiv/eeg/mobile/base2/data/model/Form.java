@@ -12,6 +12,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
  */
 public class Form extends NoSQLData {
 
+    public static final String FORM_TYPE = "formType";
     public static final String FORM_MODE = "formMode";
 
     private String type;

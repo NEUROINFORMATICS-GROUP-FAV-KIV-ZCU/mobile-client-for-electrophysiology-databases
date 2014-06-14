@@ -55,6 +55,23 @@ public class DataStore extends Store {
         return getData(dataset.getId(), field.getId());
     }
 
+    public Data getData(Dataset dataset, Field field, String data1) {
+        Query query = getQuery("data");
+        List<Object> keys = new ArrayList<Object>();
+        keys.add(data1);
+        try {
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                Data data = new Data(it.next().getDocumentProperties());
+                if(data.getDataset().getId() == dataset.getId() && field.getId() == data.getField().getId()) {
+                    return data;
+                }
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Data> getAllData(final int dataSetId, final int fieldId) {
         Query query = getQuery();
         query.setDescending(true);
@@ -115,4 +132,20 @@ public class DataStore extends Store {
     }
 
 
+    public void delete(Dataset dataset, Field field, String idForRemove) {
+        Query query = getQuery("data");
+        List<Object> keys = new ArrayList<Object>();
+        keys.add(idForRemove);
+        try {
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                Document document = it.next().getDocument();
+                Data data = new Data(document.getProperties());
+                if(data.getDataset().getId() == dataset.getId() && field.getId() == data.getField().getId()) {
+                    document.delete();
+                }
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
 }

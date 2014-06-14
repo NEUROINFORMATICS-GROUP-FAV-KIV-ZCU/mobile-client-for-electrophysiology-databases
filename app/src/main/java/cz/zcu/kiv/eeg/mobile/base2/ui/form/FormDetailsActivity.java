@@ -4,12 +4,15 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * 
@@ -40,7 +43,7 @@ public class FormDetailsActivity extends Activity {
 		actionBar.setIcon(R.drawable.ic_action_info);
 		actionBar.setTitle(getIntent().getExtras().getString(Values.MENU_ITEM_NAME));
 		
-//		formMode = getIntent().getExtras().getInt(Form.FORM_MODE, Values.FORM_EDIT_DATA);
+		formMode = getIntent().getExtras().getInt(Form.FORM_MODE, Values.FORM_EDIT_DATA);
 	}
 
 	@Override
