@@ -1,60 +1,81 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = FormLayouts.TABLE_NAME)
-public class FormLayouts {
-	public static final String TABLE_NAME = "form_layouts";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String INDEX_NAME = "form_layouts_formlayout_idx";
+public class FormLayouts extends NoSQLData {
 
-	@DatabaseField(generatedId = true)
-	private int id;
+    private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
-	private Form form;
+    private Form form;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
-	private Layout layout;
+    private Layout layout;
 
-	public FormLayouts() {
-		super();
-	}
+    public FormLayouts() {
+        super();
+    }
 
-	public FormLayouts(Form form, Layout layout) {
-		super();
-		this.form = form;
-		this.layout = layout;
-	}
+    public FormLayouts(Form form, Layout layout) {
+        super();
+        this.form = form;
+        this.layout = layout;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public FormLayouts(Map<String, Object> properties){
+        set(properties);
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Form getForm() {
-		return form;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setForm(Form form) {
-		this.form = form;
-	}
+    public Form getForm() {
+        return form;
+    }
 
-	public Layout getLayout() {
-		return layout;
-	}
+    public void setForm(Form form) {
+        this.form = form;
+    }
 
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        if (null == form) properties.put("form", null);
+        else
+            properties.put("form", form.get());
+        if (null == layout)
+            properties.put("layout", null);
+        else
+            properties.put("layout", layout.get());
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer)properties.get("id");
+        Object object = properties.get("form");
+        if (null == object) form = null;
+        else form = new Form((Map<String, Object>) object);
+        object = properties.get("layout");
+        if (null == object) layout = null;
+        else layout = new Layout((Map<String, Object>) object);
+    }
 }

@@ -1,47 +1,31 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
+ *
  * @author Jaroslav Hošek
- * 
+ *
  */
-@DatabaseTable(tableName = MenuItems.TABLE_NAME)
-public class MenuItems {
+public class MenuItems extends NoSQLData {
 
-	public static final String TABLE_NAME = "menu_items";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String FK_ID_FIELD_TMP = "field_id_tmp";
-	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
-	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String INDEX_NAME = "menu_items_name_idx";
-
-	@DatabaseField(generatedId = true)
 	private int id;
 
-	@DatabaseField(uniqueIndexName = INDEX_NAME)
 	private String name;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT)
 	private Layout layout;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
 	private Form rootForm;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
 	private Field fieldID;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_TMP)
 	private Field fieldTmp;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
 	private Field previewMajor;
 
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
 	private Field previewMinor;
 
 	public MenuItems() {
@@ -62,6 +46,10 @@ public class MenuItems {
 		this.name = name;
 		this.layout = layout;
 	}
+
+    public MenuItems(Map<String, Object> properties) {
+        set(properties);
+    }
 
 	public int getId() {
 		return id;
@@ -126,4 +114,28 @@ public class MenuItems {
 	public void setPreviewMinor(Field previewMinor) {
 		this.previewMinor = previewMinor;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        properties.put("name", name);
+        properties.put("layout", layout.get());
+        properties.put("rootForm", rootForm.get());
+        properties.put("fieldID", fieldID.get());
+        properties.put("fieldTmp", fieldTmp.get());
+        properties.put("previewMajor", previewMajor.get());
+        properties.put("previewMinor", previewMinor.get());
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        if(null == properties) return;
+        id = (Integer)properties.get("id");
+        name = (String)properties.get("name");
+        layout = new Layout((Map<String, Object>) properties.get("layout"));
+        rootForm = new Form((Map<String, Object>) properties.get("rootForm"));
+
+    }
 }

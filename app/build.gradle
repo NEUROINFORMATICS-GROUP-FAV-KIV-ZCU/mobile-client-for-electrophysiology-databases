@@ -3,14 +3,12 @@ apply plugin: 'android'
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1'
-
     defaultConfig {
         versionCode 1
         versionName '1.0.0-SNAPSHOT'
         minSdkVersion 14
         targetSdkVersion 19
     }
-
     packagingOptions {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -30,12 +28,15 @@ android {
             jniDebugBuild true
             zipAlign true
         }
+
         debug {
             debuggable true
             runProguard false
-            packageNameSuffix '.debug'
+            applicationIdSuffix '.debug'
             versionNameSuffix 'BETA'
         }
+    }
+    productFlavors {
     }
 }
 
@@ -44,13 +45,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'org.springframework.android:spring-android-core:1.0.1.RELEASE@jar'
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE@jar'
-    compile('org.simpleframework:simple-xml:2.7.1@jar') {
-        exclude group: 'org.simpleframework.stax'
-        exclude group: 'org.simpleframework.xpp3'
-    }
-
+    compile 'org.simpleframework:simple-xml:2.7.1@jar'
     compile 'com.couchbase.lite:couchbase-lite-android:1.0.+'
-
     compile files('libs/jdom.jar')
     compile files('libs/odml.jar')
     compile files('libs/ormlite-core-4.48.jar')

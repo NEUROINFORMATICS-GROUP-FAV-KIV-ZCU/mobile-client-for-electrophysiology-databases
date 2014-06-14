@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.field;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -18,9 +16,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.ArrayList;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
@@ -35,7 +36,7 @@ public class FieldSelectFragment extends Fragment {
 
 	private FieldAddActivity activity;
 	private FieldSpinnerAdapter fieldAdapter;
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 	private String layoutName;
 
 	private Spinner fieldSpinner;
@@ -52,7 +53,7 @@ public class FieldSelectFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		daoFactory = new DAOFactory(getActivity());
+		store = new StoreFactory(getActivity());
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		setHasOptionsMenu(true);
 	}
@@ -77,7 +78,7 @@ public class FieldSelectFragment extends Fragment {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				field = (Field) parent.getItemAtPosition(pos);
-				property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
+//				property = store.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
 				initFields();
 			}
 
@@ -122,7 +123,7 @@ public class FieldSelectFragment extends Fragment {
 			return true;
 		case R.id.field_save:
 			property.setLabel(label.getText().toString());
-			daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
+			store.getLayoutPropertyStore().saveOrUpdate(property);
 			Intent data = new Intent();
 		    data.putExtra(Field.FIELD_ID, field.getId());
 		    activity.setResult(Activity.RESULT_OK, data);
@@ -134,7 +135,7 @@ public class FieldSelectFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 		super.onDestroy();	
 	}
 }

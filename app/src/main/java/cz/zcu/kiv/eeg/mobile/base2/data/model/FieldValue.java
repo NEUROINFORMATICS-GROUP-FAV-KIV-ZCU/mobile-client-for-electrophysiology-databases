@@ -1,65 +1,79 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
- * zatím pouze pro uložení hodnot comboboxu
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
+ *         <p/>
+ *         cz: zatím pouze pro uložení hodnot comboboxu
+ *         en: not only to store values ​​combobox
  */
-@DatabaseTable(tableName = FieldValue.TABLE_NAME)
-public class FieldValue {
+public class FieldValue extends NoSQLData {
 
-	public static final String TABLE_NAME = "field_values";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String INDEX_NAME = "field_values_value_field_idx";
+    private int id;
 
-	@DatabaseField(generatedId = true)
-	private int id;
+    private String value;
 
-	@DatabaseField(uniqueIndexName = INDEX_NAME)
-	private String value;
+    private Field field;
 
+    public FieldValue() {
+        super();
+    }
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FIELD, uniqueIndexName = INDEX_NAME)
-	private Field field;
+    public FieldValue(String value, Field field) {
+        super();
+        this.value = value;
+        this.field = field;
+    }
+    public FieldValue(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public FieldValue() {
-		super();
-	}
-	
-	public FieldValue(String value, Field field) {
-		super();
-		this.value = value;
-		this.field = field;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public Field getField() {
+        return field;
+    }
 
-	public Field getField() {
-		return field;
-	}
+    public void setField(Field field) {
+        this.field = field;
+    }
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put("id", id);
+        m.put("value", value);
+        if (null == field)
+            m.put("field", null);
+        else
+            m.put("field", field.get());
+        return m;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer)properties.get("id");
+        value =(String)properties.get("value");
+        Object object = properties.get("field");
+        if (null == object) field = null;
+        else field = new Field((Map<String, Object>) object);
+    }
 }

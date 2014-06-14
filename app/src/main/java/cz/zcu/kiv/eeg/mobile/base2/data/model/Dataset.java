@@ -1,60 +1,78 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = Dataset.TABLE_NAME)
-public class Dataset {
+public class Dataset extends NoSQLData {
 
-	public static final String TABLE_NAME = "datasets";
-	public static final String FK_ID_FORM = "form_id";
-	public static final String DATASET_ID = "dataset_id";
-	public static final String DATASET_ROOT_ID = "dataset_root_id";
+    public static final String DATASET_ID = "dataset_id";
+    public static final String DATASET_ROOT_ID = "dataset_root_id";
 
-	@DatabaseField(generatedId = true)
-	private int id;
+    private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM)
-	private Form form;
-	
-	@DatabaseField
-	private String recordId;
+    private Form form;
 
-	public Dataset() {
-		super();
-	}
+    private String recordId;
 
-	public Dataset(Form form) {
-		super();
-		this.form = form;
-	}
+    public Dataset() {
+        super();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Dataset(Form form) {
+        super();
+        this.form = form;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Dataset(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public Form getForm() {
-		return form;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setForm(Form form) {
-		this.form = form;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getRecordId() {
-		return recordId;
-	}
+    public Form getForm() {
+        return form;
+    }
 
-	public void setRecordId(String recordId) {
-		this.recordId = recordId;
-	}
+    public void setForm(Form form) {
+        this.form = form;
+    }
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        if (null == form)
+            properties.put("form", null);
+        else properties.put("form", form.get());
+        properties.put("recordId", recordId);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer) properties.get("id");
+        Object object = properties.get("form");
+        if (null == object) form = null;
+        else form = new Form((Map<String, Object>) object);
+        recordId = (String) properties.get("recordId");
+    }
 }

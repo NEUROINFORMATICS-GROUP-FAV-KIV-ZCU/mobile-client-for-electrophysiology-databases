@@ -1,9 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.field;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,19 +7,18 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
+import java.util.ArrayList;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
-import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardFragment;
 
 /**
  * 
@@ -33,7 +28,7 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardFragment;
 public class FieldAddActivity extends Activity {
 
 	private static final String TAG = FieldAddActivity.class.getSimpleName();
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 	private String formType;
 	private String layoutName;
 	private ArrayList<Integer> usedFieldsOnLayout;
@@ -45,7 +40,7 @@ public class FieldAddActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		daoFactory = new DAOFactory(this);
+		store = new StoreFactory(this);
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -53,7 +48,7 @@ public class FieldAddActivity extends Activity {
 
 		if (savedInstanceState != null) {
 			previousFragment = savedInstanceState.getInt("previousFragment", 0);
-			formType = savedInstanceState.getString(Form.FORM_TYPE);
+//			formType = savedInstanceState.getString(Form.FORM_TYPE);
 			layoutName = savedInstanceState.getString(Layout.LAYOUT_NAME);
 			usedFieldsOnLayout = savedInstanceState.getIntegerArrayList(Values.USED_FIELD);
 			setUnusedFields();
@@ -61,7 +56,7 @@ public class FieldAddActivity extends Activity {
 		} else {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				formType = extras.getString(Form.FORM_TYPE);
+//				formType = extras.getString(Form.FORM_TYPE);
 				layoutName = extras.getString(Layout.LAYOUT_NAME);
 				usedFieldsOnLayout = extras.getIntegerArrayList(Values.USED_FIELD);
 				setUnusedFields();
@@ -122,7 +117,7 @@ public class FieldAddActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putString(Form.FORM_TYPE, formType);
+//		outState.putString(Form.FORM_TYPE, formType);
 		outState.putString(Layout.LAYOUT_NAME, layoutName);
 		outState.putIntegerArrayList(Values.USED_FIELD, usedFieldsOnLayout);
 	}
@@ -132,7 +127,7 @@ public class FieldAddActivity extends Activity {
 	}
 
 	public void setUnusedFields() {
-		unusedFieldsOnLayout = (ArrayList<Field>) daoFactory.getFieldDAO().getFields(
+		unusedFieldsOnLayout = (ArrayList<Field>) store.getFieldStore().getFields(
 				(Iterable<Integer>) usedFieldsOnLayout, formType);
 	}
 
@@ -162,7 +157,7 @@ public class FieldAddActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 	}
 
 	/**

@@ -3,104 +3,137 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
- * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
 @Root(name = Layout.XML_ROOT)
-@DatabaseTable(tableName = Layout.TABLE_NAME)
-public class Layout {
-	public static final String XML_ROOT = "layout";
-	public static final String TABLE_NAME = "layouts";
-	public static final String FK_ID_FORM = "root_form_id";
-	public static final String FK_ID_ROOT_LAYOUT = "root_layout_id";
-	//public static final String INDEX_NAME = "layout_name_idx";
-	public static final String LAYOUT_NAME = "layoutName";
-	public static final String LAYOUT_ID = "layoutId";
+public class Layout extends NoSQLData {
+    public static final String XML_ROOT = "layout";
+    public static final String LAYOUT_NAME = "layoutName";
+    public static final String LAYOUT_ID = "layoutId";
 
 	/*@DatabaseField(generatedId = true)
-	private int id;*/
-	
-	@DatabaseField(id = true, columnName = "name_id")
-	@Element(name = LAYOUT_NAME)
-	private String name;
-	
-	@DatabaseField(foreign = true, columnName = FK_ID_ROOT_LAYOUT)
-	private Layout rootLayout;
-	
-	@DatabaseField(foreign = true, columnName = FK_ID_FORM)
-	private Form rootForm;
-	
-	@DatabaseField(columnName = "xml_data")
-	private String xmlData;
+    private int id;*/
 
-	// pouze pomocná proměnná při získávání layoutu z ws
-	@Element
-	private String formName;
+    @Element(name = LAYOUT_NAME)
+    private String name;
 
-	public Layout() {
-		super();
-	}
-	
-	public Layout(Form rootForm) {
-		super();
-		this.rootForm = rootForm;
-	}
+    private Layout rootLayout;
 
-	public Layout(String name) {
-		super();
-		this.name = name;
-	}
+    private Form rootForm;
 
-	public Layout(String name, String xmlData, Layout rootLayout, Form rootForm) {
-		super();
-		this.name = name;
-		this.xmlData = xmlData;
-		this.rootLayout = rootLayout;
-		this.rootForm = rootForm;
-	}
+    private String xmlData;
 
-	public Layout getRootLayout() {
-		return rootLayout;
-	}
+    // cz: pouze pomocná proměnná při získávání layoutu z ws
+    // en: only auxiliary variable in getting the layout of ws
+    @Element
+    private String formName;
 
-	public void setRootLayout(Layout rootLayout) {
-		this.rootLayout = rootLayout;
-	}
+    public Layout() {
+        super();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Layout(Form rootForm) {
+        super();
+        this.rootForm = rootForm;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Layout(String name) {
+        super();
+        this.name = name;
+    }
 
-	public String getXmlData() {
-		return xmlData;
-	}
+    public Layout(String name, String xmlData, Layout rootLayout, Form rootForm) {
+        super();
+        this.name = name;
+        this.xmlData = xmlData;
+        this.rootLayout = rootLayout;
+        this.rootForm = rootForm;
+    }
 
-	public void setXmlData(String xmlData) {
-		this.xmlData = xmlData;
-	}
+    public Layout getRootLayout() {
+        return rootLayout;
+    }
 
-	public String getFormName() {
-		return formName;
-	}
+    public void setRootLayout(Layout rootLayout) {
+        this.rootLayout = rootLayout;
+    }
 
-	public void setFormName(String formName) {
-		this.formName = formName;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Form getRootForm() {
-		return rootForm;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setRootForm(Form rootForm) {
-		this.rootForm = rootForm;
-	}
+    public String getXmlData() {
+        return xmlData;
+    }
+
+    public void setXmlData(String xmlData) {
+        this.xmlData = xmlData;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public Form getRootForm() {
+        return rootForm;
+    }
+
+    public void setRootForm(Form rootForm) {
+        this.rootForm = rootForm;
+    }
+
+    public Layout(Map<String, Object> properties) {
+        set(properties);
+    }
+
+    @Override
+    public void setId(int id) {
+
+    }
+
+    @Override
+    public int getId() {
+        return 1;
+    }
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("name", name);
+        if (null != rootLayout) properties.put("rootLayout", rootLayout.get());
+        else properties.put("rootLayout", null);
+        if (null == rootLayout) properties.put("rootForm", null);
+        else properties.put("rootForm", rootForm.get());
+        properties.put("xmlData", xmlData);
+        properties.put("formName", formName);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        if(null == properties) return;
+        name = (String) properties.get("name");
+        Object object = properties.get("rootLayout");
+        if (null == object) rootLayout = null;
+        else rootLayout = new Layout((Map<String, Object>) object);
+        object = properties.get("rootForm");
+        if (null == object) rootForm = null;
+        else rootForm = new Form((Map<String, Object>) object);
+        xmlData = (String) properties.get("xmlData");
+        formName = (String) properties.get("formName");
+    }
 }

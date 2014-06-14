@@ -1,33 +1,31 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.builders;
 
+import android.content.Context;
+import android.util.Log;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
-//import odml.core.Reader;
-//import odml.core.Section;
-
-import odml.core.Reader;
-import odml.core.Section;
-import odml.core.Writer;
-
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-
-import android.content.Context;
-import android.util.Log;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
+import odml.core.Reader;
+import odml.core.Section;
+import odml.core.Writer;
+
+//import odml.core.Reader;
+//import odml.core.Section;
 
 /**
  * 
@@ -36,7 +34,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
  */
 public class FormBuilder {
 	private static final String TAG = FormBuilder.class.getSimpleName();
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 	private String xmlData;
 	private Section odmlForm;
 	private Section odmlRoot;
@@ -45,8 +43,8 @@ public class FormBuilder {
 	private static final String ELEMENT_FORM = "form";
 	private static final String ELEMENT_SET = "set";
 
-	public FormBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
-		this.daoFactory = daoFactory;
+	public FormBuilder(StoreFactory store, ResponseEntity<Resource> data) {
+		this.store = store;
 
 		Reader reader;
 		try {
@@ -90,26 +88,26 @@ public class FormBuilder {
 	}
 
 	private Form saveForm(Section formSection) {
-		return daoFactory.getFormDAO().saveOrUpdate(formSection.getReference(), odmlRoot.getDocumentDate());
+		return store.getFormStore().saveOrUpdate(formSection.getReference(), odmlRoot.getDocumentDate());
 	}
 
 	private Layout saveLayout(String name, Layout rootLayout, Form form) {
-		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, rootLayout, xmlData, form);
+		Layout layout = store.getLayoutStore().saveOrUpdate(name, rootLayout, xmlData, form);
 		if (layout == null) {
-			layout = daoFactory.getLayoutDAO().getLayout(name);
+			layout = store.getLayoutStore().getLayout(name);
 		}
 		return layout;
 	}
 
 	private void saveField(Section fieldSection, Form form, Form subForm, Layout layout, Layout subLayout) {
-		Field field = daoFactory.getFieldDAO().getField(fieldSection.getName(), form.getType());
+		Field field = store.getFieldStore().getField(fieldSection.getName(), form.getType());
 
 		if (field == null) {
 			field = new Field(fieldSection.getName(), fieldSection.getType(), form);
-			daoFactory.getFieldDAO().create(field);
+			store.getFieldStore().create(field);
 		} else if (field.getType() == null) {
 			field.setType(fieldSection.getType());
-			daoFactory.getFieldDAO().update(field);
+			store.getFieldStore().update(field);
 		}
 
 		LayoutProperty property = new LayoutProperty(field, layout);
@@ -140,7 +138,7 @@ public class FormBuilder {
 		// zatím hodnoty pouze pro combobox
 		if (fieldSection.getProperty("values") != null) {
 			for (Object value : fieldSection.getProperty("values").getValues()) {
-				daoFactory.getFieldValueDAO().saveOrUpdate(new FieldValue((String) value, field));
+				store.getFieldValueStore().saveOrUpdate(new FieldValue((String) value, field));
 			}
 		}
 		if (fieldSection.getProperty("previewMajor") != null) {
@@ -158,14 +156,14 @@ public class FormBuilder {
 			property.setSubLayout(subLayout);
 		}
 
-		daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
+		store.getLayoutPropertyStore().saveOrUpdate(property);
 	}
 
 	private Field createPrevField(String fieldName, Form form) {
-		Field prew = daoFactory.getFieldDAO().getField(fieldName, form.getType());
+		Field prew = store.getFieldStore().getField(fieldName, form.getType());
 		if (prew == null) {
 			prew = new Field(fieldName, null, form);
-			daoFactory.getFieldDAO().create(prew);
+			store.getFieldStore().create(prew);
 		}
 		return prew;
 	}
@@ -204,7 +202,7 @@ public class FormBuilder {
 	private InputStream readOdmlFromFile() {
 		InputStream is = null;
 		String filename = "PersonOdml.xml";
-		Context context = daoFactory.getContext();
+		Context context = store.getContext();
 
 		try {
 			is = context.getResources().getAssets().open(filename);

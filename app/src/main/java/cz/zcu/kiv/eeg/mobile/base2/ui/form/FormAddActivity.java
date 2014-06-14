@@ -1,8 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -14,11 +11,15 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
@@ -33,7 +34,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 
 	private static final String TAG = FormAddActivity.class.getSimpleName();
 	private TaskFragment mTaskFragment;
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 	private LayoutSpinnerAdapter layoutAdapter;
 	private Spinner layoutSpinner;
 	private Spinner fieldSpinner1;
@@ -44,7 +45,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 		Log.d(TAG, "FormAdd screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_form_add);
-		daoFactory = new DAOFactory(this);
+		store = new StoreFactory(this);
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setIcon(R.drawable.ic_action_event);
@@ -60,15 +61,15 @@ public class FormAddActivity extends TaskFragmentActivity {
 	}
 
 	private void initLayoutSpinner() {
-		layoutAdapter = new LayoutSpinnerAdapter(this, R.layout.spinner_row_simple, (ArrayList<Layout>) daoFactory
-				.getLayoutDAO().getLayouts());
+		layoutAdapter = new LayoutSpinnerAdapter(this, R.layout.spinner_row_simple, (ArrayList<Layout>) store
+				.getLayoutStore().getLayouts());
 		layoutSpinner = (Spinner) findViewById(R.id.form_spinnerLayout);
 		layoutSpinner.setAdapter(layoutAdapter);
 		layoutSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				Layout layout = (Layout) parent.getItemAtPosition(pos);
-				initFieldSpinner(daoFactory.getFieldDAO().getFields(layout.getRootForm().getType()));
+				initFieldSpinner(store.getFieldStore().getFields(layout.getRootForm().getType()));
 			}
 
 			@Override
@@ -104,7 +105,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 		Field field2 = (Field) fieldSpinner2.getSelectedItem();
 
 		MenuItems menu = new MenuItems(formName.getText().toString(), layout, layout.getRootForm(), field1, field2);
-		daoFactory.getMenuItemDAO().saveOrUpdate(menu);
+		store.getMenuItemStore().saveOrUpdate(menu);
 		finish();
 	}
 
@@ -134,6 +135,6 @@ public class FormAddActivity extends TaskFragmentActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 	}
 }

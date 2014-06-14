@@ -4,9 +4,9 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * 
+ *
  * @author Jaroslav Hošek
- * 
+ *
  */
 @Root(name = User.XML_ROOT)
 public class RecordCount {
@@ -17,7 +17,9 @@ public class RecordCount {
 	@Element
 	int publicRecords;
 
-	// TODO přidat proměnnou sum
+    // TODO
+    // cz: přidat proměnnou sum
+    // en: add a variable sum
 	public RecordCount() {
 		super();
 	}

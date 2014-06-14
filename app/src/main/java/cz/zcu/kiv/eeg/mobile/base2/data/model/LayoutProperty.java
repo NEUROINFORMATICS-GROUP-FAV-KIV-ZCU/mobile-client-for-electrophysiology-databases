@@ -1,185 +1,222 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
  * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-@DatabaseTable(tableName = LayoutProperty.TABLE_NAME)
-public class LayoutProperty {
-	public static final String TABLE_NAME = "properties";
-	public static final String FK_ID_FIELD = "field_id";
-	public static final String FK_ID_LAYOUT = "layout_id";
-	public static final String FK_ID_SUBLAYOUT = "sublayout_id";
-	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
-	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
-	public static final String INDEX_NAME = "property_field_layout_idx";
 
-	@DatabaseField(generatedId = true)
-	private int id;
+public class LayoutProperty extends NoSQLData {
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FIELD, uniqueIndexName = INDEX_NAME)
-	private Field field;
+    private int id;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
-	private Layout layout;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_SUBLAYOUT)
-	private Layout subLayout;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
-	private Field previewMajor;
-	
-	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
-	private Field previewMinor;
-	
-	@DatabaseField
-	private String label;
-	
-	@DatabaseField
-	private int idNode;
-	
-	@DatabaseField
-	private int idTop;
-	
-	@DatabaseField
-	private int idBottom;
-	
-	@DatabaseField
-	private int idLeft;
-	
-	@DatabaseField
-	private int idRight;
-	
-	@DatabaseField
-	private int weight;
-		
-	@DatabaseField
-	private int cardinality;
+    private Field field;
 
-	public LayoutProperty() {
-		super();
-	}
-	
-	public LayoutProperty(Field field, Layout layout) {
-		super();
-		this.field = field;
-		this.layout = layout;
-		weight = 100;
-	}
+    private Layout layout;
 
-	public int getId() {
-		return id;
-	}
+    private Layout subLayout;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    private Field previewMajor;
 
-	public Field getField() {
-		return field;
-	}
+    private Field previewMinor;
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    private String label;
 
-	public Layout getLayout() {
-		return layout;
-	}
+    private int idNode;
 
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
+    private int idTop;
 
-	public Layout getSubLayout() {
-		return subLayout;
-	}
+    private int idBottom;
 
-	public void setSubLayout(Layout subLayout) {
-		this.subLayout = subLayout;
-	}
+    private int idLeft;
 
-	public String getLabel() {
-		return label;
-	}
+    private int idRight;
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    private int weight;
 
-	public int getIdNode() {
-		return idNode;
-	}
+    private int cardinality;
 
-	public void setIdNode(int idNode) {
-		this.idNode = idNode;
-	}
+    public LayoutProperty() {
+        super();
+    }
 
-	public int getIdTop() {
-		return idTop;
-	}
+    public LayoutProperty(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public void setIdTop(int idTop) {
-		this.idTop = idTop;
-	}
+    public LayoutProperty(Field field, Layout layout) {
+        super();
+        this.field = field;
+        this.layout = layout;
+        weight = 100;
+    }
 
-	public int getIdBottom() {
-		return idBottom;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setIdBottom(int idBottom) {
-		this.idBottom = idBottom;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getIdLeft() {
-		return idLeft;
-	}
+    public Field getField() {
+        return field;
+    }
 
-	public void setIdLeft(int idLeft) {
-		this.idLeft = idLeft;
-	}
+    public void setField(Field field) {
+        this.field = field;
+    }
 
-	public int getIdRight() {
-		return idRight;
-	}
+    public Layout getLayout() {
+        return layout;
+    }
 
-	public void setIdRight(int idRight) {
-		this.idRight = idRight;
-	}
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 
-	public int getWeight() {
-		return weight;
-	}
+    public Layout getSubLayout() {
+        return subLayout;
+    }
 
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
+    public void setSubLayout(Layout subLayout) {
+        this.subLayout = subLayout;
+    }
 
-	public Field getPreviewMajor() {
-		return previewMajor;
-	}
+    public String getLabel() {
+        return label;
+    }
 
-	public void setPreviewMajor(Field previewMajor) {
-		this.previewMajor = previewMajor;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	public Field getPreviewMinor() {
-		return previewMinor;
-	}
+    public int getIdNode() {
+        return idNode;
+    }
 
-	public void setPreviewMinor(Field previewMinor) {
-		this.previewMinor = previewMinor;
-	}
+    public void setIdNode(int idNode) {
+        this.idNode = idNode;
+    }
 
-	public int getCardinality() {
-		return cardinality;
-	}
+    public int getIdTop() {
+        return idTop;
+    }
 
-	public void setCardinality(int cardinality) {
-		this.cardinality = cardinality;
-	}
+    public void setIdTop(int idTop) {
+        this.idTop = idTop;
+    }
+
+    public int getIdBottom() {
+        return idBottom;
+    }
+
+    public void setIdBottom(int idBottom) {
+        this.idBottom = idBottom;
+    }
+
+    public int getIdLeft() {
+        return idLeft;
+    }
+
+    public void setIdLeft(int idLeft) {
+        this.idLeft = idLeft;
+    }
+
+    public int getIdRight() {
+        return idRight;
+    }
+
+    public void setIdRight(int idRight) {
+        this.idRight = idRight;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public Field getPreviewMajor() {
+        return previewMajor;
+    }
+
+    public void setPreviewMajor(Field previewMajor) {
+        this.previewMajor = previewMajor;
+    }
+
+    public Field getPreviewMinor() {
+        return previewMinor;
+    }
+
+    public void setPreviewMinor(Field previewMinor) {
+        this.previewMinor = previewMinor;
+    }
+
+    public int getCardinality() {
+        return cardinality;
+    }
+
+    public void setCardinality(int cardinality) {
+        this.cardinality = cardinality;
+    }
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        if (null == field) properties.put("field", null);
+        else properties.put("field", field.get());
+        if (null == layout) properties.put("layout", null);
+        else properties.put("layout", layout.get());
+        if (null == subLayout) properties.put("subLayout", null);
+        else properties.put("subLayout", subLayout.get());
+        if (null == previewMajor) properties.put("previewMajor", null);
+        else properties.put("previewMajor", previewMajor.get());
+        if (null == previewMinor) properties.put("previewMinor", null);
+        else properties.put("previewMinor", previewMinor.get());
+        properties.put("label", label);
+        properties.put("idNode", idNode);
+        properties.put("idTop", idTop);
+        properties.put("idBottom", idBottom);
+        properties.put("idLeft", idLeft);
+        properties.put("idRight", idRight);
+        properties.put("weight", weight);
+        properties.put("cardinality", cardinality);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer) properties.get("id");
+        Object object = properties.get("field");
+        if (null == object) field = null;
+        else field = new Field((Map<String, Object>) object);
+        object = properties.get("layout");
+        if (null == object) layout = null;
+        else layout = new Layout((Map<String, Object>) object);
+        object = properties.get("subLayout");
+        if (null == object) subLayout = null;
+        else subLayout = new Layout((Map<String, Object>) object);
+        object = properties.get("previewMajor");
+        if (null == object) previewMajor = null;
+        else previewMajor = new Field((Map<String, Object>) object);
+        object = properties.get("previewMinor");
+        if (null == object) previewMinor = null;
+        else previewMinor = new Field((Map<String, Object>) object);
+        label = (String) properties.get("label");
+        idNode = (Integer) properties.get("idNode");
+        idTop = (Integer) properties.get("idTop");
+        idBottom = (Integer) properties.get("idBottom");
+        idLeft = (Integer) properties.get("idLeft");
+        idRight = (Integer) properties.get("idRight");
+        weight = (Integer) properties.get("weight");
+        cardinality = (Integer) properties.get("cardinality");
+    }
 }
