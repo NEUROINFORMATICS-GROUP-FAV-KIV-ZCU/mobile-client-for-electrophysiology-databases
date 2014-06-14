@@ -5,6 +5,7 @@
 gen/
 app/build/
 build/
+target/
 
 # Gradle Wrapper
 .gradle/
