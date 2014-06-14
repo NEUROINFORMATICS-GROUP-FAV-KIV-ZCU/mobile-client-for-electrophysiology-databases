@@ -1,7 +1,9 @@
 package cz.zcu.kiv.eeg.mobile.base2.ws;
 
-import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.INACTIVE;
-import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.RUNNING;
+import android.app.Activity;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.util.Log;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -9,17 +11,16 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.os.Bundle;
-import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+
+import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.INACTIVE;
+import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.RUNNING;
 
 /**
  * This Fragment manages a single background task and retains itself across configuration changes.
@@ -35,7 +36,7 @@ public class TaskFragment extends Fragment {
 	private TestCreditialsTask mTaskLogin;
 	private FetchLayoutsTask mTaskLayouts;
 	private FetchDataTask mTaskData;
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 	public TaskState state = INACTIVE;
 
 	@Override
@@ -49,7 +50,7 @@ public class TaskFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
-		daoFactory = new DAOFactory(activity);
+		store = new StoreFactory(activity.getApplicationContext());
 		setRetainInstance(true);
 	}
 
@@ -61,7 +62,7 @@ public class TaskFragment extends Fragment {
 	public void onDestroy() {
 		Log.i(TAG, "onDestroy()");
 		super.onDestroy();
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 		cancel();
 	}
 
@@ -111,8 +112,8 @@ public class TaskFragment extends Fragment {
 		}
 	}
 
-	public DAOFactory getDaoFactory() {
-		return daoFactory;
+	public StoreFactory getStore() {
+		return store;
 	}
 
 	/**
@@ -120,9 +121,7 @@ public class TaskFragment extends Fragment {
 	 * 
 	 * @param state
 	 *            new service state
-	 * @param messageCode
-	 *            android string identifier
-	 */	
+     */
 	protected void setState(final TaskState state) {
 		this.state = state;
 		activity.changeProgress(state, null);

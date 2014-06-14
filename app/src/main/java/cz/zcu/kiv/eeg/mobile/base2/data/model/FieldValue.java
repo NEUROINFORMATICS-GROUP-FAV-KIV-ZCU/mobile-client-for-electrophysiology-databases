@@ -6,61 +6,74 @@ import java.util.Map;
 import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- *
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
- *
- * cz: zatím pouze pro uložení hodnot comboboxu
- * en: not only to store values ​​combobox
- *
+ *         <p/>
+ *         cz: zatím pouze pro uložení hodnot comboboxu
+ *         en: not only to store values ​​combobox
  */
-public class FieldValue implements NoSQLData {
+public class FieldValue extends NoSQLData {
 
-	private int id;
+    private int id;
 
-	private String value;
+    private String value;
 
-	private Field field;
+    private Field field;
 
-	public FieldValue() {
-		super();
-	}
-	
-	public FieldValue(String value, Field field) {
-		super();
-		this.value = value;
-		this.field = field;
-	}
+    public FieldValue() {
+        super();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public FieldValue(String value, Field field) {
+        super();
+        this.value = value;
+        this.field = field;
+    }
+    public FieldValue(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public Field getField() {
-		return field;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public void setField(Field field) {
-		this.field = field;
-	}
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
+    }
 
     @Override
     public Map<String, Object> get() {
         Map<String, Object> m = new HashMap<String, Object>();
         m.put("id", id);
         m.put("value", value);
-        m.put("field", field.get());
+        if (null == field)
+            m.put("field", null);
+        else
+            m.put("field", field.get());
         return m;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer)properties.get("id");
+        value =(String)properties.get("value");
+        Object object = properties.get("field");
+        if (null == object) field = null;
+        else field = new Field((Map<String, Object>) object);
     }
 }

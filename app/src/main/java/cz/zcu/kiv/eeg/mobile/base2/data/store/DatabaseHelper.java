@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.mobile.base2.data.dao;
+package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,7 +16,8 @@ import static com.couchbase.lite.Manager.DEFAULT_OPTIONS;
 
 public class DatabaseHelper {
     public static final String TAG = "DatabaseHelper";
-    private static final String DATABASE_NAME = "eegMobileDatabase";
+    private static final String DATABASE_NAME = "eeg-mobile-database";
+    public static final String DOC_TYPE = "doc-type";
     private static final int DATABASE_VERSION = 1;
 
     private static Manager manager = null;
@@ -39,12 +40,15 @@ public class DatabaseHelper {
             }
     }
 
+    public Database getDatabase() {
+        return database;
+    }
+
     public Document getDocument() {
         return database.createDocument();
     }
 
-    public String create(Map<String, Object> docContent) {
-        Document document = getDocument();
+    public String putProperties(Document document, Map<String, Object> docContent) {
         try {
             document.putProperties(docContent);
         } catch (CouchbaseLiteException e) {
@@ -52,5 +56,10 @@ public class DatabaseHelper {
             return "";
         }
         return document.getId();
+    }
+
+    public void releaseHelper() {
+        if (null != database) database.close();
+        if (null != manager) manager.close();
     }
 }

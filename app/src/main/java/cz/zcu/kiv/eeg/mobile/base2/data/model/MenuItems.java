@@ -1,11 +1,16 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
+
 /**
  *
  * @author Jaroslav Hošek
  *
  */
-public class MenuItems {
+public class MenuItems extends NoSQLData {
 
 	private int id;
 
@@ -41,6 +46,10 @@ public class MenuItems {
 		this.name = name;
 		this.layout = layout;
 	}
+
+    public MenuItems(Map<String, Object> properties) {
+        set(properties);
+    }
 
 	public int getId() {
 		return id;
@@ -105,4 +114,28 @@ public class MenuItems {
 	public void setPreviewMinor(Field previewMinor) {
 		this.previewMinor = previewMinor;
 	}
+
+    @Override
+    public Map<String, Object> get() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        properties.put("name", name);
+        properties.put("layout", layout.get());
+        properties.put("rootForm", rootForm.get());
+        properties.put("fieldID", fieldID.get());
+        properties.put("fieldTmp", fieldTmp.get());
+        properties.put("previewMajor", previewMajor.get());
+        properties.put("previewMinor", previewMinor.get());
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        if(null == properties) return;
+        id = (Integer)properties.get("id");
+        name = (String)properties.get("name");
+        layout = new Layout((Map<String, Object>) properties.get("layout"));
+        rootForm = new Form((Map<String, Object>) properties.get("rootForm"));
+
+    }
 }

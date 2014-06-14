@@ -36,43 +36,63 @@ import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
  * Data container for holding layout collection.
- * 
+ *
  * @author Jaroslav Hošek
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
- * 
  */
 @Root(name = LayoutList.XML_ROOT)
-public class LayoutList implements NoSQLData{
-	public static final String XML_ROOT = "layouts";
+public class LayoutList extends NoSQLData {
+    public static final String XML_ROOT = "layouts";
 
-	@ElementList(inline = true, required = false)
-	private List<Layout> layouts;
+    @ElementList(inline = true, required = false)
+    private List<Layout> layouts;
 
-	public LayoutList() {
-	}
+    public LayoutList() {
+    }
 
-	public List<Layout> getLayouts() {
-		return layouts;
-	}
+    public LayoutList(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public void setLayouts(List<Layout> layouts) {
-		this.layouts = layouts;
-	}
+    public List<Layout> getLayouts() {
+        return layouts;
+    }
 
-	public boolean isAvailable() {
-		return layouts != null && !layouts.isEmpty();
-	}
+    public void setLayouts(List<Layout> layouts) {
+        this.layouts = layouts;
+    }
 
-	public int size() {
-		return layouts.size();
-	}
+    public boolean isAvailable() {
+        return layouts != null && !layouts.isEmpty();
+    }
+
+    public int size() {
+        return layouts.size();
+    }
+
+    @Override
+    public void setId(int id) {
+
+    }
+
+    @Override
+    public int getId() {
+        return 1;
+    }
 
     @Override
     public Map<String, Object> get() {
-        Map<String, Object> m = new HashMap<String, Object>();
-        List<Map<String, Object> > list = new ArrayList<Map<String, Object> >();
-        for(Layout layout: layouts) list.add(layout.get());
-        m.put("layouts", list);
-        return m;
+        Map<String, Object> properties = new HashMap<String, Object>();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (Layout layout : layouts) list.add(layout.get());
+        properties.put("layouts", list);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        List<Map<String, Object>> list = (List<Map<String, Object>>) properties.get("layouts");
+        if (null == layouts) layouts = new ArrayList<Layout>();
+        for (Map<String, Object> property : list) layouts.add(new Layout(property));
     }
 }

@@ -8,7 +8,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 /**
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-public class Data implements NoSQLData {
+public class Data extends NoSQLData {
     private int id;
 
     private String data;
@@ -28,20 +28,25 @@ public class Data implements NoSQLData {
         this.data = data;
     }
 
-    public Data(Map<String, Object> d) {
-        id = (Integer) d.get("id");
-        data = (String) d.get("data");
-        dataset = (Dataset) d.get("dataset");
-        field = (Field) d.get("field");
+    public Data(Map<String, Object> properties) {
+        set(properties);
     }
 
     public Map<String, Object> get() {
-        Map<String, Object> d = new HashMap<String, Object>();
-        d.put("id", id);
-        d.put("data", data);
-        d.put("dataset", dataset.get());
-        d.put("field", field.get());
-        return d;
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        properties.put("data", data);
+        properties.put("dataset", dataset.get());
+        properties.put("field", field.get());
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer) properties.get("id");
+        data = (String) properties.get("data");
+        dataset = (Dataset) properties.get("dataset");
+        field = (Field) properties.get("field");
     }
 
     public int getId() {

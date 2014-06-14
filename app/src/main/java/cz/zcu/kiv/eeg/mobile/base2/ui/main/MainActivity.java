@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 
@@ -15,15 +16,15 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
  */
 public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getSimpleName();
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
-		daoFactory = new DAOFactory(this);
+        store = new StoreFactory(getApplicationContext());
 
-		User user = daoFactory.getUserDAO().getUser();
+		User user = store.getUserStore().getUser();
 		if (user == null) {
 			Intent loginIntent = new Intent(this, LoginActivity.class);
 			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -49,7 +50,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 	}
 
 	// ToDo - do samostatn�ch t��d - bal�k com.mobile.editor

@@ -1,9 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.field;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,13 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
@@ -35,7 +32,7 @@ public class FieldAddFragment extends Fragment {
 
 	public final static String TAG = FieldAddFragment.class.getSimpleName();
 	private FieldAddActivity activity;
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 
 	private EditText name;
 	private Spinner type;
@@ -50,7 +47,7 @@ public class FieldAddFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		daoFactory = new DAOFactory(getActivity());
+		store = new StoreFactory(getActivity());
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		setHasOptionsMenu(true);
 	}
@@ -95,18 +92,18 @@ public class FieldAddFragment extends Fragment {
 			activity.showAlert(activity.getString(R.string.field_empty_name));
 		}
 		else{
-			Field field = daoFactory.getFieldDAO().getField(nameValue, formType);
+			Field field = store.getFieldStore().getField(nameValue, formType);
 			if (field != null) {
 				activity.showAlert(activity.getString(R.string.field_exists));
 			} else {
 				Form form = new Form(formType);
 				Field newField = new Field(nameValue, typeValue, form);
-				newField = daoFactory.getFieldDAO().create(newField);
+				newField = store.getFieldStore().create(newField);
 				Layout layout = new Layout(layoutName);
 
 				LayoutProperty property = new LayoutProperty(newField, layout);
 				property.setLabel(labelValue);
-				daoFactory.getLayoutPropertyDAO().create(property);
+				store.getLayoutPropertyStore().create(property);
 
 				Intent data = new Intent();
 				data.putExtra(Field.FIELD_ID, newField.getId());
@@ -141,7 +138,7 @@ public class FieldAddFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-		daoFactory.releaseHelper();
+		store.releaseHelper();
 		super.onDestroy();
 
 	}

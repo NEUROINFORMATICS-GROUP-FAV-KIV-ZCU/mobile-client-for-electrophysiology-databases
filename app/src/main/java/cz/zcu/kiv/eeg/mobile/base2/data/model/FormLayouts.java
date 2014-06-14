@@ -6,58 +6,76 @@ import java.util.Map;
 import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- *
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
- *
  */
-public class FormLayouts implements NoSQLData{
+public class FormLayouts extends NoSQLData {
 
-	private int id;
+    private int id;
 
-	private Form form;
+    private Form form;
 
-	private Layout layout;
+    private Layout layout;
 
-	public FormLayouts() {
-		super();
-	}
+    public FormLayouts() {
+        super();
+    }
 
-	public FormLayouts(Form form, Layout layout) {
-		super();
-		this.form = form;
-		this.layout = layout;
-	}
+    public FormLayouts(Form form, Layout layout) {
+        super();
+        this.form = form;
+        this.layout = layout;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public FormLayouts(Map<String, Object> properties){
+        set(properties);
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Form getForm() {
-		return form;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setForm(Form form) {
-		this.form = form;
-	}
+    public Form getForm() {
+        return form;
+    }
 
-	public Layout getLayout() {
-		return layout;
-	}
+    public void setForm(Form form) {
+        this.form = form;
+    }
 
-	public void setLayout(Layout layout) {
-		this.layout = layout;
-	}
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 
     @Override
     public Map<String, Object> get() {
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("id", id);
-        m.put("form",form.get());
-        m.put("layout", layout.get());
-        return m;
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        if (null == form) properties.put("form", null);
+        else
+            properties.put("form", form.get());
+        if (null == layout)
+            properties.put("layout", null);
+        else
+            properties.put("layout", layout.get());
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer)properties.get("id");
+        Object object = properties.get("form");
+        if (null == object) form = null;
+        else form = new Form((Map<String, Object>) object);
+        object = properties.get("layout");
+        if (null == object) layout = null;
+        else layout = new Layout((Map<String, Object>) object);
     }
 }

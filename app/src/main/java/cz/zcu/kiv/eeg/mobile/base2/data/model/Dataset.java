@@ -6,56 +6,73 @@ import java.util.Map;
 import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- *
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
-public class Dataset implements NoSQLData {
+public class Dataset extends NoSQLData {
 
-	private int id;
+    public static final String DATASET_ID = "dataset_id";
+    public static final String DATASET_ROOT_ID = "dataset_root_id";
 
-	private Form form;
+    private int id;
 
-	private String recordId;
+    private Form form;
 
-	public Dataset() {
-		super();
-	}
+    private String recordId;
 
-	public Dataset(Form form) {
-		super();
-		this.form = form;
-	}
+    public Dataset() {
+        super();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Dataset(Form form) {
+        super();
+        this.form = form;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Dataset(Map<String, Object> properties) {
+        set(properties);
+    }
 
-	public Form getForm() {
-		return form;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setForm(Form form) {
-		this.form = form;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getRecordId() {
-		return recordId;
-	}
+    public Form getForm() {
+        return form;
+    }
 
-	public void setRecordId(String recordId) {
-		this.recordId = recordId;
-	}
+    public void setForm(Form form) {
+        this.form = form;
+    }
+
+    public String getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(String recordId) {
+        this.recordId = recordId;
+    }
 
     @Override
     public Map<String, Object> get() {
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("id", id);
-        m.put("form", form);
-        m.put("recordId", recordId);
-        return m;
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("id", id);
+        if (null == form)
+            properties.put("form", null);
+        else properties.put("form", form.get());
+        properties.put("recordId", recordId);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer) properties.get("id");
+        Object object = properties.get("form");
+        if (null == object) form = null;
+        else form = new Form((Map<String, Object>) object);
+        recordId = (String) properties.get("recordId");
     }
 }

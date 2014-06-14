@@ -1,62 +1,47 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.builders;
 
+import android.app.Activity;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.util.SparseArray;
+import android.view.ActionMode;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Spinner;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import odml.core.Reader;
-import odml.core.Section;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.sax.StartElementListener;
-import android.util.Log;
-import android.util.SparseArray;
-import android.util.TypedValue;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SubformAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.SubformActionMode;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.ListAllFormsFragment;
+import odml.core.Reader;
+import odml.core.Section;
 
 /**
  * 
@@ -72,7 +57,7 @@ public class ViewBuilder {
 	public SparseArray<ViewNode> nodes = new SparseArray<ViewNode>(); // optimalizovaná HashMap<Integer, ?>,
 
 	private ArrayList<LinearLayout> newColumn = new ArrayList<LinearLayout>();
-	private DAOFactory daoFactory;
+	private StoreFactory store;
 
 	private LinearLayout rootLayout;
 	private LinearLayout formLayout;
@@ -90,18 +75,18 @@ public class ViewBuilder {
 	private boolean isRootForm = true;
 
 	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetId, int formMode, MenuItems menu,
-			DAOFactory daoFactory) {
+			StoreFactory store) {
 		super();
 		this.fragment = fragment;
 		this.layout = layout;
-		this.daoFactory = daoFactory;
+		this.store = store;
 		// this.datasetId = datasetId;
 		this.formMode = formMode;
 		this.menu = menu;
 
 		this.ctx = fragment.getActivity();
 		form = layout.getRootForm();
-		dataset = daoFactory.getDataSetDAO().getDataSet(datasetId);
+		dataset = store.getDatasetStore().getDataSet(datasetId);
 	}
 
 	public LinearLayout getLinearLayout() {
@@ -128,8 +113,8 @@ public class ViewBuilder {
 	}
 
 	public ViewNode createView(String name, String reference, boolean asTemplate) {
-		Field field = daoFactory.getFieldDAO().getField(name, reference);
-		LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
+		Field field = store.getFieldStore().getField(name, reference);
+		LayoutProperty property = store.getLayoutPropertyStore().getProperty(field.getId(), layout.getName());
 
 		if (asTemplate) {
 			property.setIdNode(evailabelId);
@@ -163,7 +148,7 @@ public class ViewBuilder {
 	private String[] getData(Field field) {
 		String[] data = null;
 		if (formMode == Values.FORM_EDIT_DATA) {
-			List<Data> dataList = daoFactory.getDataDAO().getAllData(dataset.getId(), field.getId());
+			List<Data> dataList = store.getDataStore().getAllData(dataset.getId(), field.getId());
 			data = new String[dataList.size()];
 			int i = 0;
 			for (Data dataF : dataList) {
@@ -190,7 +175,7 @@ public class ViewBuilder {
 		Spinner combobox = new Spinner(ctx);
 		ArrayList<String> itemList = new ArrayList<String>();
 
-		List<FieldValue> values = daoFactory.getFieldValueDAO().getFieldValue(field.getId());
+		List<FieldValue> values = store.getFieldValueStore().getFieldValue(field.getId());
 		for (FieldValue fieldValue : values) {
 			itemList.add(fieldValue.getValue());
 		}
@@ -214,7 +199,7 @@ public class ViewBuilder {
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
 		if (formMode == Values.FORM_EDIT_DATA) {
-			Layout sublayout = getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
+			Layout sublayout = getStore().getLayoutStore().getLayout(property.getSubLayout().getName());
 			final MenuItems menuItem = getSubmenuItem(property, sublayout);		
 			boolean isVisible = false;
 			
@@ -234,7 +219,7 @@ public class ViewBuilder {
 		final Spinner spinner = new Spinner(ctx);
 		final ViewBuilder vb = this;
 		FormAdapter adapter = ListAllFormsFragment.getStaticAdapter(ctx, getSubmenuItem(property, sublayout),
-				daoFactory);
+                store);
 		final int datasetId = (dataset.equalsIgnoreCase("")) ? -1 : Integer.valueOf(dataset);
 		spinner.setAdapter(adapter);
 
@@ -312,12 +297,12 @@ public class ViewBuilder {
 
 	public MenuItems getSubmenuItem(LayoutProperty property, Layout subLayout) {
 		MenuItems menuItem;
-		if (getDaoFactory().getMenuItemDAO().getMenu(property.getLabel()) == null) {
+		if (getStore().getMenuItemStore().getMenu(property.getLabel()) == null) {
 			menuItem = new MenuItems(property.getLabel(), subLayout, subLayout.getRootForm(),
 					property.getPreviewMajor(), property.getPreviewMinor());
-			getDaoFactory().getMenuItemDAO().saveOrUpdate(menuItem);
+			getStore().getMenuItemStore().saveOrUpdate(menuItem);
 		} else {
-			menuItem = getDaoFactory().getMenuItemDAO().getMenu(property.getLabel());
+			menuItem = getStore().getMenuItemStore().getMenu(property.getLabel());
 		}
 		return menuItem;
 	}
@@ -376,7 +361,7 @@ public class ViewBuilder {
 
 	public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
 		if (fieldId != 0) {
-			Field field = daoFactory.getFieldDAO().getField(fieldId);
+			Field field = store.getFieldStore().getField(fieldId);
 			ViewNode node = createView(field.getName(), field.getForm().getType(), true);
 
 			LinearLayout rowLayout = new LinearLayout(ctx);
@@ -458,7 +443,7 @@ public class ViewBuilder {
 				newId++;
 			}
 		}
-		OdmlBuilder.createODML(newNodes, layout, daoFactory);
+		OdmlBuilder.createODML(newNodes, layout, store);
 	}
 
 	public void enableEditor() {
@@ -518,11 +503,11 @@ public class ViewBuilder {
 	// načte data do formuláře
 	/*
 	 * public void initData(int datasetID) { //if (datasetID != Values.NEW_DATA) { if (formMode != Values.FORM_NEW_DATA)
-	 * { Form form = layout.getRootForm(); Dataset dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
+	 * { Form form = layout.getRootForm(); Dataset dataset = store.getDataSetDAO().getDataSet(datasetID);
 	 * 
 	 * if (dataset != null) { for (int i = 0; i < nodes.size(); i++) { Field field =
-	 * daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType()); Data data =
-	 * daoFactory.getDataDAO().getData(dataset.getId(), field.getId()); if (data != null) {
+	 * store.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType()); Data data =
+	 * store.getDataDAO().getData(dataset.getId(), field.getId()); if (data != null) {
 	 * nodes.valueAt(i).setData(data.getData()); } } } } }
 	 */
 
@@ -531,14 +516,14 @@ public class ViewBuilder {
 		Form form = layout.getRootForm();
 		Dataset dataset;
 		if (formMode != Values.FORM_NEW_DATA) {
-			dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
+			dataset = store.getDatasetStore().getDataSet(datasetID);
 		} else {
 			dataset = new Dataset(form);
-			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
+			store.getDatasetStore().saveOrUpdate(dataset);
 		}
 
 		for (int i = 0; i < nodes.size(); i++) {
-			Field field = daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType());
+			Field field = store.getFieldStore().getField(nodes.valueAt(i).getName(), form.getType());
 			if(field.getType().equals("form")){
 				ViewNode node = nodes.valueAt(i);
 				LinearLayout spinnerLayout = (LinearLayout) node.getNode();
@@ -550,12 +535,12 @@ public class ViewBuilder {
 				String data = nodes.valueAt(i).getData();
 				if (data != null && !data.equals("")) {
 					if (formMode == Values.FORM_NEW_DATA) {
-						daoFactory.getDataDAO().create(dataset, field, data);
+						store.getDataStore().create(dataset, field, data);
 					} else {
-						if (daoFactory.getDataDAO().getData(dataset, field) == null) {
-							daoFactory.getDataDAO().create(dataset, field, data);
+						if (store.getDataStore().getData(dataset, field) == null) {
+							store.getDataStore().create(dataset, field, data);
 						} else {
-							daoFactory.getDataDAO().update(dataset, field, data);
+							store.getDataStore().update(dataset, field, data);
 						}
 					}
 				}
@@ -600,8 +585,8 @@ public class ViewBuilder {
 		return rootLayout;
 	}
 
-	public DAOFactory getDaoFactory() {
-		return daoFactory;
+	public StoreFactory getStore() {
+		return store;
 	}
 
 	public Dataset getDataset() {

@@ -97,7 +97,7 @@ public class ViewNode {
 				button_param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 				button_param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		
-				final Layout subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
+				final Layout subLayout = vb.getStore().getLayoutStore().getLayout(property.getSubLayout().getName());
 				menuItem = vb.getSubmenuItem(property, subLayout);
 
 				button.setOnClickListener(new OnClickListener() {

@@ -12,7 +12,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
  */
 @Root(name = Layout.XML_ROOT)
-public class Layout implements NoSQLData {
+public class Layout extends NoSQLData {
     public static final String XML_ROOT = "layout";
     public static final String LAYOUT_NAME = "layoutName";
     public static final String LAYOUT_ID = "layoutId";
@@ -96,15 +96,44 @@ public class Layout implements NoSQLData {
         this.rootForm = rootForm;
     }
 
+    public Layout(Map<String, Object> properties) {
+        set(properties);
+    }
+
+    @Override
+    public void setId(int id) {
+
+    }
+
+    @Override
+    public int getId() {
+        return 1;
+    }
+
     @Override
     public Map<String, Object> get() {
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("name", name);
-        if (null != rootLayout) m.put("rootLayout", rootLayout.get());
-        else m.put("rootLayout", null);
-        m.put("rootForm", rootForm.get());
-        m.put("xmlData", xmlData);
-        m.put("formName", formName);
-        return m;
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("name", name);
+        if (null != rootLayout) properties.put("rootLayout", rootLayout.get());
+        else properties.put("rootLayout", null);
+        if (null == rootLayout) properties.put("rootForm", null);
+        else properties.put("rootForm", rootForm.get());
+        properties.put("xmlData", xmlData);
+        properties.put("formName", formName);
+        return properties;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        if(null == properties) return;
+        name = (String) properties.get("name");
+        Object object = properties.get("rootLayout");
+        if (null == object) rootLayout = null;
+        else rootLayout = new Layout((Map<String, Object>) object);
+        object = properties.get("rootForm");
+        if (null == object) rootForm = null;
+        else rootForm = new Form((Map<String, Object>) object);
+        xmlData = (String) properties.get("xmlData");
+        formName = (String) properties.get("formName");
     }
 }

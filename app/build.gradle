@@ -19,6 +19,7 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
+
     buildTypes {
         release {
             runProguard true
@@ -27,10 +28,11 @@ android {
             jniDebugBuild true
             zipAlign true
         }
+
         debug {
             debuggable true
             runProguard false
-            packageNameSuffix '.debug'
+            applicationIdSuffix '.debug'
             versionNameSuffix 'BETA'
         }
     }

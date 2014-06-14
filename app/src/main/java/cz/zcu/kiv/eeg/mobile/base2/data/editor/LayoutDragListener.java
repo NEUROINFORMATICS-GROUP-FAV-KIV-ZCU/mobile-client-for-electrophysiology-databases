@@ -1,16 +1,15 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.editor;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnDragListener;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
 import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
 public class LayoutDragListener implements OnDragListener {
@@ -32,7 +31,7 @@ public class LayoutDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View viewB, DragEvent event) {
 		int action = event.getAction();
-		//System.out.println(viewB.getTag(Values.NODE_ID) + "_all " + count);
+//		System.out.println(viewB.getTag(Values.NODE_ID) + "_all " + count);
 		ViewGroup wrapLayoutB = (ViewGroup) viewB.getParent();
 
 		switch (event.getAction()) {

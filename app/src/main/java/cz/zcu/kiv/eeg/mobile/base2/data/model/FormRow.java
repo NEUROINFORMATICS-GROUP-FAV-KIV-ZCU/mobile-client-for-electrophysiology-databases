@@ -6,58 +6,60 @@ import java.util.Map;
 import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 /**
- * 
  * @author Rahul Kadyan, (mail@rahulkadyan.com)
- * 
  */
-public class FormRow implements NoSQLData {
+public class FormRow extends NoSQLData {
 
-	private int id; // TODO
-	// cz: ID datasetu (zatím))
+    private int id; // TODO
+    // cz: ID datasetu (zatím))
     // en: ID Dataset (yet))
-	private String name;
-	private String description;
-	private String mine;
+    private String name;
+    private String description;
+    private String mine;
 
-	public FormRow(int id, String name, String description, String mine) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.mine = mine;
-	}
+    public FormRow(int id, String name, String description, String mine) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.mine = mine;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public FormRow(Map<String, Object> properties){
+        set(properties);
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getMine() {
-		return mine;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setMine(String mine) {
-		this.mine = mine;
-	}
+    public String getMine() {
+        return mine;
+    }
+
+    public void setMine(String mine) {
+        this.mine = mine;
+    }
 
     @Override
     public Map<String, Object> get() {
@@ -67,5 +69,13 @@ public class FormRow implements NoSQLData {
         m.put("description", description);
         m.put("mine", mine);
         return m;
+    }
+
+    @Override
+    public void set(Map<String, Object> properties) {
+        id = (Integer) properties.get("id");
+        name = (String) properties.get("name");
+        description = (String) properties.get("description");
+        mine = (String) properties.get("mine");
     }
 }
