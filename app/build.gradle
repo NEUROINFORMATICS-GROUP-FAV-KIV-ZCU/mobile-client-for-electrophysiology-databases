@@ -47,8 +47,9 @@ dependencies {
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE@jar'
     compile 'org.simpleframework:simple-xml:2.7.1@jar'
     compile 'com.couchbase.lite:couchbase-lite-android:1.0.+'
-    compile files('libs/jdom.jar')
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
     compile files('libs/odml.jar')
-    compile files('libs/ormlite-core-4.48.jar')
-    compile files('libs/ormlite-android-4.48.jar')
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'org.slf4j:slf4j-jdk14:1.7.7'
 }
