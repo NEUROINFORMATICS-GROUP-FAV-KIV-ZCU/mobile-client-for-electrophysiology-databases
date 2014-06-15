@@ -14,7 +14,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 public class DatasetStore extends Store {
     private final static String TAG = DatasetStore.class.getName();
 
-    private final static String VIEW_NAME = "datasets";
+    private final static String VIEW_NAME = "dataset-view";
     private final static String DOC_TYPE_VALUE = "dataset";
 
     public DatasetStore(DatabaseHelper databaseHelper) {

@@ -18,7 +18,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 public class DataStore extends Store {
     private final static String TAG = DataStore.class.getName();
 
-    private final static String VIEW_NAME = "datum";
+    private final static String VIEW_NAME = "data-view";
     private final static String DOC_TYPE_VALUE = "data";
 
     public DataStore(DatabaseHelper databaseHelper) {

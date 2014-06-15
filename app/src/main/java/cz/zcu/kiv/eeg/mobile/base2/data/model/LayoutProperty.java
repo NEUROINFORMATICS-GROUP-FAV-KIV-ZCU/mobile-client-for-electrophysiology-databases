@@ -171,16 +171,11 @@ public class LayoutProperty extends NoSQLData {
     public Map<String, Object> get() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("id", id);
-        if (null == field) properties.put("field", null);
-        else properties.put("field", field.get());
-        if (null == layout) properties.put("layout", null);
-        else properties.put("layout", layout.get());
-        if (null == subLayout) properties.put("subLayout", null);
-        else properties.put("subLayout", subLayout.get());
-        if (null == previewMajor) properties.put("previewMajor", null);
-        else properties.put("previewMajor", previewMajor.get());
-        if (null == previewMinor) properties.put("previewMinor", null);
-        else properties.put("previewMinor", previewMinor.get());
+        properties.put("field", field != null ? field.get() : null);
+        properties.put("layout", layout != null ? layout.get() : null);
+        properties.put("subLayout", subLayout != null ? subLayout.get() : null);
+        properties.put("previewMajor", previewMajor != null ? previewMajor.get() : null);
+        properties.put("previewMinor", previewMinor != null ? previewMinor.get() : null);
         properties.put("label", label);
         properties.put("idNode", idNode);
         properties.put("idTop", idTop);
@@ -194,22 +189,14 @@ public class LayoutProperty extends NoSQLData {
 
     @Override
     public void set(Map<String, Object> properties) {
+        if (null == properties) return;
         id = (Integer) properties.get("id");
-        Object object = properties.get("field");
-        if (null == object) field = null;
-        else field = new Field((Map<String, Object>) object);
-        object = properties.get("layout");
-        if (null == object) layout = null;
-        else layout = new Layout((Map<String, Object>) object);
-        object = properties.get("subLayout");
-        if (null == object) subLayout = null;
-        else subLayout = new Layout((Map<String, Object>) object);
-        object = properties.get("previewMajor");
-        if (null == object) previewMajor = null;
-        else previewMajor = new Field((Map<String, Object>) object);
-        object = properties.get("previewMinor");
-        if (null == object) previewMinor = null;
-        else previewMinor = new Field((Map<String, Object>) object);
+        Object object;
+        field = (object = properties.get("field")) != null ? new Field((Map<String, Object>) object) : null;
+        layout = (object = properties.get("layout")) != null ? new Layout((Map<String, Object>) object) : null;
+        subLayout = (object = properties.get("subLayout")) != null ? new Layout((Map<String, Object>) object) : null;
+        previewMajor = (object = properties.get("previewMajor")) != null ? new Field((Map<String, Object>) object) : null;
+        previewMinor = (object = properties.get("previewMinor")) != null ? new Field((Map<String, Object>) object) : null;
         label = (String) properties.get("label");
         idNode = (Integer) properties.get("idNode");
         idTop = (Integer) properties.get("idTop");

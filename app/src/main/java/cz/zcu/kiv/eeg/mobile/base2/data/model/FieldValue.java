@@ -28,6 +28,7 @@ public class FieldValue extends NoSQLData {
         this.value = value;
         this.field = field;
     }
+
     public FieldValue(Map<String, Object> properties) {
         set(properties);
     }
@@ -61,17 +62,15 @@ public class FieldValue extends NoSQLData {
         Map<String, Object> m = new HashMap<String, Object>();
         m.put("id", id);
         m.put("value", value);
-        if (null == field)
-            m.put("field", null);
-        else
-            m.put("field", field.get());
+        m.put("field", field != null ? field.get() : null);
         return m;
     }
 
     @Override
     public void set(Map<String, Object> properties) {
-        id = (Integer)properties.get("id");
-        value =(String)properties.get("value");
+        if(properties == null) return;
+        id = (Integer) properties.get("id");
+        value = (String) properties.get("value");
         Object object = properties.get("field");
         if (null == object) field = null;
         else field = new Field((Map<String, Object>) object);

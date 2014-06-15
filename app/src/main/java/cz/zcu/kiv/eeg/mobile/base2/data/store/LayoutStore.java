@@ -15,7 +15,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 public class LayoutStore extends Store {
     private final static String TAG = LayoutStore.class.getName();
 
-    private final static String VIEW_NAME = "layouts";
+    private final static String VIEW_NAME = "layout-view";
     private final static String DOC_TYPE_VALUE = "layout";
 
     public LayoutStore(DatabaseHelper databaseHelper) {

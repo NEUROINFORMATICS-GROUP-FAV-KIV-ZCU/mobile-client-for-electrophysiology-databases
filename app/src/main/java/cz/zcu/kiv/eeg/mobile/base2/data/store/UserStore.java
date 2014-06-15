@@ -7,7 +7,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 public class UserStore extends Store {
     private final static String TAG = DataStore.class.getName();
 
-    private final static String VIEW_NAME = "users";
+    private final static String VIEW_NAME = "user-view";
     private final static String DOC_TYPE_VALUE = "user";
 
 

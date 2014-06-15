@@ -13,8 +13,8 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 public class LayoutPropertyStore extends Store {
     private final static String TAG = LayoutPropertyStore.class.getName();
 
-    private final static String VIEW_NAME = "layouts";
-    private final static String DOC_TYPE_VALUE = "layout";
+    private final static String VIEW_NAME = "layout-property-view";
+    private final static String DOC_TYPE_VALUE = "layout-property";
 
     public LayoutPropertyStore(DatabaseHelper databaseHelper) {
         super(databaseHelper, VIEW_NAME, DOC_TYPE_VALUE);
@@ -31,7 +31,8 @@ public class LayoutPropertyStore extends Store {
         Query query = getQuery();
         try {
             for (QueryEnumerator it = query.run(); it.hasNext(); ) {
-                LayoutProperty layoutProperty = new LayoutProperty(it.next().getDocumentProperties());
+                Document document = it.next().getDocument();
+                LayoutProperty layoutProperty = new LayoutProperty(document.getProperties());
                 if (layoutProperty.getField().getId() == fieldId && layoutId.equals(layoutProperty.getLayout().getName()))
                     return layoutProperty;
             }

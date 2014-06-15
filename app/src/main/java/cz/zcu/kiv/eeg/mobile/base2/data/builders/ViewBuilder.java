@@ -105,6 +105,7 @@ public class ViewBuilder {
 	}
 
 	private void loadViews(Vector<Section> sections, String reference) {
+        if(null == sections) return;
 		for (Section section : sections) {
 			createView(section.getName(), reference, false);
 		}

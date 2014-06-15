@@ -204,7 +204,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 			MenuItems menu = daoFactory.getMenuItemDAO().getMenu(rootMenuId);
 			
 			Intent intentEdit = new Intent(this, FormDetailsActivity.class);
-			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getIcon());
+			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getId());
 			intentEdit.putExtra(Values.MENU_ITEM_NAME, menu.getName());
 			intentEdit.putExtra(Layout.LAYOUT_ID, layout.getName());
 			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);

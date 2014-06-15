@@ -17,7 +17,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 public class FieldStore extends Store {
     private final static String TAG = FieldStore.class.getName();
 
-    private final static String VIEW_NAME = "fields";
+    private final static String VIEW_NAME = "field-view";
     private final static String DOC_TYPE_VALUE = "field";
 
     public FieldStore(DatabaseHelper databaseHelper) {
@@ -31,13 +31,8 @@ public class FieldStore extends Store {
         return null;
     }
 
-    @Override
-    protected Query getQuery() {
-        return getQuery("name");
-    }
-
     public Field getField(String name, String formId) {
-        Query query = getQuery();
+        Query query = getQuery("name");
         List<Object> key = new ArrayList<Object>();
         key.add(name);
         query.setKeys(key);

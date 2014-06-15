@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
-import android.util.Log;
-
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
@@ -15,8 +13,8 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 public class MenuItemsStore extends Store {
     private final static String TAG = DataStore.class.getName();
 
-    private final static String VIEW_NAME = "menus";
-    private final static String DOC_TYPE_VALUE = "menu";
+    private final static String VIEW_NAME = "menu-item-view";
+    private final static String DOC_TYPE_VALUE = "menu-item";
 
     public MenuItemsStore(DatabaseHelper databaseHelper) {
         super(databaseHelper, VIEW_NAME, DOC_TYPE_VALUE);
@@ -64,7 +62,6 @@ public class MenuItemsStore extends Store {
 
     public MenuItems getMenu(int id) {
         Document document = getDocument(id);
-        Log.i(TAG, "-----------" + id);
         if (null != document) return new MenuItems(document.getProperties());
         return null;
     }
