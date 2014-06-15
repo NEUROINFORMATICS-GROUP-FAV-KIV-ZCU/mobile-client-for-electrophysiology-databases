@@ -22,8 +22,10 @@ public class DatabaseHelper {
 
     private static Manager manager = null;
     private static Database database = null;
+    private Context context;
 
     public DatabaseHelper(final Context context) {
+        this.context = context;
         if (null == manager)
             try {
                 manager = new Manager(new AndroidContext(context), DEFAULT_OPTIONS);
@@ -61,5 +63,9 @@ public class DatabaseHelper {
     public void releaseHelper() {
         if (null != database) database.close();
         if (null != manager) manager.close();
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

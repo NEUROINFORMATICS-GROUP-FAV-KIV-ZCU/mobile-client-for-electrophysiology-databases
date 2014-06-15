@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
-import android.util.Log;
-
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
@@ -11,7 +9,6 @@ import com.couchbase.lite.QueryRow;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
@@ -34,8 +31,13 @@ public class FieldStore extends Store {
         return null;
     }
 
+    @Override
+    protected Query getQuery() {
+        return getQuery("name");
+    }
+
     public Field getField(String name, String formId) {
-        Query query = getQuery("name");
+        Query query = getQuery();
         List<Object> key = new ArrayList<Object>();
         key.add(name);
         query.setKeys(key);
@@ -44,13 +46,9 @@ public class FieldStore extends Store {
             for (; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document document = row.getDocument();
-                if (null != document) {
-                    Map<String, Object> properties = (Map<String, Object>) document.getProperties().get("form"); // Variable name for Field.Form field
-                    if (formId.equals(properties.get("type"))) {
-                        return new Field(document.getProperties());
-                    }
-                } else {
-                    Log.i(TAG, "Null document - ");
+                Field field = new Field(document.getProperties());
+                if (field.getForm() != null && formId.equals(field.getForm().getType())) {
+                    return field;
                 }
             }
         } catch (CouchbaseLiteException e) {
@@ -67,11 +65,7 @@ public class FieldStore extends Store {
             for (; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document document = row.getDocument();
-                if (null != document) {
-                    list.add(new Field(document.getProperties()));
-                } else {
-                    Log.i(TAG, "Null document - ");
-                }
+                list.add(new Field(document.getProperties()));
             }
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
@@ -88,12 +82,9 @@ public class FieldStore extends Store {
             for (; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document document = row.getDocument();
-                if (null != document) {
-                    Map<String, Object> properties = (Map<String, Object>) document.getProperty("form");
-                    if (properties != null && rootForm.equals(properties.get("type")))
-                        list.add(new Field(document.getProperties()));
-                } else {
-                    Log.i(TAG, "Null document - ");
+                Field field = new Field(document.getProperties());
+                if (field.getForm() != null && rootForm.equals(field.getForm().getType())) {
+                    list.add(field);
                 }
             }
         } catch (CouchbaseLiteException e) {
@@ -114,12 +105,9 @@ public class FieldStore extends Store {
             for (; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document document = row.getDocument();
-                if (null != document) {
-                    Map<String, Object> properties = (Map<String, Object>) document.getProperty("form");
-                    if (properties != null && formId.equals(properties.get("type")))
-                        list.add(new Field(document.getProperties()));
-                } else {
-                    Log.i(TAG, "Null document - ");
+                Field field = new Field(document.getProperties());
+                if (field.getForm() != null && formId.equals(field.getForm().getType())) {
+                    list.add(field);
                 }
             }
         } catch (CouchbaseLiteException e) {
@@ -141,15 +129,12 @@ public class FieldStore extends Store {
             for (; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document document = row.getDocument();
-                if (null != document) {
-                    int id = (Integer) document.getProperty("id");
-                    if (!notInSet.contains(id)) {
-                        Map<String, Object> properties = (Map<String, Object>) document.getProperty("form");
-                        if (properties != null && formType.equals(properties.get("type")))
-                            list.add(new Field(document.getProperties()));
+                int id = (Integer) document.getProperty("id");
+                if (!notInSet.contains(id)) {
+                    Field field = new Field(document.getProperties());
+                    if (field.getForm() != null && formType.equals(field.getForm().getType())) {
+                        list.add(field);
                     }
-                } else {
-                    Log.i(TAG, "Null document - ");
                 }
             }
         } catch (CouchbaseLiteException e) {
@@ -165,7 +150,7 @@ public class FieldStore extends Store {
     }
 
     public Field create(Field field) {
-        return saveOrUpdate(field, databaseHelper.getDocument()) ? field : null;
+        return saveOrUpdate(field, null) ? field : null;
 
     }
 

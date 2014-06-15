@@ -99,7 +99,7 @@ public class ViewBuilder {
 				System.out.println("test");
 			}		
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
+			Log.e(TAG, "Error", e);
 		}
 		return createForm();
 	}

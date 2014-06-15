@@ -30,7 +30,7 @@ public class DataStore extends Store {
     }
 
     public void create(final Dataset dataset, final Field field, final String data) {
-        saveOrUpdate(new Data(dataset, field, data), databaseHelper.getDocument());
+        saveOrUpdate(new Data(dataset, field, data), null);
     }
 
     public Data getData(final int dataSetId, final int fieldId) {

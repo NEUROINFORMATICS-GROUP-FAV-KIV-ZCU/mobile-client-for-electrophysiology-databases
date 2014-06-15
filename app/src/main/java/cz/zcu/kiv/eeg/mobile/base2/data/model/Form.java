@@ -67,7 +67,7 @@ public class Form extends NoSQLData {
     public Map<String, Object> get() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("type", type);
-        properties.put("date", date);
+        properties.put("date", date != null ? date.getTime() : null);
         return properties;
     }
 
@@ -75,6 +75,7 @@ public class Form extends NoSQLData {
     public void set(Map<String, Object> properties) {
         if (null == properties) return;
         type = (String) properties.get("type");
-        date = (Date) properties.get("date");
+        Object object;
+        date = (object = properties.get("date")) != null ? new Date((Long) object) : null;
     }
 }

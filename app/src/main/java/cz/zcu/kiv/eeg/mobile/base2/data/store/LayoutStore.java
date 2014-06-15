@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
@@ -23,7 +24,27 @@ public class LayoutStore extends Store {
 
     public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm) {
         Layout data = new Layout(layoutName, xmlData, rootForm);
-        return saveOrUpdate(data) ? data : null;
+        return saveOrUpdate(data, getDocument(layoutName)) ? data : null;
+    }
+
+    public Boolean saveOrUpdate(Layout data) {
+        return saveOrUpdate(data, getDocument(data.getName()));
+    }
+
+    protected Document getDocument(String name) {
+        Query query = getQuery("name");
+        List<Object> keys = new ArrayList<Object>();
+        keys.add(name);
+        query.setKeys(keys);
+        try {
+            QueryEnumerator it = query.run();
+            if (it.hasNext()) {
+                return it.next().getDocument();
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Layout> getLayouts() {
@@ -48,7 +69,8 @@ public class LayoutStore extends Store {
         try {
             QueryEnumerator it = query.run();
             if (it.hasNext()) {
-                return new Layout(it.next().getDocumentProperties());
+                Document document = it.next().getDocument();
+                return new Layout(document.getProperties());
             }
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
@@ -58,6 +80,6 @@ public class LayoutStore extends Store {
 
     public Layout create(String name, String xmlData, Form form) {
         Layout layout = new Layout(name, xmlData, form);
-        return saveOrUpdate(layout) ? layout : null;
+        return saveOrUpdate(layout, null) ? layout : null;
     }
 }

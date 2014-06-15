@@ -39,7 +39,7 @@ public class Store {
 
     protected Boolean saveOrUpdate(NoSQLData data, Document document) {
         Map<String, Object> properties = new HashMap<String, Object>();
-        if (data.getId() == 0) data.setId(getCount());
+        if (data.getId() == 0) data.setId(getCount()+1);
         if (null == document) {
             document = databaseHelper.getDocument();
             properties.put(DOC_TYPE, docType);

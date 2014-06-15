@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 
@@ -28,12 +29,13 @@ public class FormLayoutsStore extends Store {
 
     public List<Layout> getLayout(Form form) {
         Query query = getQuery();
-        List<Layout> list =new ArrayList<Layout>();
+        List<Layout> list = new ArrayList<Layout>();
         try {
-            for(QueryEnumerator it = query.run(); it.hasNext();) {
-                Layout layout = new Layout(it.next().getDocumentProperties());
-                if(form.getId() == layout.getRootForm().getId()) {
-                    list.add(layout);
+            for (QueryEnumerator it = query.run(); it.hasNext(); ) {
+                Document document = it.next().getDocument();
+                FormLayouts layout = new FormLayouts(document.getProperties());
+                if (layout.getForm() != null && form.getId() == layout.getForm().getId()) {
+                    list.add(layout.getLayout());
                 }
             }
         } catch (CouchbaseLiteException e) {

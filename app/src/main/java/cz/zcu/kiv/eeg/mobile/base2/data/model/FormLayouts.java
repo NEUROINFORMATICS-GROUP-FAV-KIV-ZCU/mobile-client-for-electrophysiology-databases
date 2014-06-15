@@ -26,7 +26,7 @@ public class FormLayouts extends NoSQLData {
         this.layout = layout;
     }
 
-    public FormLayouts(Map<String, Object> properties){
+    public FormLayouts(Map<String, Object> properties) {
         set(properties);
     }
 
@@ -58,24 +58,17 @@ public class FormLayouts extends NoSQLData {
     public Map<String, Object> get() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("id", id);
-        if (null == form) properties.put("form", null);
-        else
-            properties.put("form", form.get());
-        if (null == layout)
-            properties.put("layout", null);
-        else
-            properties.put("layout", layout.get());
+        properties.put("form", form != null ? form.get() : null);
+        properties.put("layout", layout != null ? layout.get() : null);
         return properties;
     }
 
     @Override
     public void set(Map<String, Object> properties) {
-        id = (Integer)properties.get("id");
-        Object object = properties.get("form");
-        if (null == object) form = null;
-        else form = new Form((Map<String, Object>) object);
-        object = properties.get("layout");
-        if (null == object) layout = null;
-        else layout = new Layout((Map<String, Object>) object);
+        if (properties == null) return;
+        id = (Integer) properties.get("id");
+        Object object;
+        form = (object = properties.get("form")) != null ? new Form((Map<String, Object>) object) : null;
+        layout = (object = properties.get("layout")) != null ? new Layout((Map<String, Object>) object) : null;
     }
 }

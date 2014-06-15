@@ -28,7 +28,6 @@ android {
             jniDebugBuild true
             zipAlign true
         }
-
         debug {
             debuggable true
             runProguard false
@@ -49,7 +48,8 @@ dependencies {
     compile 'com.couchbase.lite:couchbase-lite-android:1.0.+'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
-    compile files('libs/odml.jar')
     compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'org.slf4j:slf4j-jdk14:1.7.7'
+    compile 'org.jdom:jdom:1.1@jar'
+    compile files('libs/odml.jar')
 }

@@ -3,17 +3,15 @@ package cz.zcu.kiv.eeg.mobile.base2.data.store;
 import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
-import com.couchbase.lite.QueryRow;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-
-import static cz.zcu.kiv.eeg.mobile.base2.data.store.DatabaseHelper.DOC_TYPE;
 
 public class FormStore extends Store {
     private final static String TAG = FormStore.class.getName();
@@ -22,7 +20,7 @@ public class FormStore extends Store {
     private final static String DOC_TYPE_VALUE = "form";
 
     public FormStore(DatabaseHelper databaseHelper) {
-        super(databaseHelper, VIEW_NAME, DOC_TYPE);
+        super(databaseHelper, VIEW_NAME, DOC_TYPE_VALUE);
     }
 
     public Form saveOrUpdate(String type, Date date) {
@@ -37,8 +35,8 @@ public class FormStore extends Store {
         query.setKeys(keys);
         try {
             QueryEnumerator it = query.run();
-            QueryRow row = it.next();
-            if (null != row) return new Form(row.getDocumentProperties());
+            Document document = it.next().getDocument();
+            return new Form(document.getProperties());
         } catch (CouchbaseLiteException e) {
             Log.i(TAG, "Error running query", e);
         }
@@ -50,16 +48,17 @@ public class FormStore extends Store {
         List<Form> list = new ArrayList<Form>();
         try {
             for (QueryEnumerator it = query.run(); it.hasNext(); ) {
-                list.add(new Form(it.next().getDocumentProperties()));
+                Document document = it.next().getDocument();
+                list.add(new Form(document.getProperties()));
             }
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
 
     public Form create(String type) {
         Form form = new Form(type);
-        return saveOrUpdate(form) ? form : null;
+        return saveOrUpdate(form, null) ? form : null;
     }
 }

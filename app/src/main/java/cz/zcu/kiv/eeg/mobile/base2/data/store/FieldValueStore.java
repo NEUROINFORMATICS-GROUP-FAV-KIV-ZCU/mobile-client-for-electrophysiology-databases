@@ -21,7 +21,7 @@ public class FieldValueStore extends Store {
 
 
     public FieldValue create(FieldValue fieldValue) {
-        if (saveOrUpdate(fieldValue, databaseHelper.getDocument())) return fieldValue;
+        if (saveOrUpdate(fieldValue, null)) return fieldValue;
         return null;
     }
 

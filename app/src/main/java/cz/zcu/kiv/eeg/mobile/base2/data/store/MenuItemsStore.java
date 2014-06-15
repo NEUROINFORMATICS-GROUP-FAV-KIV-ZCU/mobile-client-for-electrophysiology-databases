@@ -1,10 +1,11 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.store;
 
+import android.util.Log;
+
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
-import com.couchbase.lite.QueryRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class MenuItemsStore extends Store {
         List<MenuItems> list = new ArrayList<MenuItems>();
         try {
             for (QueryEnumerator it = query.run(); it.hasNext(); ) {
-                QueryRow row = it.next();
-                list.add(new MenuItems(row.getDocumentProperties()));
+                Document document = it.next().getDocument();
+                list.add(new MenuItems(document.getProperties()));
             }
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
@@ -40,7 +41,8 @@ public class MenuItemsStore extends Store {
         List<MenuItems> list = new ArrayList<MenuItems>();
         try {
             for (QueryEnumerator it = query.run(); it.hasNext(); ) {
-                MenuItems menuItems = new MenuItems(it.next().getDocumentProperties());
+                Document document = it.next().getDocument();
+                MenuItems menuItems = new MenuItems(document.getProperties());
                 if (menuItems.getParentId() != null && menuItems.getParentId().getId() == parent.getId())
                     list.add(menuItems);
             }
@@ -62,12 +64,13 @@ public class MenuItemsStore extends Store {
 
     public MenuItems getMenu(int id) {
         Document document = getDocument(id);
+        Log.i(TAG, "-----------" + id);
         if (null != document) return new MenuItems(document.getProperties());
         return null;
     }
 
     public MenuItems getMenu(String name) {
-        Query query = getQuery("name");
+        Query query = getQuery();
         List<Object> keys = new ArrayList<Object>();
         keys.add(name);
         query.setKeys(keys);
@@ -86,7 +89,8 @@ public class MenuItemsStore extends Store {
         List<MenuItems> list = new ArrayList<MenuItems>();
         try {
             for (QueryEnumerator it = query.run(); it.hasNext(); ) {
-                MenuItems menuItems = new MenuItems(it.next().getDocumentProperties());
+                Document document = it.next().getDocument();
+                MenuItems menuItems = new MenuItems(document.getProperties());
                 if (menuItems.getParentId() == null)
                     list.add(menuItems);
             }

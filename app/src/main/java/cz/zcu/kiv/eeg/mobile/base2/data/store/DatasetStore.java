@@ -23,7 +23,7 @@ public class DatasetStore extends Store {
 
     public Dataset create(final Form form) {
         Dataset dataset = new Dataset(form);
-        saveOrUpdate(dataset);
+        saveOrUpdate(dataset, null);
         return dataset;
     }
 

@@ -55,6 +55,6 @@ public class LayoutPropertyStore extends Store {
     }
 
     public LayoutProperty create(LayoutProperty layoutProperty) {
-        return saveOrUpdate(layoutProperty, databaseHelper.getDocument()) ? layoutProperty : null;
+        return saveOrUpdate(layoutProperty, null) ? layoutProperty : null;
     }
 }
