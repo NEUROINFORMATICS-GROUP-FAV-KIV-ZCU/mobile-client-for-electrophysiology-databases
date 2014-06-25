@@ -40,6 +40,7 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 	private DAOFactory daoFactory;
 	private String formType;
 	private String layoutName;
+	private int fieldId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,8 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);	
-		actionBar.setIcon(R.drawable.ic_action_storage);			
+		actionBar.setIcon(R.drawable.ic_action_storage);	
+		actionBar.setTitle("Edit field");
 						
 		if (savedInstanceState != null) {
 			formType = savedInstanceState.getString(Form.FORM_TYPE);
@@ -68,6 +70,7 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 			if (extras != null) {
 				formType = extras.getString(Form.FORM_TYPE);
 				layoutName = extras.getString(Layout.LAYOUT_NAME);
+				fieldId = extras.getInt(Field.FIELD_ID, -1);
 			}					
 		}
 	}
@@ -80,12 +83,16 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 		return layoutName;
 	}
 	
-	/*@Override
+	public int getFieldId(){
+		return fieldId;
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);		
-		getMenuInflater().inflate(R.menu.field_add_menu, menu);		
+		getMenuInflater().inflate(R.menu.save_menu, menu);		
 		return true;
-	}*/
+	}
 		
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

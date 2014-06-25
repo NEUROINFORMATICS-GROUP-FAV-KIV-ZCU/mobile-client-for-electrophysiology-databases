@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 
@@ -86,5 +89,16 @@ public class DatasetDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void delete(final int dataset) {
+		try {		
+			DeleteBuilder<Dataset, Integer> deleteBuilder = getDataSetDao().deleteBuilder();
+			Where<Dataset, Integer> where = deleteBuilder.where();
+			where.eq("id", dataset);		
+			deleteBuilder.delete();								
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -64,7 +64,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, Void> {
 	
 	@Override
 	protected Void doInBackground(String... serviceUrl) {
-		User user = fragment.getDaoFactory().getUserDAO().getUser();
+		User user = null;////fragment.getDaoFactory().getUserDAO().getUser();
 		String url = user.getUrl() + serviceUrl[0];
 
 		HttpAuthentication authHeader = new HttpBasicAuthentication(user.getUsername(), user.getPassword());

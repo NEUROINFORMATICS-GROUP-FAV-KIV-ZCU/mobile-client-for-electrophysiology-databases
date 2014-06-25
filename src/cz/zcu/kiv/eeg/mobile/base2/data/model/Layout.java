@@ -21,6 +21,8 @@ public class Layout {
 	//public static final String INDEX_NAME = "layout_name_idx";
 	public static final String LAYOUT_NAME = "layoutName";
 	public static final String LAYOUT_ID = "layoutId";
+	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
+	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
 
 	/*@DatabaseField(generatedId = true)
 	private int id;*/
@@ -37,6 +39,12 @@ public class Layout {
 	
 	@DatabaseField(columnName = "xml_data")
 	private String xmlData;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
+	private Field previewMajor;
+
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
+	private Field previewMinor;
 
 	// pouze pomocná proměnná při získávání layoutu z ws
 	@Element
@@ -56,12 +64,14 @@ public class Layout {
 		this.name = name;
 	}
 
-	public Layout(String name, String xmlData, Form rootForm) {
+	public Layout(String name, String xmlData, Form rootForm, Field major, Field minor) {
 		super();
 		this.name = name;
 		this.xmlData = xmlData;
 		//this.rootLayout = rootLayout;
 		this.rootForm = rootForm;
+		this.previewMajor = major;
+		this.previewMinor = minor;
 	}
 
 	/*public Layout getRootLayout() {
@@ -102,5 +112,21 @@ public class Layout {
 
 	public void setRootForm(Form rootForm) {
 		this.rootForm = rootForm;
+	}
+
+	public Field getPreviewMajor() {
+		return previewMajor;
+	}
+
+	public void setPreviewMajor(Field previewMajor) {
+		this.previewMajor = previewMajor;
+	}
+
+	public Field getPreviewMinor() {
+		return previewMinor;
+	}
+
+	public void setPreviewMinor(Field previewMinor) {
+		this.previewMinor = previewMinor;
 	}
 }

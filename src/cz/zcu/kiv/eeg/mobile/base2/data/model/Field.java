@@ -17,6 +17,7 @@ public class Field {
 	public static final String FK_ID_FORM = "form_id";
 	public static final String INDEX_NAME = "field_form_name_idx";
 	public static final String FIELD_ID = "field_id";
+	public static final String DATA_TYPE = "data_type";
 
 	@DatabaseField(generatedId = true)
 	private int id;
@@ -26,9 +27,30 @@ public class Field {
 
 	@DatabaseField
 	private String type;
+	
+	@DatabaseField(columnName = DATA_TYPE)
+	private String dataType;
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
 	private Form form;
+	
+	@DatabaseField
+	private int minLength;
+	
+	@DatabaseField
+	private int maxLength;
+	
+	@DatabaseField
+	private int minValue;
+	
+	@DatabaseField
+	private int maxValue;
+	
+	@DatabaseField
+	private String defaultValue;
+	
+	@DatabaseField
+	private int action;
 
 	public Field() {
 		super();
@@ -65,11 +87,67 @@ public class Field {
 		this.type = type;
 	}
 
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
 	public Form getForm() {
 		return form;
 	}
 
 	public void setForm(Form form) {
 		this.form = form;
+	}
+
+	public int getMinLength() {
+		return minLength;
+	}
+
+	public void setMinLength(int minLength) {
+		this.minLength = minLength;
+	}
+
+	public int getMaxLength() {
+		return maxLength;
+	}
+
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
+	}
+
+	public int getMinValue() {
+		return minValue;
+	}
+
+	public void setMinValue(int minValue) {
+		this.minValue = minValue;
+	}
+
+	public int getMaxValue() {
+		return maxValue;
+	}
+
+	public void setMaxValue(int maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public int getAction() {
+		return action;
+	}
+
+	public void setAction(int action) {
+		this.action = action;
 	}
 }

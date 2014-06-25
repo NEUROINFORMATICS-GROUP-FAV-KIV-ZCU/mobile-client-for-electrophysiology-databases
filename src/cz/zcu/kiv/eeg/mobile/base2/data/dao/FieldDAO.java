@@ -7,13 +7,16 @@ import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * 
@@ -105,12 +108,35 @@ public class FieldDAO {
 		}
 		return null;
 	}
+	
+	public List<Field> getFieldsTextbox(final String rootForm) {
+		try {
+			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
+			queryBuilder.where().eq("form_id", rootForm).and().eq("type", "textbox");
+			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	
 	public List<Field> getFields(final Iterable<Integer> notIn, final String formType) {
 		try {
 			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
 			queryBuilder.where().notIn("id", notIn).and().eq("form_id", formType);
+			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Field> getModifyFields(final Form rootForm, int action) {
+		try {
+			QueryBuilder<Field, Integer> queryBuilder = getFieldDao().queryBuilder();
+			queryBuilder.where().eq("form_id", rootForm).and().gt("action", action);
+			queryBuilder.orderBy("id", true);
 			return queryBuilder.query();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -125,5 +151,16 @@ public class FieldDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void delete(int id) {
+		try {
+			DeleteBuilder<Field, Integer> deleteBuilder = getFieldDao().deleteBuilder();
+			Where<Field, Integer> where = deleteBuilder.where();
+			where.eq("id", id);
+			deleteBuilder.delete();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -25,6 +25,7 @@
     <string name="task_progress_msg">Progress:</string>
     <string name="start">Start</string>
     <string name="cancel">Cancel</string>
+    <string name="no_record">No record available</string>
     <string name="task_started_msg">Task started!</string>
     <string name="task_cancelled_msg">Task cancelled!</string>
     <string name="task_complete_msg">Task complete!</string>
@@ -35,19 +36,34 @@
     <string name="discard">Discard</string>
     <string name="back">Back</string>
     <string name="remove">Remove</string>
+    <string name="delete">Delete</string>
+    <string name="delete_folder">Delete workspace</string>
+    <string name="delete_formr">Delete form</string>
     <string name="edit">Edit</string>
+    <string name="edit_preview_fields">Edit preview fields</string>
+    <string name="rename">Rename</string>
+    <string name="save_changes">Save changes</string>
 
     <!-- Settings activity -->
+    <string name="settings_workspace_name">Workspace name</string>
+    <string name="edit_workspace">Edit workspace</string>
     <string name="app_settings">Login Settings</string>
+    <string name="settings_optional">Optional login</string>
     <string name="settings_username">Username</string>
     <string name="settings_password">Password</string>
     <string name="settings_url">Service URL</string>
     <string name="settings_saved">Settings saved.</string>
     <string name="settings_login">Login</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_layout_name">Layout name</string>
+    <string name="settings_layout_downloaded">Downloaded</string>
+    <string name="settings_new">New ...</string>
+    <string name="settings_add">Add</string>
 
     <!-- Form management -->
     <string name="form_section">Form</string>
     <string name="form_layout_section">Layout</string>
+    <string name="form_layout_generated">-generated</string>
     <string name="form_fields_section">Fields</string>
     <string name="form_preview_section">Form preview</string>
     <string name="form_plus">Add...</string>
@@ -67,15 +83,20 @@
     <string name="form_move">Move fields</string>
     <string name="form_name">Form Name</string>
     <string name="form_layouts">Select Layout</string>
-    <string name="form_type">Select Form Type (Database entity)</string>
+    <string name="form_type">Select Form Type</string>
     <string name="form_create_type">Create new form type ...</string>
+    <string name="form_manager">Form manager</string>
+    <string name="form_preview_fields">Preview</string>
     <string name="form_create_fields">Create fields ...</string>
     <string name="form_edit_field">Edit field</string>
+    <string name="form_create_form">Create form</string>
     <string name="form_create_type_title">Create New Form Type</string>
     <string name="form_fields">Select field</string>
     <string name="form_list_of_fields">List Of Fields</string>
     <string name="form_previewMajor">Preview Major</string>
     <string name="form_previewMinor">Preview Minor</string>
+    <string name="form_change_preview">Change preview fields</string>
+     <string name="form_empty_list">No data. Tap to create new form.</string>
 
     <!-- Field management -->
     <string name="field_label">Label</string>
@@ -89,8 +110,17 @@
     <string name="field_noUnusedFields">No unused fields</string>
     <string name="field_exists">The field name already exists</string>
     <string name="field_was_created">The field was created</string>
+    <string name="field_was_edited">The field was edited</string>
+    <string name="field_description">Description</string>
+    <string name="field_datatype">Data type</string>
+    <string name="field_minLength">Minimum length</string>
+    <string name="field_maxLength">Maximum length</string>
+    <string name="field_minValue">Minimum value</string>
+    <string name="field_maxValue">Maximum value</string>
+    <string name="field_defaultValue">Default value</string>
+    <string name="field_newItem">Add item</string>
     
-
+    
     <!-- person management -->
     <string name="person_add">Add person</string>
     <string name="person_name">Name</string>
@@ -109,7 +139,7 @@
 
     <!-- drawer management -->
     <string name="drawer_createNewfolder">Create New Folder</string>
-    <string name="drawer_newfolder">New Folder</string>
+    <string name="drawer_new_workspace">New Workspace</string>
 
     <color name="red">#FFFF0000</color>
 
@@ -119,7 +149,9 @@
     <string name="error_date_comparison">Reservation action cannot end before it even started!</string>
     <string name="error_unknown_host">Invalid host name/address!</string>
     <string name="error_invalid_password">Password must be entered!</string>
-    <string name="error_invalid_url">Entered value is not invalid URL!</string>
+    <string name="error_invalid_workspace_name">Workspace name must be entered!</string>   
+    <string name="error_ivalid_workspace_name_exists">The workspace already exists!</string>
+    <string name="error_invalid_url">Entered value is invalid URL!</string>
     <string name="error_invalid_username">Username must be an email!</string>
     <string name="error_host_unreach">Host unavailable (no route exist). Is hostname/IP correct?</string>
     <string name="error_host_timeout">Connection timeout. Try again.</string>
@@ -160,6 +192,7 @@
     <string name="error_empty_form_name">Form name must be filled</string>
     <string name="error_layout_no_fields">Add fields to layout (Press "Edit layout button ...")</string>
     <string name="field_empty_name">Empty field name</string>
+    <string name="field_fill_item_name">Fill item name</string>
 
     <!-- Working -->
     <string name="working_ws_credentials">Verifying login information…</string>
@@ -168,5 +201,10 @@
     <!-- Spinners -->
     <string name="spinner_layout">[Select layout...]</string>
     <string name="spinner_field">[Select field...]</string>
+    
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_remove_item">Remove item</string>
+    <string name="dialog_button_clear_selection">Clear selection</string>
 
 </resources>

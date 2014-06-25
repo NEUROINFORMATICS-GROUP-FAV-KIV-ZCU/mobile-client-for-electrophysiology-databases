@@ -34,9 +34,11 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 	private static final String TAG = TestCreditialsTask.class.getSimpleName();
 	private TaskFragment fragment;
+	private User user;
 
-	public TestCreditialsTask(TaskFragment fragment) {
+	public TestCreditialsTask(TaskFragment fragment, User user) {
 		this.fragment = fragment;
+		this.user = user;
 	}
 
 	@Override
@@ -46,11 +48,10 @@ public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 
 	@Override
 	protected User doInBackground(Void... ignore) {
-		User testUser = fragment.getDaoFactory().getUserDAO().getTestUser();
-		testUser.setFirstName(null);		
-		String url = testUser.getUrl() + Values.SERVICE_USER_LOGIN + "login";
+		user.setFirstName(null);		
+		String url = user.getUrl() + Values.SERVICE_USER_LOGIN + "login";
 
-		HttpAuthentication authHeader = new HttpBasicAuthentication(testUser.getUsername(), testUser.getPassword());
+		HttpAuthentication authHeader = new HttpBasicAuthentication(user.getUsername(), user.getPassword());
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setAuthorization(authHeader);
 		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
@@ -62,27 +63,25 @@ public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 		try {
 			ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
 			User tmp = response.getBody();
-			testUser.setFirstName(tmp.getFirstName());
-			testUser.setSurname(tmp.getSurname());
-			testUser.setRights(tmp.getRights());		
+			user.setFirstName(tmp.getFirstName());
+			user.setSurname(tmp.getSurname());
+			user.setRights(tmp.getRights());		
 		} catch (Exception e) {
 			fragment.setState(ERROR, e);
 			Log.i("test", "testovnicek");
 			Log.e(TAG, e.getMessage(), e);
 		}		
-		return testUser;
+		return user;
 	}
 
 	@Override
 	protected void onPostExecute(User testUser) {
 		fragment.setState(DONE);
+		
 		if (testUser.getFirstName() != null) {
-			testUser.setId(2); //ověřený uživatel
-			fragment.getDaoFactory().getUserDAO().saveOrUpdate(testUser);
-			Intent intent = new Intent(fragment.activity, DashboardActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			fragment.activity.startActivity(intent);
-			fragment.activity.finish();
+			fragment.dashboard.saveNewWorkspace(false, true);
+			//fragment.getDaoFactory().getUserDAO().saveOrUpdate(testUser);
+			
 		}
 	}
 

@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -49,6 +51,11 @@ public class ViewNode {
 	private ActionMode mActionMode;
 	private ViewBuilder vb;
 	private MenuItems menuItem;
+	
+	public ViewNode(Field field, LayoutProperty property) {			
+		this.field = field;
+		this.property = property;
+	}
 
 	public ViewNode(View node, Field field, LayoutProperty property, Context ctx, FormDetailsFragment fragment, ViewBuilder vb) {
 		this.ctx = ctx;
@@ -61,6 +68,7 @@ public class ViewNode {
 				LinearLayout.LayoutParams.MATCH_PARENT));
 		layout = new LinearLayout(ctx);
 		layout.setTag(R.id.NODE_ID, property.getIdNode());
+		layout.setTag(R.id.FIELD_ID, field.getId());
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, property
 				.getWeight()));
@@ -81,6 +89,7 @@ public class ViewNode {
 
 			if (field.getType().equals(Values.FORM)) {
 				RelativeLayout labelLayout = new RelativeLayout(ctx);
+				labelLayout.setTag(R.id.NODE_ID, property.getIdNode());
 
 				label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 				label.setId(1);
@@ -104,17 +113,20 @@ public class ViewNode {
 		
 				final Layout subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
 				menuItem = vb.getSubmenuItem(property, subLayout);
-
+				
+				
+				
 				button.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {	
-						//fragment.showSubform(Values.FORM_NEW_SUBFORM, 0, menuItem, field.getId());	
+						vb.selectHardwareDialog(subLayout, property, (LinearLayout)node);
+						/*//fragment.showSubform(Values.FORM_NEW_SUBFORM, 0, menuItem, field.getId());	
 						LinearLayout spinnerLayout = (LinearLayout) node;
 						int size = spinnerLayout.getChildCount();
 						Spinner emptyItem = (Spinner)spinnerLayout.getChildAt(size - 1);
 						Spinner newItem = vb.createSubformItem(property, subLayout, field, spinnerLayout, menuItem, "");
 						emptyItem.setVisibility(View.VISIBLE);				
-						spinnerLayout.addView(newItem, size - 1);					
+						spinnerLayout.addView(newItem, size - 1);		*/			
 					}
 				});
 
@@ -128,12 +140,17 @@ public class ViewNode {
 	}
 
 	public String getData() {
-		if (node instanceof TextView) {
+		if(node instanceof CheckBox){
+			return  ((CheckBox) node).isChecked()? "1" : "0";
+		}
+		else if (node instanceof TextView) {
 			return ((TextView) node).getText().toString();
 		} else if ((node instanceof Spinner)) {
 			return (String) ((Spinner) node).getSelectedItem();
 		} else if (node instanceof LinearLayout) {
 
+		}else if(node instanceof CheckBox){
+			return  ((CheckBox) node).isChecked()? "1" : "0";
 		}
 		/*
 		 * else if (view instanceof TextView) { TextView textView = (TextView) view; // do what you want with textView }
@@ -171,13 +188,19 @@ public class ViewNode {
 
 	// drag and drop pro vyplňované pole
 	public void setEditor(SparseArray<ViewNode> nodes) {
-		// background = layout.getBackground(); přesunuto do konstruktoru
 		Drawable dragShape = ctx.getResources().getDrawable(R.drawable.shape);
 
-		node.setOnTouchListener(new LayoutTouchListener());
-		node.setOnDragListener(new LayoutDragListener(ctx, nodes));
-		label.setOnTouchListener(new LayoutTouchListener());
-		label.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		if(field.getType().equalsIgnoreCase(Values.FORM)){
+			RelativeLayout parent = (RelativeLayout)label.getParent();
+			parent.setOnTouchListener(new LayoutTouchListener());
+			parent.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		}else{
+			node.setOnTouchListener(new LayoutTouchListener());
+			node.setOnDragListener(new LayoutDragListener(ctx, nodes));
+			label.setOnTouchListener(new LayoutTouchListener());
+			label.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		}
+		
 
 		layout.setBackgroundDrawable(dragShape);
 	}
@@ -196,19 +219,58 @@ public class ViewNode {
 		final Drawable touchShape = ctx.getResources().getDrawable(R.drawable.shape_droptarget);
 		layout.setBackgroundDrawable(editShape);
 
-		node.setOnLongClickListener(new View.OnLongClickListener() {
-			// Called when the user long-clicks on someView
-			public boolean onLongClick(View view) {
-				if (mActionMode != null) {
-					return false;
+		
+		// disable editable
+		node.setFocusable(false);
+		node.setFocusableInTouchMode(false);
+		node.setClickable(false);
+		
+		if(node instanceof EditText){
+			node.setOnLongClickListener(new View.OnLongClickListener() {
+				// Called when the user long-clicks on someView
+				public boolean onLongClick(View view) {
+					if (mActionMode != null) {
+						return false;
+					}
+					// Start the CAB using the ActionMode.Callback defined above
+					mActionMode = activity.startActionMode(mActionModeCallback);
+					layout.setBackgroundDrawable(touchShape);
+					view.setSelected(true);
+					return true;
 				}
-				// Start the CAB using the ActionMode.Callback defined above
-				mActionMode = activity.startActionMode(mActionModeCallback);
-				layout.setBackgroundDrawable(touchShape);
-				view.setSelected(true);
-				return true;
-			}
-		});
+			});
+			label.setOnLongClickListener(new View.OnLongClickListener() {
+				// Called when the user long-clicks on someView
+				public boolean onLongClick(View view) {
+					if (mActionMode != null) {
+						return false;
+					}
+					// Start the CAB using the ActionMode.Callback defined above
+					mActionMode = activity.startActionMode(mActionModeCallback);
+					layout.setBackgroundDrawable(touchShape);
+					view.setSelected(true);
+					return true;
+				}
+			});
+		}else{
+			//node.setOnLongClickListener(new View.OnLongClickListener() {
+			layout.setOnLongClickListener(new View.OnLongClickListener() {
+				// Called when the user long-clicks on someView
+				public boolean onLongClick(View view) {
+					if (mActionMode != null) {
+						return false;
+					}
+					// Start the CAB using the ActionMode.Callback defined above
+					mActionMode = activity.startActionMode(mActionModeCallback);
+					layout.setBackgroundDrawable(touchShape);
+					view.setSelected(true);
+					return true;
+				}
+			});
+		}
+		
+		
+		
 	}
 
 	public void removeLocalEdit() {
@@ -244,6 +306,10 @@ public class ViewNode {
 			switch (item.getItemId()) {
 			case R.id.form_remove_field:
 				vb.removeFieldFromForm(property.getIdNode());
+				mode.finish(); // Action picked, so close the CAB
+				return true;
+			case R.id.form_edit_field:
+				fragment.editField(field.getId());
 				mode.finish(); // Action picked, so close the CAB
 				return true;
 			default:

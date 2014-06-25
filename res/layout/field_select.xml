@@ -45,22 +45,5 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/field_label"
         android:ems="10" />
-
-    <Button
-        android:id="@+id/field_add_unused_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/field_edit_Label"
-        android:layout_alignRight="@+id/field_edit_Label"
-        android:layout_below="@+id/field_edit_Label"
-        android:text="@string/field_addToLayout" />
-
-    <TextView
-        android:id="@+id/field_options_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/field_add_unused_button"
-        android:layout_below="@+id/field_add_unused_button"
-        android:text="@string/field_options" />
     
 </RelativeLayout>

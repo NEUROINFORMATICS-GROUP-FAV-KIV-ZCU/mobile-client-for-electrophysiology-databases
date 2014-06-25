@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
@@ -85,7 +86,7 @@ public class FieldSelectFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				field = (Field) parent.getItemAtPosition(pos);
 				property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
-				initFields();
+				initFields(field.getName());
 			}
 
 			@Override
@@ -93,34 +94,36 @@ public class FieldSelectFragment extends Fragment {
 				// do nothing
 			}
 		});
-
-		Button button = (Button) view.findViewById(R.id.field_add_unused_button);
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				addSelectField();
-			}
-		});
 	}
 
-	private void initFields() {
+	private void initFields(String name) {
 		if(property != null){
 			label.setText(property.getLabel());
-		}	
+		}else{
+			label.setText(name);
+		}
 	}
 
-	private void addSelectField() {
+	private void addSelectField(int action) {
 		if (!fieldAdapter.isEmpty()) {
 			saveChanges();
 			fieldAdapter.remove(field);
 
 			newFields.add(field.getId());
+			if(action == Values.ACTION_ADD){
+				field.setAction(Values.ACTION_ADD);
+			}else{
+				field.setAction(Values.ACTION_REMOVE);
+			}
+			
+			daoFactory.getFieldDAO().update(field);				
 
 			if (!fieldAdapter.isEmpty()) {
 				fieldSpinner.setSelection(0, true);
-				field = (Field) fieldSpinner.getItemAtPosition(0);
+				field = (Field) fieldSpinner.getItemAtPosition(0);			
 				property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
-				initFields();
+				property.setLabel(field.getName());
+				initFields(field.getName());								
 			} else {
 				removeFieldData();
 			}
@@ -153,13 +156,16 @@ public class FieldSelectFragment extends Fragment {
 		case android.R.id.home:
 			return false;
 		case R.id.field_discard:
+			addSelectField(Values.ACTION_REMOVE);
 			activity.finish();
 			return true;
-		case R.id.field_save:
-			Intent data = new Intent();
+		case R.id.form_add_field:
+			addSelectField(Values.ACTION_ADD);
+			/*Intent data = new Intent();
 			data.putExtra(Field.FIELD_ID, newFields);
 			activity.setResult(Activity.RESULT_OK, data);
-			activity.finish();
+			activity.finish();*/
+			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

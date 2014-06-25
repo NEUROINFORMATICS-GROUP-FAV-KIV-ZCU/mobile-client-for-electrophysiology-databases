@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp" >
+
+    <LinearLayout
+        android:id="@+id/form_addLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp" >
+            
+        <!-- Minor x Major -->
+
+        <TextView
+            android:id="@+id/form_labelPreviewMajor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_previewMajor" />
+
+        <Spinner
+            android:id="@+id/form_spinnerPreviewMajor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/form_labelPreviewMinor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_previewMinor" />
+
+        <Spinner
+            android:id="@+id/form_spinnerPreviewMinor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/form_change_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/form_change_preview" />
+
+    </LinearLayout>
+
+</ScrollView>

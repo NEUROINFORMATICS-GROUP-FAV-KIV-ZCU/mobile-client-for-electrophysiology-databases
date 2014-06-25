@@ -13,7 +13,6 @@ import java.util.Vector;
 //import odml.core.Reader;
 //import odml.core.Section;
 
-
 import odml.core.Reader;
 import odml.core.Section;
 import odml.core.Writer;
@@ -42,6 +41,7 @@ public class FormBuilder {
 	private String xmlData;
 	private Section odmlForm;
 	private Section odmlRoot;
+	private String layoutName;
 
 	public FormBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
 		this.daoFactory = daoFactory;
@@ -49,60 +49,83 @@ public class FormBuilder {
 		Reader reader;
 		try {
 			reader = new Reader();
-			// this.xmlData = getStringFromInputStream(data.getBody().getInputStream());
-			this.xmlData = getStringFromInputStream(readOdmlFromFile()); //todo testovaci odstranit tadz to nebude treba
+			this.xmlData = getStringFromInputStream(data.getBody().getInputStream());
+			 //this.xmlData = getStringFromInputStream(readOdmlFromFile()); // todo testovaci odstranit tadz to nebude
+			// treba
 
-			 //odmlRoot = reader.load(data.getBody().getInputStream());
-			odmlRoot = reader.load(readOdmlFromFile());// todo testovaci
+			odmlRoot = reader.load(data.getBody().getInputStream());
+			 //odmlRoot = reader.load(readOdmlFromFile());// todo testovaci
 			odmlForm = odmlRoot.getSection(0);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 		}
 	}
 
-	public void start() {
+	public String start() {
 		if (odmlForm.getType().equalsIgnoreCase(Values.FORM)) {
 			Form rootForm = saveForm(odmlForm);
-			Layout layout = saveLayout(getLayoutName(odmlForm), rootForm);
+			Layout layout = saveLayout(odmlForm, rootForm);
 			saveFormLayouts(rootForm, layout);
 			createFields(odmlForm.getSections(), rootForm, layout);
+			return layout.getName();
 		}
+		return "";
 	}
 
 	public void createFields(Vector<Section> sections, Form form, Layout layout) {
-		for (Section section : sections) {
-			if (section.getType().equalsIgnoreCase(Values.FORM)) {
-				Form subform = saveForm(section);
+		if (sections != null) {
+			for (Section section : sections) {
+				if (section.getType().equalsIgnoreCase(Values.FORM)) {
+					Form subform = saveForm(section);
 
-				Writer writer = new Writer(section);
-				OutputStream stream = new ByteArrayOutputStream();
-				writer.write(stream);
-				xmlData = stream.toString();
+					Writer writer = new Writer(section);
+					OutputStream stream = new ByteArrayOutputStream();
+					writer.write(stream);
+					xmlData = stream.toString();
 
-				Layout subLayout = saveLayout(getLayoutName(section), subform);
-				//Layout subLayout = saveLayout(getLayoutName(section), layout, subform);
-				saveField(section, form, subform, layout, subLayout);
-				createFields(section.getSections(), subform, subLayout);
-			} else {
-				saveField(section, form, null, layout, null);
+					Layout subLayout = saveLayout(section, subform);
+					saveField(section, form, subform, layout, subLayout);				
+					createFields(section.getSections(), subform, subLayout);
+				} else {
+					saveField(section, form, null, layout, null);
+				}
 			}
 		}
 	}
-	
+
 	private Form saveForm(Section formSection) {
 		return daoFactory.getFormDAO().saveOrUpdate(formSection.getReference(), odmlRoot.getDocumentDate());
 	}
 
-	private Layout saveLayout(String name, Form form) {
-	//private Layout saveLayout(String name, Layout rootLayout, Form form) {
-		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, xmlData, form);
+	private Layout saveLayout(Section formSection, Form form) {
+		String name;
+		Field major = null;
+		Field minor = null;
+		
+		if (formSection.getProperty(Layout.LAYOUT_NAME) != null) {
+			name =  formSection.getProperty(Layout.LAYOUT_NAME).getText();
+		}
+		// na serveru generatoru to chce upravit - neuklada se layout pro podformulář
+		name = formSection.getReference() + "-generated";
+		
+		if (formSection.getProperty("previewMajor") != null) {
+			String fieldName = formSection.getProperty("previewMajor").getText();
+			major = createPrevField(fieldName, form);
+		}
+			
+		if (formSection.getProperty("previewMinor") != null) {
+			String fieldName = formSection.getProperty("previewMinor").getText();
+			minor = createPrevField(fieldName, form);
+		}
+		
+		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, xmlData, form, major, minor);		
 		if (layout == null) {
 			layout = daoFactory.getLayoutDAO().getLayout(name);
 		}
 		return layout;
 	}
-	
-	private void saveFormLayouts(Form form, Layout layout){
+
+	private void saveFormLayouts(Form form, Layout layout) {
 		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
 	}
 
@@ -111,9 +134,11 @@ public class FormBuilder {
 
 		if (field == null) {
 			field = new Field(fieldSection.getName(), fieldSection.getType(), form);
+			setTextboxOptions(fieldSection, field);
 			daoFactory.getFieldDAO().create(field);
 		} else if (field.getType() == null) {
 			field.setType(fieldSection.getType());
+			setTextboxOptions(fieldSection, field);
 			daoFactory.getFieldDAO().update(field);
 		}
 
@@ -142,7 +167,7 @@ public class FormBuilder {
 		} else {
 			property.setWeight(100);
 		}
-		// zatím hodnoty pouze pro combobox
+		// combobox
 		if (fieldSection.getProperty("values") != null) {
 			for (Object value : fieldSection.getProperty("values").getValues()) {
 				daoFactory.getFieldValueDAO().saveOrUpdate(new FieldValue((String) value, field));
@@ -166,6 +191,29 @@ public class FormBuilder {
 		daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
 	}
 
+	private void setTextboxOptions(Section fieldSection, Field field) {
+		if (fieldSection.getProperty("datatype") != null) {
+			field.setDataType(fieldSection.getProperty("datatype").getText());
+		} else {
+			field.setDataType(Values.STRING);
+		}
+		if (fieldSection.getProperty("minLength") != null) {
+			field.setMinLength(Integer.parseInt(fieldSection.getProperty("minLength").getText()));
+		}
+		if (fieldSection.getProperty("maxLength") != null) {
+			field.setMaxLength(Integer.parseInt(fieldSection.getProperty("maxLength").getText()));
+		}
+		if (fieldSection.getProperty("minValue") != null) {
+			field.setMinValue(Integer.parseInt(fieldSection.getProperty("minValue").getText()));
+		}
+		if (fieldSection.getProperty("maxValue") != null) {
+			field.setMaxValue(Integer.parseInt(fieldSection.getProperty("maxValue").getText()));
+		}
+		if (fieldSection.getProperty("defaultValue") != null) {
+			field.setDefaultValue(fieldSection.getProperty("defaultValue").getText());
+		}
+	}
+
 	private Field createPrevField(String fieldName, Form form) {
 		Field prew = daoFactory.getFieldDAO().getField(fieldName, form.getType());
 		if (prew == null) {
@@ -175,9 +223,6 @@ public class FormBuilder {
 		return prew;
 	}
 
-	private String getLayoutName(Section form) {
-		return form.getProperty(Layout.LAYOUT_NAME).getText();
-	}
 
 	private static String getStringFromInputStream(InputStream is) {
 		BufferedReader br = null;

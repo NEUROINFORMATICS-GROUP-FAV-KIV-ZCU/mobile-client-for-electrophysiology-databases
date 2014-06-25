@@ -1,10 +1,12 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
 /**
@@ -33,22 +35,22 @@ public class UserDAO {
 		}
 		return null;
 	}
-
-	public User getUser() {
+	
+	public User getUser(int id){
 		try {
-			return getUserDao().queryForId(2);
+			return getUserDao().queryForId(id);		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public User getTestUser() {
+	public List<User> getUser(){
 		try {
-			return getUserDao().queryForId(1);
+			return getUserDao().queryForAll();		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
-	}	
+	}
 }

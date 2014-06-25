@@ -9,6 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
 /**
@@ -18,15 +20,30 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
  */
 public class ValidationUtils {
 
-	public static String isUserValid(Context cx, User user) {
+	public static String isWorkspaceValid(Context cx, User user, String workspaceName, DAOFactory daoFactory,
+			boolean isEdit) {
 		StringBuilder error = new StringBuilder();
-		if (isUsernameFormatInvalid(user.getUsername()))
-			error.append(cx.getString(R.string.error_invalid_username)).append('\n');
-		if (isPasswordFormatInvalid(user.getPassword()))
-			error.append(cx.getString(R.string.error_invalid_password)).append('\n');
-		if (isUrlFormatInvalid(user.getUrl()))
-			error.append(cx.getString(R.string.error_invalid_url)).append('\n');
 
+		if (isEmpty(workspaceName)) {
+			error.append(cx.getString(R.string.error_invalid_workspace_name)).append('\n');
+		} else {
+			if (!isEdit) {
+				MenuItems menu = daoFactory.getMenuItemDAO().getMenu(workspaceName);
+				if (menu != null) {
+					error.append(cx.getString(R.string.error_ivalid_workspace_name_exists)).append('\n');
+				}
+			}
+		}
+
+		if (!user.getUsername().equals("") || !user.getPassword().equals("") 
+				|| !user.getUrl().equalsIgnoreCase("https://uu404p22-kiv.fav.zcu.cz:8443")){//|| !user.getUrl().equals("https://")) {
+			if (isUsernameFormatInvalid(user.getUsername()))
+				error.append(cx.getString(R.string.error_invalid_username)).append('\n');
+			if (isPasswordFormatInvalid(user.getPassword()))
+				error.append(cx.getString(R.string.error_invalid_password)).append('\n');
+			if (isUrlFormatInvalid(user.getUrl()))
+				error.append(cx.getString(R.string.error_invalid_url)).append('\n');
+		}
 		return error.toString();
 	}
 

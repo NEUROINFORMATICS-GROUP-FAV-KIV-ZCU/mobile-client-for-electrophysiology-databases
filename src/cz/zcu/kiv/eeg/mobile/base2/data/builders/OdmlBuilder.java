@@ -88,4 +88,11 @@ public class OdmlBuilder {
 			Log.e(TAG, e1.getMessage());
 		}
 	}
+	
+	public static void createDefaultODML(Field field, Layout layout, LayoutProperty property, DAOFactory daoFactory) {
+		ViewNode node = new ViewNode(field, property);
+		SparseArray<ViewNode> nodes = new SparseArray<ViewNode>();
+		nodes.put(1, node);
+		createODML(nodes, layout, daoFactory);	
+	}
 }

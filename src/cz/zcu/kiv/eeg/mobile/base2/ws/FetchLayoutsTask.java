@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.mobile.base2.ws;
 
 import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.DONE;
 import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.ERROR;
+import static cz.zcu.kiv.eeg.mobile.base2.data.TaskState.RUNNING;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,11 +25,13 @@ import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutDialogAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.FormBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutList;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 
@@ -37,19 +40,24 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
  * @author Jaroslav Hošek
  * 
  */
-public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
+public class FetchLayoutsTask extends AsyncTask<Void, Integer, ArrayList<String>> {
 	private static final String TAG = FetchLayoutsTask.class.getSimpleName();
 	private TaskFragment fragment;
-	private FormTypeSpinnerAdapter formAdapter;
+	private MenuItems menu;
 
-	public FetchLayoutsTask(TaskFragment fragment, FormTypeSpinnerAdapter formAdapter) {
+	public FetchLayoutsTask(TaskFragment fragment, MenuItems menu ) {
 		this.fragment = fragment;
-		this.formAdapter = formAdapter;
+		this.menu = menu;
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		fragment.setState(RUNNING, R.string.working_ws_layouts);
 	}
 
 	@Override
-	protected Void doInBackground(Void... ignore) {
-		User user = fragment.getDaoFactory().getUserDAO().getUser();
+	protected ArrayList<String> doInBackground(Void... ignore) {
+		User user = menu.getCredential();
 		String urlAvailableLayouts = user.getUrl() + Values.SERVICE_GET_AVAILABLE_LAYOUTS;
 
 		HttpAuthentication authHeader = new HttpBasicAuthentication(user.getUsername(), user.getPassword());
@@ -62,6 +70,8 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 		restTemplate.getMessageConverters().add(new ResourceHttpMessageConverter());
 		restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
+		
+		ArrayList<String> layouts = new ArrayList<String>();
 
 		try {
 			ResponseEntity<LayoutList> responseList = restTemplate.exchange(urlAvailableLayouts, HttpMethod.GET,
@@ -69,6 +79,7 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 			LayoutList body = responseList.getBody();
 
 			if (body != null) {
+				fragment.setState(DONE); // konec nekonečného progresu
 				fragment.createProgressBarHorizontal(body.size(), R.string.working_ws_layouts);
 				System.out.println("layouty ulozeny" + body.size());
 
@@ -76,33 +87,22 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, Void> {
 					String urlLayout = user.getUrl()+ String.format(Values.SERVICE_GET_LAYOUT, layout.getFormName(), layout.getName());
 					ResponseEntity<Resource> result = restTemplate.exchange(urlLayout, HttpMethod.GET, entity,
 							Resource.class);
-					new FormBuilder(fragment.getDaoFactory(), result).start();
+					FormBuilder formBuilder = new FormBuilder(fragment.getDaoFactory(), result);
+					layouts.add(formBuilder.start());
 					publishProgress(1);
 				}
 			}
 		} catch (Exception e) {
 			fragment.setState(ERROR, e);
-			Log.e(TAG, e.getMessage(), e);
+			Log.e(TAG, e.getMessage(), e);		
 		}
-		return null;
+		return layouts;
 	}
 
 	@Override
-	protected void onPostExecute(Void v) {
+	protected void onPostExecute(ArrayList<String> layouts) {
 		fragment.setState(DONE);
-
-		formAdapter.clear();
-		for (Form form : (ArrayList<Form>) fragment.getDaoFactory().getFormDAO().getForms()) {
-			formAdapter.add(form);
-		}
-		//formAdapter = new FormTypeSpinnerAdapter(fragment.getActivity(), R.layout.spinner_row_simple, (ArrayList<Form>) fragment.getDaoFactory().getFormDAO().getForms());
-		
-		
-		//formAdapter.notifyDataSetChanged();
-
-		// TODO napsat kolik sem jich naimportoval
-		// //Toast.makeText(fragment.activity, R.string.settings_saved,
-		// Toast.LENGTH_SHORT).show();
+		fragment.dashboard.createSelectLayoutDialog(layouts);	
 	}
 
 	@Override

@@ -57,6 +57,13 @@ public class Values {
 	
 	// ViewBuilder
 	public static final String FORM = "form";
+	public static final String CHECKBOX = "checkbox";
+	public static final String TEXTBOX = "Textbox";
+	public static final String COMBOBOX = "Combobox";
+	public static final String STRING = "String";
+	public static final String INTEGER = "Integer";
+	public static final String EMAIL = "Email";
+	public static final String DATE = "Date";
 	
 	public static final int NODE_ID = 1;
 	public static final int NEW_DATA = -1;
@@ -70,6 +77,11 @@ public class Values {
 	// FORM
 	public static final int TYPE_MODE = 1;
 	public static final int LAYOUT_MODE = 2;
+	
+	// FIELD
+	public static final int ACTION_EDIT = 1;
+	public static final int ACTION_ADD = 2;
+	public static final int ACTION_REMOVE = 3;
 
 	//MENU
 	public static final String MENU_ITEM_ID = "menuItem_id";
@@ -77,6 +89,10 @@ public class Values {
 	public static final String ICON_FOLDER = "ic_action_collection";
 	public static final String ICON_COPY = "ic_action_copy_dark";
 	public static final String ICON_FOLDER_UP = "ic_action_collection_up";
+	public static final int WORKSPACE_NEW = 1;
+	public static final int WORKSPACE_EDIT = 2;
+	public static final int WORKSPACE_DELETE = 3;
+	
 
 	// ODML
 	public static final String ODML_STRING_TYPE = "string";

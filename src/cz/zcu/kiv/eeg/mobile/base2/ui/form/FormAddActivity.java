@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -29,11 +30,13 @@ import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.builders.OdmlBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
@@ -60,10 +63,12 @@ public class FormAddActivity extends TaskFragmentActivity {
 	private Spinner fieldSpinner;
 	private Spinner previewMajor;
 	private Spinner previewMinor;
-	private int rootMenuId;
+	private MenuItems menu;
 
 	private boolean isNewField = false;
-	private boolean isEditLayout= false;
+	private boolean isEditLayout = false;
+	private boolean isInitEditForm = false;
+	private boolean isEditForm = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +81,13 @@ public class FormAddActivity extends TaskFragmentActivity {
 		actionBar.setIcon(R.drawable.ic_action_event);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
+		int rootMenuId;
 		if (savedInstanceState == null) {
 			rootMenuId = getIntent().getExtras().getInt(MenuItems.ROOT_MENU);
 		} else {
 			rootMenuId = savedInstanceState.getInt(MenuItems.ROOT_MENU);
 		}
+		menu = daoFactory.getMenuItemDAO().getMenu(rootMenuId);
 
 		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "Fragment");
@@ -89,13 +96,14 @@ public class FormAddActivity extends TaskFragmentActivity {
 			fm.beginTransaction().add(mTaskFragment, "taskFragment").commit();
 		}
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-		
+
 		typeSpinner = (Spinner) findViewById(R.id.form_spinnerType);
 		layoutSpinner = (Spinner) findViewById(R.id.form_spinnerLayout);
 		fieldSpinner = (Spinner) findViewById(R.id.form_spinnerFields);
 		previewMajor = (Spinner) findViewById(R.id.form_spinnerPreviewMajor);
 		previewMinor = (Spinner) findViewById(R.id.form_spinnerPreviewMinor);
 		initTypeSpinner();
+		editForm();
 	}
 
 	@Override
@@ -105,12 +113,40 @@ public class FormAddActivity extends TaskFragmentActivity {
 			initFieldSpinner(daoFactory.getFieldDAO().getFields(form.getType()));
 			isNewField = false;
 		}
-		if(isEditLayout){
+		if (isEditLayout) {
 			Form form = (Form) typeSpinner.getSelectedItem();
 			initLayoutSpinner(form);
 			isEditLayout = false;
 		}
 		super.onResume();
+	}
+
+	private void editForm() {
+		if (menu.getParentId() != null) {
+			Form form = daoFactory.getFormDAO().getForm(menu.getRootForm().getType());
+			int position = typeAdapter.getPosition(form);
+
+			typeSpinner.setSelection(position);
+
+			initLayoutSpinner(form);
+			Layout layout = daoFactory.getLayoutDAO().getLayout(menu.getLayout().getName());
+			position = layoutAdapter.getPosition(layout);
+			layoutSpinner.setSelection(position);
+
+			initFieldSpinner(daoFactory.getFieldDAO().getFields(form.getType()));
+			FieldSpinnerAdapter adapter = (FieldSpinnerAdapter) previewMajor.getAdapter();
+			position = adapter.getPosition(menu.getPreviewMajor());
+			previewMajor.setSelection(position);
+
+			FieldSpinnerAdapter adapter2 = (FieldSpinnerAdapter) previewMinor.getAdapter();
+			position = adapter2.getPosition(menu.getPreviewMinor());
+			previewMinor.setSelection(position);
+
+			EditText formName = (EditText) findViewById(R.id.form_editName);
+			formName.setText(menu.getName());
+			isEditForm = true;
+			isInitEditForm = true;
+		}
 	}
 
 	private void initTypeSpinner() {
@@ -120,9 +156,13 @@ public class FormAddActivity extends TaskFragmentActivity {
 		typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
 				Form form = (Form) parent.getItemAtPosition(pos);
 				initLayoutSpinner(form);
-				initFieldSpinner(daoFactory.getFieldDAO().getFields(form.getType()));
+				if (!isInitEditForm) {
+					initFieldSpinner(daoFactory.getFieldDAO().getFields(form.getType()));
+				}
+				isInitEditForm = false;
 			}
 
 			@Override
@@ -130,6 +170,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 				// do nothing
 			}
 		});
+		
 	}
 
 	private void initLayoutSpinner(Form form) {
@@ -152,26 +193,29 @@ public class FormAddActivity extends TaskFragmentActivity {
 	}
 
 	private void initFieldSpinner(List<Field> fields) {
-		fieldAdapter = new FieldSpinnerAdapter(this, R.layout.spinner_row_simple, (ArrayList<Field>) fields);	
+		fieldAdapter = new FieldSpinnerAdapter(this, R.layout.spinner_row_simple, (ArrayList<Field>) fields);
 		fieldSpinner.setAdapter(fieldAdapter);
 
 		FieldSpinnerAdapter previewAdapter = new FieldSpinnerAdapter(this, R.layout.spinner_row_simple,
 				(ArrayList<Field>) fields);
 		previewMajor.setAdapter(previewAdapter);
-		previewMinor.setAdapter(previewAdapter);
+		FieldSpinnerAdapter previewAdapter2 = new FieldSpinnerAdapter(this, R.layout.spinner_row_simple,
+				(ArrayList<Field>) fields);
+		previewMinor.setAdapter(previewAdapter2);
 	}
 
 	private void fetchLayouts() {
-		User user = daoFactory.getUserDAO().getUser();
-		if(user == null || user.getFirstName() == null){
+		User user = null;//daoFactory.getUserDAO().getUser();
+		//User user = daoFactory.getUserDAO().getUser();  //TODO
+		if (user == null || user.getFirstName() == null) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			Toast.makeText(this, "You must login first", Toast.LENGTH_SHORT).show();
-		}else{
-			mTaskFragment.startFetchLayouts(typeAdapter);
+		} else {
+			///mTaskFragment.startFetchLayouts(typeAdapter); todo
 		}
 	}
-				
+
 	public void createType(View view) {
 		createDialog(getString(R.string.form_create_type_title), Values.TYPE_MODE);
 	}
@@ -195,27 +239,24 @@ public class FormAddActivity extends TaskFragmentActivity {
 	public void editField(View view) {
 		showAlert("Not implemented yet", false);
 	}
-	
+
 	public void editLayout(View view) {
 		Form form = (Form) typeSpinner.getSelectedItem();
 		Layout layout = (Layout) layoutSpinner.getSelectedItem();
-		
+
 		if (form == null || ValidationUtils.isEmpty(form.getType())) {
 			showAlert(getString(R.string.error_empty_type), false);
-		} else if(layout == null || ValidationUtils.isEmpty(form.getType())){
+		} else if (layout == null || ValidationUtils.isEmpty(form.getType())) {
 			showAlert(getString(R.string.error_empty_layout), false);
-		}
-		else {						
-			MenuItems menu = daoFactory.getMenuItemDAO().getMenu(rootMenuId);
-			
+		} else {
 			Intent intentEdit = new Intent(this, FormDetailsActivity.class);
-			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getIcon());
+			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getId());
 			intentEdit.putExtra(Values.MENU_ITEM_NAME, menu.getName());
 			intentEdit.putExtra(Layout.LAYOUT_ID, layout.getName());
 			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);
 			startActivity(intentEdit);
 			isEditLayout = true;
-		}				
+		}
 	}
 
 	public void duplicateLayout(View view) {
@@ -232,24 +273,42 @@ public class FormAddActivity extends TaskFragmentActivity {
 			Form form = daoFactory.getFormDAO().create(type);
 			typeAdapter.add(form);
 			typeSpinner.setSelection(typeAdapter.getPosition(form));
+
+			Layout layout = addItemToLayoutSpinner(type + getString(R.string.form_layout_generated));
+			Field field = new Field(getString(R.string.field_description), "Textbox", form);
+			daoFactory.getFieldDAO().create(field);
+			fieldAdapter.add(field);
+			fieldSpinner.setSelection(fieldAdapter.getPosition(field));
+			initFieldSpinner(daoFactory.getFieldDAO().getFields(form.getType()));
+
+			LayoutProperty property = new LayoutProperty(field, layout);
+			property.setLabel(getString(R.string.field_description));
+			daoFactory.getLayoutPropertyDAO().create(property);
+
+			EditText formName = (EditText) findViewById(R.id.form_editName);
+			formName.setText(type);
+
+			OdmlBuilder.createDefaultODML(field, layout, property, daoFactory);
 		}
 	}
 
-	private void addItemToLayoutSpinner(String name) {
+	private Layout addItemToLayoutSpinner(String name) {
 		Form form = (Form) typeSpinner.getSelectedItem();
-		
+
 		if (daoFactory.getLayoutDAO().getLayout(name) != null) {
 			showAlert(getString(R.string.error_layout_name_exists), false);
 		} else if (ValidationUtils.isEmpty(name)) {
 			showAlert(getString(R.string.error_empty_layout), false);
 		} else if (form == null || ValidationUtils.isEmpty(form.getType())) {
 			showAlert(getString(R.string.error_empty_type), false);
-		}else {
-			Layout layout = daoFactory.getLayoutDAO().create(name, null, form);
+		} else {
+			Layout layout = daoFactory.getLayoutDAO().create(name, null, form, null, null);
 			daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
 			layoutAdapter.add(layout);
 			layoutSpinner.setSelection(layoutAdapter.getPosition(layout));
+			return layout;
 		}
+		return null;
 	}
 
 	public void createDialog(String title, final int mode) {
@@ -306,7 +365,6 @@ public class FormAddActivity extends TaskFragmentActivity {
 	}
 
 	private void createMenuItem() {
-		MenuItems rootMenu = daoFactory.getMenuItemDAO().getMenu(rootMenuId);
 		EditText formName = (EditText) findViewById(R.id.form_editName);
 
 		Form form = (Form) typeSpinner.getSelectedItem();
@@ -326,11 +384,11 @@ public class FormAddActivity extends TaskFragmentActivity {
 
 		StringBuilder error = new StringBuilder();
 
-		if (ValidationUtils.isEmpty(formName.getText().toString())) {
-			error.append(getString(R.string.error_empty_form_name)).append('\n');
-		}
 		if (form == null) {
 			error.append(getString(R.string.error_empty_type)).append('\n');
+		}
+		if (ValidationUtils.isEmpty(formName.getText().toString())) {
+			error.append(getString(R.string.error_empty_form_name)).append('\n');
 		}
 		if (layout == null) {
 			error.append(getString(R.string.error_empty_layout)).append('\n');
@@ -340,10 +398,21 @@ public class FormAddActivity extends TaskFragmentActivity {
 			}
 		}
 		if (error.toString().isEmpty()) {
-			MenuItems menu = new MenuItems(formName.getText().toString(), layout, form, prevMajor, prevMinor, rootMenu);
+			MenuItems menuItem;
+			if (isEditForm) {
+				menuItem = menu;
+				menuItem.setName(formName.getText().toString());
+				menuItem.setLayout(layout);
+				menuItem.setRootForm(form);
+				menuItem.setPreviewMajor(prevMajor);
+				menuItem.setPreviewMinor(prevMinor);
+			} else {
+				menuItem = new MenuItems(formName.getText().toString(), layout, form, prevMajor, prevMinor, menu);
+			}
+
 			// menu.setIcon(Values.ICON_COPY);
-			menu.setIcon("");
-			daoFactory.getMenuItemDAO().saveOrUpdate(menu);
+			menuItem.setIcon("");
+			daoFactory.getMenuItemDAO().saveOrUpdate(menuItem);
 			finish();
 		} else {
 			showAlert(error.toString(), false);
@@ -388,7 +457,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt(MenuItems.ROOT_MENU, rootMenuId);
+		outState.putInt(MenuItems.ROOT_MENU, menu.getId());
 	}
 
 	@Override

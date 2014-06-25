@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
@@ -25,6 +26,7 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	private final int rowLayout;
 	private List<FormRow> formList;
 	private MenuItems menu;
+	private DAOFactory daoFactory;
 
 	/**
 	 * Adapter constructor.
@@ -33,13 +35,14 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	 * @param resourceId row layout identifier
 	 * @param items scenario data collection
 	 */
-	public FormAdapter(Context context, int rowLayout, MenuItems menu, List<FormRow> items) {
+	public FormAdapter(Context context, int rowLayout, MenuItems menu, DAOFactory daoFactory, List<FormRow> items) {
 		super(context, rowLayout);
 		this.rowLayout = rowLayout;
 		this.context = context;
 		//this.formType = formType;
 		this.menu = menu;
 		this.formList = new ArrayList<FormRow>(items.size());
+		this.daoFactory = daoFactory;
 	}
 
 	/**
@@ -87,6 +90,16 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 		}
 		
 		return 0;
+	}
+	
+	@Override
+	public void remove(FormRow row) {
+		super.remove(row);
+		daoFactory.getDataDAO().delete(row.getId());
+		daoFactory.getDataSetDAO().delete(row.getId());
+			
+		formList.remove(row);	
+		notifyDataSetChanged();
 	}
 
 	/**

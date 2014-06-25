@@ -9,10 +9,10 @@
     </item>
     
     <item
-        android:id="@+id/field_save"
-        android:icon="@drawable/ic_action_save"
+        android:id="@+id/form_add_field"
+        android:icon="@drawable/ic_action_add"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/field_addToLayout">
+         android:title="@string/field_add">
     </item>
-
+       
 </menu>

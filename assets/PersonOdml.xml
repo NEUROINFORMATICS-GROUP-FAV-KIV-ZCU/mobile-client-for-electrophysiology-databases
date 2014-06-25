@@ -35,7 +35,9 @@
         <type>string</type>
       </value>
     </property>
-    <section>
+    
+	
+	<section>
       <type>textbox</type>
       <name>dateOfBirth</name>
       <property>

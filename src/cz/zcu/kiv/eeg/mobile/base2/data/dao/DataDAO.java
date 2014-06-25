@@ -92,6 +92,17 @@ public class DataDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void delete(final int dataset) {
+		try {		
+			DeleteBuilder<Data, Integer> deleteBuilder = getDataDao().deleteBuilder();
+			Where<Data, Integer> where = deleteBuilder.where();
+			where.eq("dataset_id", dataset);		
+			deleteBuilder.delete();								
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public Data getData(final Dataset dataset, final Field field) {
 		try {

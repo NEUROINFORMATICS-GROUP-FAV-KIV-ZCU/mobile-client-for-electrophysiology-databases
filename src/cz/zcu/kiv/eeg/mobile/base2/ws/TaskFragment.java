@@ -18,9 +18,12 @@ import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutDialogAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
+import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 
 /**
  * This Fragment manages a single background task and retains itself across configuration changes.
@@ -32,6 +35,7 @@ public class TaskFragment extends Fragment {
 	private static final String TAG = TaskFragment.class.getSimpleName();
 
 	public TaskFragmentActivity activity;
+	public DashboardActivity dashboard;
 	private DummyTask mTask;
 	private TestCreditialsTask mTaskLogin;
 	private FetchLayoutsTask mTaskLayouts;
@@ -44,6 +48,10 @@ public class TaskFragment extends Fragment {
 		Log.i(TAG, "onAttach(Activity)");
 		super.onAttach(activity);
 		this.activity = (TaskFragmentActivity)activity;
+		if(activity instanceof DashboardActivity){
+			dashboard = (DashboardActivity) activity;
+		}
+		
 	}
 
 	@Override
@@ -87,16 +95,16 @@ public class TaskFragment extends Fragment {
 		}
 	}
 	
-	public void startLogin() {
+	public void startLogin(User user) {
 		if (state != RUNNING) {
-			mTaskLogin = new TestCreditialsTask(this);
+			mTaskLogin = new TestCreditialsTask(this, user);
 			mTaskLogin.execute();
 		}
 	}
 	
-	public void startFetchLayouts(FormTypeSpinnerAdapter formAdapter) {
+	public void startFetchLayouts(MenuItems menu) {
 		if (state != RUNNING) {
-			mTaskLayouts = new FetchLayoutsTask(this, formAdapter);
+			mTaskLayouts = new FetchLayoutsTask(this, menu);
 			mTaskLayouts.execute();
 		}
 	}

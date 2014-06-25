@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp" >
+
+    <LinearLayout
+        android:id="@+id/form_addLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp" >
+
+        <!-- Form type -->
+
+        <TextView
+            android:id="@+id/form_LabelType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_type" />
+
+        <Spinner
+            android:id="@+id/form_spinnerType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:weightSum="3" >
+
+            <ImageButton
+                android:id="@+id/form_newForm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_new_dark" />
+
+
+            <ImageButton
+                android:id="@+id/form_editForm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_edit_dark" />
+
+            <ImageButton
+                android:id="@+id/form_deleteForm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_discard_dark" />
+        </LinearLayout>
+
+        <!-- Form name -->
+
+
+   
+
+   
+
+        <!-- Layout -->
+
+        <TextView
+            android:id="@+id/form_LabelLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_layouts" />
+
+        <Spinner
+            android:id="@+id/form_spinnerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:weightSum="3" >
+
+            <ImageButton
+                android:id="@+id/form_newLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_new_dark" />
+
+            <ImageButton
+                android:id="@+id/form_editLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_edit_dark" />
+
+            <ImageButton
+                android:id="@+id/form_deleteLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/form_edit_field"
+                android:onClick="editField"
+                android:src="@drawable/ic_action_discard_dark" />
+
+        </LinearLayout>
+
+        <!-- Minor x Major -->
+
+        <Button
+            android:id="@+id/form_createForm"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/form_create_form" />
+
+    </LinearLayout>
+
+</ScrollView>

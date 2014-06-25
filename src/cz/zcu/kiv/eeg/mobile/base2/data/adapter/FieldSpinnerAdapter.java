@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
 /**
  * 
@@ -19,10 +21,22 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 public class FieldSpinnerAdapter extends ArrayAdapter<Field> {
 
 	int rowLayout;
+	ArrayList<Field> items;
 
 	public FieldSpinnerAdapter(Context context, int rowLayout, ArrayList<Field> items) {
 		super(context, rowLayout, items);
 		this.rowLayout = rowLayout;
+		this.items = items;
+	}
+	
+	@Override
+	public int getPosition(Field item) {
+		for(Field field : items){
+			if(field.getId() == item.getId()){
+				return super.getPosition(field);
+			}
+		}
+		return -1;
 	}
 
 	/**

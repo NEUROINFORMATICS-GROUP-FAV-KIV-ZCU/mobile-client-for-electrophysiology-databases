@@ -1,19 +1,27 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.builders;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import odml.core.Reader;
 import odml.core.Section;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.sax.StartElementListener;
+import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -29,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +45,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
@@ -73,17 +83,14 @@ public class ViewBuilder {
 	private LinearLayout rootLayout;
 	private LinearLayout formLayout;
 	private Layout layout;
-	private MenuItems menu;
-	private Form form;
+
 	private int formMode = 0;
 	private Dataset dataset;
 	private Activity ctx;
 	FormDetailsFragment fragment;
 	private int evailabelId = 1;
-	// private int datasetId;
 	private ActionMode mActionMode;
 	private int rootID;
-	private boolean isRootForm = true;
 
 	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetId, int formMode, MenuItems menu,
 			DAOFactory daoFactory) {
@@ -91,12 +98,8 @@ public class ViewBuilder {
 		this.fragment = fragment;
 		this.layout = layout;
 		this.daoFactory = daoFactory;
-		// this.datasetId = datasetId;
 		this.formMode = formMode;
-		this.menu = menu;
-
 		this.ctx = fragment.getActivity();
-		form = layout.getRootForm();
 		dataset = daoFactory.getDataSetDAO().getDataSet(datasetId);
 	}
 
@@ -104,14 +107,14 @@ public class ViewBuilder {
 		String layoutData = layout.getXmlData();
 		Reader reader;
 		try {
-			if(layoutData != null){
+			if (layoutData != null) {
 				reader = new Reader();
 				Section odmlRoot = reader.load(new ByteArrayInputStream(layoutData.getBytes()));
 				Section odmlForm = odmlRoot.getSection(0);
 				loadViews(odmlForm.getSections(), odmlForm.getReference());
 				recountPositions();
 				System.out.println("test");
-			}		
+			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 		}
@@ -139,9 +142,9 @@ public class ViewBuilder {
 		String[] data = getData(field);
 
 		if (type.equalsIgnoreCase("textbox")) {
-			view = getEditText(data[0]);
-		} else if (type.equalsIgnoreCase("checkbox")) {
-			view = new CheckBox(ctx);
+			view = getEditText(data[0], field);
+		} else if (type.equalsIgnoreCase(Values.CHECKBOX)) {
+			view = setCheckbox(data[0]);
 		} else if (type.equalsIgnoreCase("combobox")) {
 			view = getSpinner(data[0], field);
 		} else if (type.equalsIgnoreCase("choice")) {
@@ -178,10 +181,60 @@ public class ViewBuilder {
 		return data;
 	}
 
-	private View getEditText(String data) {
-		EditText editText = new EditText(ctx);
+	private View getEditText(String data, Field field) {
+		final EditText editText = new EditText(ctx);
 		editText.setText(data);
+
+		if (field.getDataType().equalsIgnoreCase(Values.DATE)) {
+			// if ( field.getDataType() != null && field.getDataType().equalsIgnoreCase("date")) { //todo string data
+			final Calendar myCalendar = Calendar.getInstance();
+			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+				@Override
+				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+					myCalendar.set(Calendar.YEAR, year);
+					myCalendar.set(Calendar.MONTH, monthOfYear);
+					myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+					updateLabel(editText, myCalendar);
+				}
+
+			};
+			editText.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					new DatePickerDialog(ctx, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+							myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+				}
+			});
+		} else if (field.getDataType().equalsIgnoreCase(Values.STRING)) {
+			editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+		} else if (field.getDataType().equalsIgnoreCase(Values.INTEGER)) {
+			editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+		} else if (field.getDataType().equalsIgnoreCase(Values.EMAIL)) {
+			editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+		}
+
+		if (data.equalsIgnoreCase("") && field.getDefaultValue() != null) {
+			editText.setText(field.getDefaultValue());
+		}
+
 		return editText;
+	}
+
+	private void updateLabel(EditText editText, Calendar myCalendar) {
+
+		String myFormat = "dd/MM/yyyy";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+		editText.setText(sdf.format(myCalendar.getTime()));
+	}
+
+	private View setCheckbox(String data) {
+		CheckBox cb = new CheckBox(ctx);
+		if (data.equalsIgnoreCase("1")) {
+			cb.setChecked(true);
+		}
+		return cb;
 	}
 
 	private View getSpinner(String data, Field field) {
@@ -211,20 +264,20 @@ public class ViewBuilder {
 		wrapLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 
-		if (formMode == Values.FORM_EDIT_DATA) {
+		/*if (formMode == Values.FORM_EDIT_DATA || formMode == Values.FORM_NEW_DATA) {
 			Layout sublayout = getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
 			final MenuItems menuItem = getSubmenuItem(property, sublayout);
-			boolean isVisible = false; //todo isVisibleEmptyField
+			boolean isVisibleEmptySpinner = false;
 
 			if (data[0].equalsIgnoreCase("")) {
-				isVisible = true;
+				isVisibleEmptySpinner = true;
 			}
 
 			for (String dataset : data) {
 				wrapLayout.addView(createSubformItem(property, sublayout, field, wrapLayout, menuItem, dataset));
 			}
-			wrapLayout.addView(createEmptyItem(wrapLayout, field, menuItem, isVisible));
-		}
+			wrapLayout.addView(createEmptyItem(wrapLayout, field, menuItem, isVisibleEmptySpinner));
+		}*/
 		return wrapLayout;
 	}
 
@@ -342,9 +395,9 @@ public class ViewBuilder {
 		rootLayout.addView(scroller);
 
 		int nodeId = rootID;
-		
+
 		// průchod grafem
-		if(nodes.size() > 0){
+		if (nodes.size() > 0) {
 			while (true) {
 				// vytvořím nový řádek
 				LinearLayout rowLayout = new LinearLayout(ctx);
@@ -375,38 +428,73 @@ public class ViewBuilder {
 					break;
 				}
 			}
-		}	
+			// editor - poslední přidávácí řádek
+			LinearLayout rowLayout = new LinearLayout(ctx);
+			rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+			rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
+			rowLayout.addView(getNewColumnButton(false));
+			rowLayout.addView(getNewColumnButton(false));
+			formLayout.addView(rowLayout);
+
+		}
 		return rootLayout;
 	}
 
-	public void addFieldsToForm(ArrayList<Integer> fields, boolean isEnabledMove, Activity activity) {
-	//public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
-		
-		if (fields != null) {
-			for(int fieldId : fields){
-				Field field = daoFactory.getFieldDAO().getField(fieldId);
-				ViewNode node = createView(field.getName(), field.getForm().getType(), true);
+	// TODO
+	// public void addFieldsToForm(ArrayList<Integer> fields, boolean isEnabledMove, Activity activity) {
+	public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
 
-				LinearLayout rowLayout = new LinearLayout(ctx);
-				rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-				rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-						LinearLayout.LayoutParams.WRAP_CONTENT));
+		// if (fields != null) {
+		// for (int fieldId : fields) {
+		Field field = daoFactory.getFieldDAO().getField(fieldId);
+		ViewNode node = createView(field.getName(), field.getForm().getType(), true);
 
-				node.setDiffWeight(10);
-				View view = node.getWrapNode();
-				rowLayout.addView(getNewColumnButton(isEnabledMove));
-				rowLayout.addView(view);
-				node.setDiffWeight(10);
-				rowLayout.addView(getNewColumnButton(isEnabledMove));
+		LinearLayout rowLayout = new LinearLayout(ctx);
+		rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+		rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
 
-				if (isEnabledMove) {
-					node.setEditor(nodes);
-				} else {
-					node.setLocalEdit(this, activity);
-				}
-				formLayout.addView(rowLayout);
-			}		
+		node.setDiffWeight(10);
+		View view = node.getWrapNode();
+		rowLayout.addView(getNewColumnButton(isEnabledMove));
+		rowLayout.addView(view);
+		node.setDiffWeight(10);
+		rowLayout.addView(getNewColumnButton(isEnabledMove));
+
+		if (isEnabledMove) {
+			node.setEditor(nodes);
+		} else {
+			node.setLocalEdit(this, activity);
 		}
+		// pole přidávám na předposlední řádek, poslední řádek slouží v editoru k přesunu
+		formLayout.addView(rowLayout, formLayout.getChildCount() - 1);
+		// }
+		// }
+	}
+
+	public void removeFieldFromDB(int fieldId) {			
+		for (int i = 0; i < formLayout.getChildCount(); i++) {
+			ViewGroup rowLayout = (ViewGroup) formLayout.getChildAt(i);			
+			for (int j = 0; j < rowLayout.getChildCount(); j++) {
+				ViewGroup wrapLayout = (ViewGroup) rowLayout.getChildAt(j);
+				if(wrapLayout.getTag(R.id.FIELD_ID) != null){
+					int id = (Integer) wrapLayout.getTag(R.id.FIELD_ID);
+					if (id == fieldId) {
+						if (rowLayout.getChildCount() == 3) { // pole plus dva postraní sloupce
+							formLayout.removeViewAt(i);
+							nodes.remove(id);
+						} else {
+							rowLayout.removeViewAt(j);
+							nodes.remove(id);
+						}						
+						return;
+					}
+				}		
+			}
+		}
+		daoFactory.getFieldDAO().delete(fieldId);
+		
 	}
 
 	public void removeFieldFromForm(int fieldId) {
@@ -436,7 +524,7 @@ public class ViewBuilder {
 		SparseArray<ViewNode> newNodes = new SparseArray<ViewNode>();
 
 		// průchod zleva doprava a dolu
-		for (int i = 0; i < formLayout.getChildCount(); i++) {
+		for (int i = 0; i < formLayout.getChildCount() - 1; i++) {
 			ViewGroup rowLayout = (ViewGroup) formLayout.getChildAt(i);
 
 			// zpracování řádku
@@ -459,7 +547,7 @@ public class ViewBuilder {
 					node.setIdRight(newId + 1);
 				}
 				// nalezení potomka (o řádek níže)
-				else if (i + 1 < formLayout.getChildCount()) {
+				else if (i + 1 < formLayout.getChildCount() - 1) {
 					node.setIdBottom(newId + 1);
 				}
 				node.setIdNode(newId);
@@ -478,6 +566,7 @@ public class ViewBuilder {
 		for (LinearLayout column : newColumn) {
 			column.setVisibility(View.VISIBLE);
 		}
+		newColumn.get(newColumn.size() - 1).setVisibility(View.GONE);
 	}
 
 	public void disableEditor() {
@@ -524,19 +613,8 @@ public class ViewBuilder {
 		return layout;
 	}
 
-	// načte data do formuláře
-	/*
-	 * public void initData(int datasetID) { //if (datasetID != Values.NEW_DATA) { if (formMode != Values.FORM_NEW_DATA)
-	 * { Form form = layout.getRootForm(); Dataset dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
-	 * 
-	 * if (dataset != null) { for (int i = 0; i < nodes.size(); i++) { Field field =
-	 * daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType()); Data data =
-	 * daoFactory.getDataDAO().getData(dataset.getId(), field.getId()); if (data != null) {
-	 * nodes.valueAt(i).setData(data.getData()); } } } } }
-	 */
-
 	// slouží k uložení/aktualizace do databáze
-	//public int saveFormData(int datasetID) {
+	// public int saveFormData(int datasetID) {
 	public int saveFormData(int datasetID) {
 		Form form = layout.getRootForm();
 		Dataset dataset;
@@ -549,55 +627,53 @@ public class ViewBuilder {
 
 		for (int i = 0; i < nodes.size(); i++) {
 			Field field = daoFactory.getFieldDAO().getField(nodes.valueAt(i).getName(), form.getType());
-			
+
 			// položky podformuláře
-			if (field.getType().equalsIgnoreCase(Values.FORM)) {
+			/*if (field.getType().equalsIgnoreCase(Values.FORM)) {
 				ViewNode node = nodes.valueAt(i);
 				LinearLayout spinnerLayout = (LinearLayout) node.getNode();
 				String[] data = getData(field);
-				
-				for (int j = 0; j < spinnerLayout.getChildCount(); j++) {				
-					Spinner spinner = (Spinner)spinnerLayout.getChildAt(j);
-					if(spinner.getSelectedItem() instanceof FormRow && spinner.getVisibility() == View.VISIBLE){						
+
+				for (int j = 0; j < spinnerLayout.getChildCount(); j++) {
+					Spinner spinner = (Spinner) spinnerLayout.getChildAt(j);
+					if (spinner.getSelectedItem() instanceof FormRow && spinner.getVisibility() == View.VISIBLE) {
 						FormRow row = (FormRow) spinner.getSelectedItem();
 						boolean exists = false;
-						
+
 						// kontrola zda je již prvek v databázi
-						for(int k = 0; k < data.length; k++){						
-							if(data[k] != null && data[k].equalsIgnoreCase(Integer.toString(row.getId()))){
+						for (int k = 0; k < data.length; k++) {
+							if (data[k] != null && data[k].equalsIgnoreCase(Integer.toString(row.getId()))) {
 								data[k] = null;
 								exists = true;
 							}
 						}
 						// uložit do databáze
-						if(!exists){
+						if (!exists) {
 							createOrUpdateData(Integer.toString(row.getId()), dataset, field);
-						}											
-					}				
+						}
+					}
 				}
 				// co zbylo v data je k odstranění z databáze
-				for(String idForRemove : data){		
-					if(idForRemove != null){
+				for (String idForRemove : data) {
+					if (idForRemove != null) {
 						daoFactory.getDataDAO().delete(dataset, field, idForRemove);
-					}				
+					}
 				}
-			
-			} 		
-			// ostatní pole 	
-			else {
+			}*/
+			// ostatní pole
+			//else {
 				String data = nodes.valueAt(i).getData();
 				createOrUpdateData(data, dataset, field);
-			}
-
+			//}
 		}
 		return dataset.getId();
 	}
-	
-	private void createOrUpdateData(String data, Dataset dataset, Field field){
+
+	private void createOrUpdateData(String data, Dataset dataset, Field field) {
 		if (data != null && !data.equals("")) {
-			if(field.getType().equalsIgnoreCase(Values.FORM)){
-				if(daoFactory.getDataDAO().getData(dataset, field, data) == null){
-					daoFactory.getDataDAO().create(dataset, field, data);	
+			if (field.getType().equalsIgnoreCase(Values.FORM)) {
+				if (daoFactory.getDataDAO().getData(dataset, field, data) == null) {
+					daoFactory.getDataDAO().create(dataset, field, data);
 					daoFactory.getDataDAO().getAllData(dataset.getId(), field.getId());
 				}
 			}
@@ -613,7 +689,7 @@ public class ViewBuilder {
 			}
 		}
 	}
-	
+
 	private void recountPositions() {
 		rootID = Integer.MAX_VALUE;
 
@@ -659,6 +735,129 @@ public class ViewBuilder {
 	public void onDestroyActionMode() {
 		mActionMode = null;
 	}
+	
+	private  List<FormRow> selectedHardware = new ArrayList<FormRow>();
+	
+	public void selectHardwareDialog(Layout subLayout, LayoutProperty property, final LinearLayout container) {
+		//selectedHardware.clear();
+		
+		AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+        final LayoutInflater inflater = fragment.getActivity().getLayoutInflater();
+        
+        View dialogView = inflater.inflate(R.layout.base_list, null, false);
+        final ListView listView = (ListView) dialogView.findViewById(android.R.id.list);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listView.setEmptyView(dialogView.findViewById(android.R.id.empty));
+        
+        final FormAdapter adapter = ListAllFormsFragment.getStaticAdapter(ctx, getSubmenuItem(property, subLayout),
+				daoFactory);
+        //listView.setAdapter(getHardwareAdapter());
+        listView.setAdapter(adapter);
+
+        /*if (!isWorking() && hardwareAdapter.isEmpty())
+            updateHardwareList();*/
+
+        dialog.setTitle("Pokus");
+        dialog.setView(dialogView);
+        dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                int len = listView.getCount();
+                SparseBooleanArray checked = listView.getCheckedItemPositions();
+
+                //selectedHardware.clear();
+
+                //find out selected items
+                for (int i = 0; i < len; i++) {
+                    if (checked.get(i))  {                	
+                        selectedHardware.add(adapter.getItem(i));
+                    }
+                }
+
+                fillHardwareListRows(container);
+            }
+        });
+
+        dialog.setNeutralButton(R.string.dialog_button_clear_selection, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                selectedHardware.clear();
+                fillHardwareListRows(container);
+                //fillHardwareListRows();
+                //Toast.makeText(ExperimentAddActivity.this, R.string.dialog_selection_cleared, Toast.LENGTH_SHORT).show();*/
+            }
+        });
+
+        //reselect previously selected items
+        for (FormRow hw : selectedHardware)
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getItem(i).getId() == hw.getId()) {
+                    listView.setItemChecked(i, true);
+                }
+            }
+        dialog.show();
+    }
+	
+	public void fillHardwareListRows(final ViewGroup viewGroup){
+		 if (selectedHardware != null && !selectedHardware.isEmpty()) {
+	            //create and inflate row by row
+	            final LayoutInflater inflater = getLayoutInflater(viewGroup);
+
+	            for (final FormRow record : selectedHardware) {
+	                View row = inflater.inflate(R.layout.form_row, viewGroup, false);
+	                	                       		
+	        			TextView id = (TextView) row.findViewById(R.id.rowId);
+	        			TextView name = (TextView) row.findViewById(R.id.rowName);
+	        			TextView description = (TextView) row.findViewById(R.id.rowDescription);
+	        			TextView mine = (TextView) row.findViewById(R.id.rowMime);
+
+	        			if (id != null) {
+	        				id.setText(Integer.toString(record.getId()));
+	        			}
+	        			if (name != null) {
+	        				name.setText(record.getName());
+	        			}
+	        			if (description != null) {
+	        				description.setText(record.getDescription());
+	        			}
+	            
+
+	                //every row has its detail dialog
+	                row.setOnClickListener(new View.OnClickListener() {
+	                    @Override
+	                    public void onClick(View v) {
+	                        //getHardwareDetailDialog(inflater, viewGroup, record).show();
+	                    }
+	                });
+
+	                row.setBackgroundResource(R.drawable.list_selector);
+	                viewGroup.addView(row);
+	            }
+	        } else {
+	            setNoRecord(viewGroup);
+	        }
+	}
+	
+	private  void setNoRecord(ViewGroup viewGroup) {
+        //inflate information, that no record is available
+        TextView row = new TextView(viewGroup.getContext());
+        row.setText("Zadné data");
+        viewGroup.addView(row);
+    }
+	
+	private  LayoutInflater getLayoutInflater(ViewGroup viewGroup) {
+        return (LayoutInflater) viewGroup.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
 	/*
 	 * public int getDatasetId() { return datasetId; }

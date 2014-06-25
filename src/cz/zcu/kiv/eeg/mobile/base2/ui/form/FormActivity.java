@@ -69,6 +69,14 @@ public class FormActivity extends TaskFragmentActivity {
 		actionBar.setTitle(menu.getName());
 
 	}
+	
+	public void newData(){
+		Intent intent = new Intent(this, FormDetailsActivity.class);
+		intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
+		intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+		intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
+		startActivity(intent);
+	}
 
 	@Override
 	protected void onResume() {
@@ -94,12 +102,7 @@ public class FormActivity extends TaskFragmentActivity {
 			finish();
 			break;
 		case R.id.form_new_data:
-			Toast.makeText(this, "New data", Toast.LENGTH_SHORT).show();
-			Intent intent = new Intent(this, FormDetailsActivity.class);
-			intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
-			intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
-			intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
-			startActivity(intent);
+			newData();
 			break;
 		
 		case R.id.form_edit_layout:

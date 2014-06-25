@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:padding="5dp" >
 
-        <!-- Form name -->
+        <!-- Form type -->
 
         <TextView
             android:id="@+id/form_formSection"
@@ -22,25 +22,7 @@
             android:padding="0dp"
             android:text="@string/form_section"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/form_labelName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/form_name" />
-
-        <EditText
-            android:id="@+id/form_editName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textCapSentences" >
-
-            <requestFocus />
-        </EditText>
-
-        <!-- Form type -->
-
+        
         <TextView
             android:id="@+id/form_LabelType"
             android:layout_width="wrap_content"
@@ -58,6 +40,23 @@
             android:layout_height="wrap_content"
             android:onClick="createType"
             android:text="@string/form_create_type" />
+  
+        
+        <!-- Form name -->
+
+         <TextView
+            android:id="@+id/form_labelName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_name" />
+
+        <EditText
+            android:id="@+id/form_editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textCapSentences" >
+        </EditText>
 
         <!-- Fields -->
 

@@ -8,6 +8,7 @@ import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnDragListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
@@ -17,8 +18,8 @@ public class LayoutDragListener implements OnDragListener {
 	static int count = 0; // TODO
 	Drawable enterShape;
 	Drawable normalShape;
-	Context ctx; //TODO zatim zbytecne
-	private SparseArray<ViewNode> nodes;//TODO zatim zbytecne
+	Context ctx; // TODO zatim zbytecne
+	private SparseArray<ViewNode> nodes;// TODO zatim zbytecne
 
 	public LayoutDragListener(Context ctx, SparseArray<ViewNode> nodes) {
 		this.enterShape = ctx.getResources().getDrawable(R.drawable.shape_droptarget); // červený rámeček
@@ -28,11 +29,11 @@ public class LayoutDragListener implements OnDragListener {
 		count++;
 	}
 
-	// TODO viewB = target
+	// TODO viewB, wrapLayoutB = target
 	@Override
 	public boolean onDrag(View viewB, DragEvent event) {
 		int action = event.getAction();
-		//System.out.println(viewB.getTag(Values.NODE_ID) + "_all " + count);
+		// System.out.println(viewB.getTag(Values.NODE_ID) + "_all " + count);
 		ViewGroup wrapLayoutB = (ViewGroup) viewB.getParent();
 
 		switch (event.getAction()) {
@@ -72,16 +73,24 @@ public class LayoutDragListener implements OnDragListener {
 					// konec řádky
 					else {
 						rowLayoutA.removeView(wrapLayoutA);
-						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex);
+						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex - 1);
 					}
 					// přepočet váhy pro cílový řádek
 					recalculateWeight(rowLayoutB);
-					// přepočet váhy pro zdrojový řádek
-					if (rowLayoutA.getChildCount() == 2) {
-						formLayout.removeView(rowLayoutA); // TODO sem přidat prostor pro přesun
-					} else {
-						recalculateWeight(rowLayoutA);
+
+					 //poslední řádek (1 přidávací sloupec)
+					if(rowLayoutBIndex == formLayout.getChildCount() -1){
+						rowLayoutB.getChildAt(2).setVisibility(View.VISIBLE);
+						formLayout.addView(addLastRow());
 					}
+					
+					if (rowLayoutA.getChildCount() == 2) {
+						formLayout.removeView(rowLayoutA);
+					}
+					// přepočet váhy pro zdrojový řádek
+					else {
+						recalculateWeight(rowLayoutA);
+					}					
 				}
 			}
 			// prohození dvou polí
@@ -90,8 +99,13 @@ public class LayoutDragListener implements OnDragListener {
 					rowLayoutA.removeView(wrapLayoutA);
 					rowLayoutB.removeView(wrapLayoutB);
 
-					rowLayoutA.addView(wrapLayoutB, wrapLayoutAIndex);
-					rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex);
+					if (wrapLayoutAIndex < wrapLayoutBIndex) {
+						rowLayoutA.addView(wrapLayoutB, wrapLayoutAIndex);
+						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex);
+					} else {
+						rowLayoutB.addView(wrapLayoutA, wrapLayoutBIndex);
+						rowLayoutA.addView(wrapLayoutB, wrapLayoutAIndex);
+					}
 
 					recalculateWeight(rowLayoutA);
 					recalculateWeight(rowLayoutB);
@@ -114,13 +128,48 @@ public class LayoutDragListener implements OnDragListener {
 
 		for (int i = 1; i <= count; i++) {
 			View item = rowLayout.getChildAt(i);
+
 			if (i != 1 && i != count) {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight;
-				nodes.get((Integer)item.getTag(R.id.NODE_ID)).setWeight((int)weight);
+				nodes.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			} else {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight - 10;
-				nodes.get((Integer)item.getTag(R.id.NODE_ID)).setWeight((int)weight);
+				nodes.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			}
 		}
 	}
+
+	private LinearLayout addLastRow() {
+		LinearLayout rowLayout = new LinearLayout(ctx);
+		rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+		rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		rowLayout.addView(getNewColumnButton(true));
+		rowLayout.addView(getNewColumnButton(false));
+		return rowLayout;
+	}
+
+	private LinearLayout getNewColumnButton(boolean isVisible) {
+		Drawable editShape = ctx.getResources().getDrawable(R.drawable.shape);
+		LinearLayout layout = new LinearLayout(ctx);
+		layout.setOrientation(LinearLayout.VERTICAL);
+		layout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 10));
+		layout.setBackgroundDrawable(editShape);
+		layout.setTag(R.id.NODE_ID, -1);
+		Button button = new Button(ctx);
+		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT));
+		button.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		button.setText(" ");
+		button.setTag(R.id.NODE_ID, -1);
+		layout.addView(button);
+		if (isVisible) {
+			layout.setVisibility(View.VISIBLE);
+		} else {
+			layout.setVisibility(View.GONE);
+		}
+		return layout;
+	}
+
 }

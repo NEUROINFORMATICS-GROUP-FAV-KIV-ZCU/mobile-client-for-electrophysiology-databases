@@ -21,7 +21,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"
-        android:onClick="createFolder"
         android:orientation="vertical" >
 		
         <!--  android:background="#111"-->
@@ -38,8 +37,8 @@
              android:id="@+id/drawer_newFolder"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:onClick="createFolder"
-             android:text="@string/drawer_newfolder" />
+             android:onClick="createWorkspace"
+             android:text="@string/drawer_new_workspace" />
          
          <Button
              android:id="@+id/drawer_newForm"

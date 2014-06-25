@@ -6,6 +6,7 @@ import java.util.List;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
@@ -36,9 +37,9 @@ public class LayoutDAO {
 		return null;
 	}
 
-	public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm) {
+	public Layout saveOrUpdate(String layoutName, String xmlData, Form rootForm, Field minor, Field major) {
 		try {
-			Layout layout = new Layout(layoutName, xmlData , rootForm);
+			Layout layout = new Layout(layoutName, xmlData , rootForm, major, minor);
 			getLayoutDao().createOrUpdate(layout);
 			return layout;
 		} catch (SQLException e) {
@@ -47,9 +48,9 @@ public class LayoutDAO {
 		return null;
 	}
 	
-	public Layout create(String layoutName, String xmlData, Form rootForm ) {
+	public Layout create(String layoutName, String xmlData, Form rootForm, Field minor, Field major) {
 		try {
-			Layout layout = new Layout(layoutName, xmlData , rootForm);
+			Layout layout = new Layout(layoutName, xmlData , rootForm, major, minor);
 			getLayoutDao().create(layout);
 			return layout;
 		} catch (SQLException e) {

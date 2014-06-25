@@ -5,8 +5,13 @@ import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
@@ -34,6 +39,17 @@ public class MenuItemsDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void delete(int id) {
+		try {
+			DeleteBuilder<MenuItems, Integer> deleteBuilder = getMenuItemDao().deleteBuilder();
+			Where<MenuItems, Integer> where = deleteBuilder.where();
+			where.eq("id", id);
+			deleteBuilder.delete();		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String[] getMenuNames() {

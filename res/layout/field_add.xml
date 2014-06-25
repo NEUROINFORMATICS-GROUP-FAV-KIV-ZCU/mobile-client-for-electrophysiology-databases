@@ -5,7 +5,7 @@
     android:padding="5dp" >
 
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/field_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/TextView01"
+        android:layout_below="@+id/field_name_label"
         android:ems="10"
         android:inputType="textCapWords" />
 
@@ -54,23 +54,149 @@
         android:layout_alignRight="@+id/field_spinner_type"
         android:layout_below="@+id/field_label"
         android:ems="10"
-        android:inputType="textCapWords" />
-
-    <Button
-        android:id="@+id/field_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/field_edit_Label"
-        android:layout_alignRight="@+id/field_edit_Label"
-        android:layout_below="@+id/field_edit_Label"
-        android:text="@string/field_createField" />
+        android:inputType="textCapWords" />  
 
     <TextView
         android:id="@+id/field_options_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/field_add_button"
-        android:layout_below="@+id/field_add_button"
-        android:text="@string/field_options" />
-  
+        android:layout_alignLeft="@+id/field_edit_Label"
+        android:layout_below="@+id/field_edit_Label"
+        android:layout_marginTop="10dp"
+        android:text="@string/field_options"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ScrollView
+        android:id="@+id/field_scrollView_optionTextbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+ 		android:layout_alignParentRight="true"
+        android:layout_below="@+id/field_options_label"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:id="@+id/field_textBox_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/field_datatype_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/field_datatype" />
+
+            <Spinner
+                android:id="@+id/field_spinner_datatype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/field_layout_length"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/field_minLength_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/field_minLength" />
+
+                <EditText
+                    android:id="@+id/field_edit_minLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberSigned" />
+
+                <TextView
+                    android:id="@+id/field_maxLength_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/field_maxLength" />
+
+                <EditText
+                    android:id="@+id/field_edit_maxLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberSigned" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/field_layout_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/field_minValue_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/field_minValue" />
+
+                <EditText
+                    android:id="@+id/field_edit_minValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberSigned" />
+
+                <TextView
+                    android:id="@+id/field_maxValue_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/field_maxValue" />
+
+                <EditText
+                    android:id="@+id/field_edit_maxValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberSigned" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/field_defaultValue_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/field_defaultValue" />
+
+            <EditText
+                android:id="@+id/field_edit_defaultValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberSigned" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/field_scrollView_optionCombobox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/field_edit_Label"
+        android:layout_below="@+id/field_options_label" >
+
+        <LinearLayout
+            android:id="@+id/field_combobox_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/field_button_newItem"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"               
+                android:text="@string/field_newItem" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </RelativeLayout>

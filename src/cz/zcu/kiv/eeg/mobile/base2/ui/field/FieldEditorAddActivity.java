@@ -108,7 +108,7 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 			return true;	
 		case R.id.field_discard:
 			return false;	
-		case R.id.field_save:
+		case R.id.form_add_field:
 			return false;		
 		}		
 		return super.onOptionsItemSelected(item);
@@ -120,7 +120,7 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 		outState.putString(Form.FORM_TYPE, formType);
 		outState.putString(Layout.LAYOUT_NAME, layoutName);
 		outState.putIntegerArrayList(Values.USED_FIELD, usedFieldsOnLayout);
-		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());
+		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());		
 	}
 
 	public ArrayList<Field> getFields() {
@@ -142,6 +142,10 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 
 	public String getLayoutName() {
 		return layoutName;
+	}
+	
+	public int getFieldId(){
+		return 0;
 	}
 
 	public void hideKeyboard(){

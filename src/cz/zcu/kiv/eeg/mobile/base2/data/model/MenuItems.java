@@ -19,6 +19,7 @@ public class MenuItems {
 	public static final String FK_ID_FIELD_PREVIEW_MAJOR = "field_id_prew_major";
 	public static final String FK_ID_FIELD_PREVIEW_MINOR= "field_id_prew_minor";
 	public static final String FK_ID_FORM = "form_id";
+	public static final String FK_ID_USER = "user_id";
 	public static final String INDEX_NAME = "menu_items_name_idx";
 	public static final String ROOT_MENU = "root_menu";
 
@@ -37,6 +38,10 @@ public class MenuItems {
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FORM)
 	private Form rootForm;
+	
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_USER)
+	private User credential;
+
 
 	/*@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD)
 	private Field fieldID;
@@ -157,5 +162,13 @@ public class MenuItems {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+
+	public User getCredential() {
+		return credential;
+	}
+
+	public void setCredential(User credential) {
+		this.credential = credential;
 	}
 }

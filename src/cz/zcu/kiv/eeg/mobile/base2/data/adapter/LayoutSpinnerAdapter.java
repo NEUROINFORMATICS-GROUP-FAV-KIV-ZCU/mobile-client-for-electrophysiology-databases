@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
 /**
@@ -19,12 +20,24 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 public class LayoutSpinnerAdapter extends ArrayAdapter<Layout> {
 
 	int rowLayout;
+	ArrayList<Layout> items;
 
 	public LayoutSpinnerAdapter(Context context, int rowLayout, ArrayList<Layout> items) {
 		super(context, rowLayout, items);
 		this.rowLayout = rowLayout;
+		this.items = items;
 	}
 
+	@Override
+	public int getPosition(Layout item) {
+		for(Layout layout : items){
+			if(layout.getName().equals(item.getName())){
+				return super.getPosition(layout);
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * Getter of row view in drop down element (spinner like).
 	 * 

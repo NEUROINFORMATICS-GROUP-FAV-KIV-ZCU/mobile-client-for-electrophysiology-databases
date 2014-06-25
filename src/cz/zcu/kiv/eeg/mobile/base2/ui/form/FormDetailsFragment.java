@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
+import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
@@ -51,8 +52,8 @@ import android.view.View.OnClickListener;
 public class FormDetailsFragment extends Fragment {
 
 	public final static String TAG = FormDetailsFragment.class.getSimpleName();
-	//public final static String DATASET_ID = "datasetID";
-	//public final static String LAYOUT_ID = "layoutID";
+	// public final static String DATASET_ID = "datasetID";
+	// public final static String LAYOUT_ID = "layoutID";
 	private DAOFactory daoFactory;
 	private MenuItems menu;
 	private Layout layout;
@@ -63,6 +64,8 @@ public class FormDetailsFragment extends Fragment {
 	private int rootField;
 	private int formMode = 0;
 	private boolean isEnabledMove = false;
+
+	private LinearLayout linearLayout;
 
 	@Override
 	// menuID, layoutID, DatasetID
@@ -79,7 +82,7 @@ public class FormDetailsFragment extends Fragment {
 		datasetId = extras.getInt(Dataset.DATASET_ID);
 		datasetRootId = extras.getInt(Dataset.DATASET_ROOT_ID);
 		rootField = extras.getInt(Field.FIELD_ID);
-		
+
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 
 		if (layoutName != null) {// jedno asi při přidávání pole
@@ -96,14 +99,40 @@ public class FormDetailsFragment extends Fragment {
 		} else {
 			vb = new ViewBuilder(this, layout, datasetId, formMode, menu, daoFactory);
 		}
-
-		View view = vb.getLinearLayout();
+		linearLayout = vb.getLinearLayout();
+		View view = linearLayout;
 
 		if (formMode == Values.FORM_EDIT_LAYOUT) {
 			vb.enableLocalEdit(getActivity());
 		}
 
 		return view;
+	}
+
+	// aktualizace formuláře
+	@Override
+	public void onStart() {
+		List<Field> fields = daoFactory.getFieldDAO().getModifyFields(menu.getRootForm(), 0);
+		if (fields.size() > 0) {		
+
+			for (int i = 0; i < fields.size(); i++) {
+				Field tmp = fields.get(i);
+				if (tmp.getAction() == Values.ACTION_EDIT) {
+					linearLayout.removeAllViews();
+					linearLayout.addView(vb.getLinearLayout());
+					daoFactory.getFieldDAO().update(tmp);
+					vb.enableLocalEdit(getActivity());
+
+				} else if (tmp.getAction() == Values.ACTION_ADD) {
+					vb.addFieldToForm(tmp.getId(), isEnabledMove, getActivity());
+				} else if (tmp.getAction() == Values.ACTION_REMOVE) {
+					vb.removeFieldFromDB(tmp.getId());
+				}
+				tmp.setAction(0);
+				daoFactory.getFieldDAO().update(tmp);
+			}
+		}
+		super.onStart();
 	}
 
 	@Override
@@ -126,10 +155,20 @@ public class FormDetailsFragment extends Fragment {
 		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
 		startActivityForResult(intent, Values.PICK_FIELD_ID_REQUEST);
 	}
-	
-	public void showSubform(int formMode, int datasetId ,MenuItems item, int fieldId){
+
+	public void editField(int id) {
+		Intent intent = new Intent(getActivity(), FieldAddActivity.class);
+		intent.putExtra(Form.FORM_TYPE, layout.getRootForm().getType());
+		intent.putExtra(Field.FIELD_ID, id);
+		intent.putExtra(Layout.LAYOUT_NAME, layout.getName());
+		intent.putExtra(Values.USED_FIELD, vb.getUsedFields());
+		startActivity(intent);
+		// startActivityForResult(intent, Values.PICK_FIELD_ID_REQUEST);
+	}
+
+	public void showSubform(int formMode, int datasetId, MenuItems item, int fieldId) {
 		Intent intent = new Intent(getActivity(), FormDetailsActivity.class);
-		
+
 		intent.putExtra(Form.FORM_MODE, formMode);
 		intent.putExtra(Field.FIELD_ID, fieldId);
 		intent.putExtra(Dataset.DATASET_ROOT_ID, saveData());
@@ -158,8 +197,8 @@ public class FormDetailsFragment extends Fragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
 			if (requestCode == Values.PICK_FIELD_ID_REQUEST) {
-				//vb.addFieldToForm(data.getIntExtra(Field.FIELD_ID, 0), isEnabledMove, getActivity());
-				vb.addFieldsToForm(data.getIntegerArrayListExtra(Field.FIELD_ID), isEnabledMove, getActivity());
+				
+				//vb.addFieldToForm(data.getIntegerArrayListExtra(Field.FIELD_ID), isEnabledMove, getActivity());
 			} else if (requestCode == Values.PICK_SUBFORM_ID) {
 				Intent intent = getActivity().getIntent();
 				getActivity().finish();
@@ -180,8 +219,15 @@ public class FormDetailsFragment extends Fragment {
 			// musím projít všechny adaptéry odpovídajícího typu, abych jim aktualizoval řádek v listview
 			if (adapter != null && aMenu.getRootForm().getType().equalsIgnoreCase(menu.getRootForm().getType())) {
 				String id = "id";
-				Field description1Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMajor().getId());
-				Field description2Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMinor().getId());
+				Field description1Field = null;
+				Field description2Field = null;
+				
+				if(aMenu.getPreviewMajor() != null){
+					 description1Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMajor().getId());
+				}
+				if(aMenu.getPreviewMinor() != null){
+					description2Field = daoFactory.getFieldDAO().getField(aMenu.getPreviewMinor().getId());
+				}			
 
 				String descriptionData1 = null;
 				String descriptionData2 = null;
@@ -217,14 +263,14 @@ public class FormDetailsFragment extends Fragment {
 			}
 		}
 
-		if (formMode == Values.FORM_NEW_SUBFORM) {		
-			Field field = daoFactory.getFieldDAO().getField(rootField);	
+		if (formMode == Values.FORM_NEW_SUBFORM) {
+			Field field = daoFactory.getFieldDAO().getField(rootField);
 			Dataset rootDataset = daoFactory.getDataSetDAO().getDataSet(datasetRootId);
 			daoFactory.getDataDAO().create(rootDataset, field, Integer.toString(newDataset));
-			
+
 			getActivity().setResult(Activity.RESULT_OK);
 		}
-		
+
 		return newDataset;
 	}
 

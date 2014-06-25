@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/form_add"
-        android:icon="@drawable/ic_action_event"
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_action_edit"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/form_add">
+        android:title="@string/edit">
     </item>
     
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_action_settings"
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_action_remove"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/app_settings">
+        android:title="@string/delete">
     </item>
 
 </menu>

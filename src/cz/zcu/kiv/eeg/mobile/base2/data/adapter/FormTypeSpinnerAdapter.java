@@ -19,10 +19,12 @@ import android.widget.TextView;
 public class FormTypeSpinnerAdapter extends ArrayAdapter<Form> {
 
 	int rowLayout;
+	ArrayList<Form> arrayList;
 
 	public FormTypeSpinnerAdapter(Context context, int rowLayout, ArrayList<Form> arrayList) {
 		super(context, rowLayout, arrayList);
 		this.rowLayout = rowLayout;
+		this.arrayList = arrayList;
 	}
 
 	/**
@@ -36,6 +38,17 @@ public class FormTypeSpinnerAdapter extends ArrayAdapter<Form> {
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		return getView(position, convertView, parent);
+	}
+	
+	@Override
+	public int getPosition(Form item) {
+		for(Form form : arrayList){
+			if(form.getType().equalsIgnoreCase(item.getType())){
+				return super.getPosition(form);
+			}
+		}
+
+		return -1;
 	}
 
 	/**

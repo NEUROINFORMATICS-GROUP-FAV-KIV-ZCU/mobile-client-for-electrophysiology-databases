@@ -36,7 +36,7 @@ public class LoginActivity extends TaskFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "Settings screen");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_settings);
+		setContentView(R.layout.workspace_add);
 
 		FragmentManager fm = getFragmentManager();
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "Fragment");
@@ -53,7 +53,7 @@ public class LoginActivity extends TaskFragmentActivity {
 		urlField = (TextView) findViewById(R.id.settings_url);
 
 		daoFactory = new DAOFactory(this);
-		user = daoFactory.getUserDAO().getUser();
+		///user = daoFactory.getUserDAO().getUser();
 		if (user != null) {
 			usernameField.setText(user.getUsername());
 			passwordField.setText(user.getPassword());
@@ -63,17 +63,23 @@ public class LoginActivity extends TaskFragmentActivity {
 			urlField.setText(Values.URL_DEFAULT);// default
 		}
 		user.setId(1);
+		
+		
+		//TODO
+		usernameField.setText("axim@students.zcu.cz");
+		passwordField.setText("19821983");
+		
 	}
 
 	private void testCredentials() {		
 		user.setUsername(usernameField.getText().toString());
 		user.setPassword(passwordField.getText().toString());
 		user.setUrl(urlField.getText().toString());		
-		String error = ValidationUtils.isUserValid(this, user);
+		String error = ValidationUtils.isWorkspaceValid(this, user, "", null, false);
 		
 		if (error.toString().isEmpty()) {				
 			daoFactory.getUserDAO().saveOrUpdate(user);  
-			mTaskFragment.startLogin();
+			//mTaskFragment.startLogin();
 		} else {
 			showAlert(error.toString());
 		}
