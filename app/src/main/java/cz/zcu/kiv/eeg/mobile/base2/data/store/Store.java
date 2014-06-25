@@ -19,27 +19,56 @@ import cz.zcu.kiv.eeg.mobile.base2.data.interfaces.NoSQLData;
 
 import static cz.zcu.kiv.eeg.mobile.base2.data.store.DatabaseHelper.DOC_TYPE;
 
+/**
+ * Generic storage class
+ *
+ * @author Rahul Kadyan, mail@rahulkadyan.com
+ * @version 1.0.0.
+ */
 public class Store {
     private final static String TAG = Store.class.getName();
 
+    /**
+     * The Database helper.
+     */
     protected final DatabaseHelper databaseHelper;
     private final String viewName;
     private final String docType;
 
+    /**
+     * Instantiates a new Store.
+     *
+     * @param databaseHelper the database helper
+     * @param viewName       the view name
+     * @param docType        the doc type
+     */
     public Store(DatabaseHelper databaseHelper, String viewName, String docType) {
         this.databaseHelper = databaseHelper;
         this.viewName = viewName;
         this.docType = docType;
     }
 
+    /**
+     * Save or update.
+     *
+     * @param data the data
+     * @return the boolean
+     */
     public Boolean saveOrUpdate(NoSQLData data) {
         Document document = getDocument(data.getId());
         return saveOrUpdate(data, document);
     }
 
+    /**
+     * Save or update.
+     *
+     * @param data     the data
+     * @param document the document
+     * @return the boolean
+     */
     protected Boolean saveOrUpdate(NoSQLData data, Document document) {
         Map<String, Object> properties = new HashMap<String, Object>();
-        if (data.getId() == 0) data.setId(getCount()+1);
+        if (data.getId() == 0) data.setId(getCount() + 1);
         if (null == document) {
             document = databaseHelper.getDocument();
             properties.put(DOC_TYPE, docType);
@@ -51,10 +80,50 @@ public class Store {
         return !id.equals("");
     }
 
+    /**
+     * Gets query.
+     *
+     * @return the query
+     */
     protected Query getQuery() {
         return getQuery("id");
     }
 
+    /**
+     * Gets query.
+     *
+     * @param fields   the fields
+     * @param viewName the view name
+     * @return the query
+     */
+    public Query getQuery(final List<String> fields, String viewName) {
+        View view = databaseHelper.getDatabase().getView(viewName + "-by-" + viewName);
+        if (view.getMap() == null) {
+            Mapper mapper = new Mapper() {
+                @Override
+                public void map(Map<String, Object> document, Emitter emitter) {
+                    String type = (String) document.get(DOC_TYPE);
+                    if (docType.equals(type)) {
+                        List<Object> compoundKey = new ArrayList<Object>();
+                        Log.i(TAG, "##########" + document);
+                        for (String field : fields) compoundKey.add(document.get(field));
+                        emitter.emit(compoundKey, document);
+                    }
+                }
+            };
+            view.setMap(mapper, null);
+        }
+        Query query = view.createQuery();
+        query.setDescending(true);
+        return query;
+    }
+
+    /**
+     * Gets query.
+     *
+     * @param field the field
+     * @return the query
+     */
     public Query getQuery(final String field) {
         View view = databaseHelper.getDatabase().getView(viewName + "-by-" + field);
         if (view.getMap() == null) {
@@ -74,6 +143,12 @@ public class Store {
         return query;
     }
 
+    /**
+     * Gets document.
+     *
+     * @param id the id
+     * @return the document
+     */
     protected Document getDocument(int id) {
         if (0 == id) return null;
         Query query = getQuery();
@@ -92,6 +167,11 @@ public class Store {
         return null;
     }
 
+    /**
+     * Gets count.
+     *
+     * @return the count
+     */
     public int getCount() {
         Query query = getQuery();
         try {

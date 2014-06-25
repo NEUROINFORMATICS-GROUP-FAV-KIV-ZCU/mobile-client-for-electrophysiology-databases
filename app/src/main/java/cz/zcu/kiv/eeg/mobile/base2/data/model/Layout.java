@@ -114,7 +114,10 @@ public class Layout extends NoSQLData {
     public Map<String, Object> get() {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("name", name);
-        properties.put("rootForm", rootForm != null ? rootForm.get() : null);
+        if (rootForm != null) {
+            properties.put("rootForm", rootForm.get());
+            properties.put("rootForm-id", rootForm.getId());
+        } else properties.put("rootForm", null);
         properties.put("xmlData", xmlData);
         properties.put("formName", formName);
         return properties;

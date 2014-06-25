@@ -36,8 +36,14 @@ public class Data extends NoSQLData {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("id", id);
         properties.put("data", data);
-        properties.put("dataset", dataset.get());
-        properties.put("field", field.get());
+        if (dataset != null) {
+            properties.put("dataset", dataset.get());
+            properties.put("dataset-id", dataset.getId());
+        } else properties.put("dataset", null);
+        if (field != null) {
+            properties.put("field", field.get());
+            properties.put("field-id", field.getId());
+        }else properties.put("field", null);
         return properties;
     }
 
@@ -45,8 +51,9 @@ public class Data extends NoSQLData {
     public void set(Map<String, Object> properties) {
         id = (Integer) properties.get("id");
         data = (String) properties.get("data");
-        dataset = (Dataset) properties.get("dataset");
-        field = (Field) properties.get("field");
+        Object object;
+        dataset = (object = properties.get("dataset")) != null ? new Dataset((Map<String, Object>) object) : null;
+        field = (object = properties.get("field")) != null ? new Field((Map<String, Object>) object) : null;
     }
 
     public int getId() {

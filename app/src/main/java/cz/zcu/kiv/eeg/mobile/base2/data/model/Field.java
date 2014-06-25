@@ -72,9 +72,10 @@ public class Field extends NoSQLData {
         properties.put("id", id);
         properties.put("name", name);
         properties.put("type", type);
-        if (null != form)
+        if (null != form) {
             properties.put("form", form.get());
-        else properties.put("form", null);
+            properties.put("form-type", form.getType());
+        } else properties.put("form", null);
         return properties;
     }
 

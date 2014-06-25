@@ -10,22 +10,46 @@ import java.util.List;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
+/**
+ * Storage class for LayoutPropertyStore.java
+ *
+ * @author Rahul Kadyan, mail@rahulkadyan.com
+ * @version 1.0.0.
+ */
 public class LayoutPropertyStore extends Store {
     private final static String TAG = LayoutPropertyStore.class.getName();
 
     private final static String VIEW_NAME = "layout-property-view";
     private final static String DOC_TYPE_VALUE = "layout-property";
 
+    /**
+     * Instantiates a new Layout property store.
+     *
+     * @param databaseHelper the database helper
+     */
     public LayoutPropertyStore(DatabaseHelper databaseHelper) {
         super(databaseHelper, VIEW_NAME, DOC_TYPE_VALUE);
     }
 
+    /**
+     * Gets property.
+     *
+     * @param id the id
+     * @return the property
+     */
     public LayoutProperty getProperty(int id) {
         Document document = getDocument(id);
         if (null != document) return new LayoutProperty(document.getProperties());
         return null;
     }
 
+    /**
+     * Gets property.
+     *
+     * @param fieldId the field id
+     * @param layoutId the layout id
+     * @return the property
+     */
     public LayoutProperty getProperty(int fieldId, String layoutId) {
         if (fieldId < 1 || layoutId == null) return null;
         Query query = getQuery();
@@ -42,6 +66,11 @@ public class LayoutPropertyStore extends Store {
         return null;
     }
 
+    /**
+     * Gets properties.
+     *
+     * @return the properties
+     */
     public List<LayoutProperty> getProperties() {
         Query query = getQuery();
         List<LayoutProperty> list = new ArrayList<LayoutProperty>();
@@ -55,6 +84,12 @@ public class LayoutPropertyStore extends Store {
         return list;
     }
 
+    /**
+     * Create layout property.
+     *
+     * @param layoutProperty the layout property
+     * @return the layout property
+     */
     public LayoutProperty create(LayoutProperty layoutProperty) {
         return saveOrUpdate(layoutProperty, null) ? layoutProperty : null;
     }

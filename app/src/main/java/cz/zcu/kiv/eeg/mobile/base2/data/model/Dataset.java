@@ -62,13 +62,17 @@ public class Dataset extends NoSQLData {
         properties.put("id", id);
         if (null == form)
             properties.put("form", null);
-        else properties.put("form", form.get());
+        else {
+            properties.put("form", form.get());
+            properties.put("form-type", form.getType());
+        }
         properties.put("recordId", recordId);
         return properties;
     }
 
     @Override
     public void set(Map<String, Object> properties) {
+        if (null == properties) return;
         id = (Integer) properties.get("id");
         Object object = properties.get("form");
         if (null == object) form = null;

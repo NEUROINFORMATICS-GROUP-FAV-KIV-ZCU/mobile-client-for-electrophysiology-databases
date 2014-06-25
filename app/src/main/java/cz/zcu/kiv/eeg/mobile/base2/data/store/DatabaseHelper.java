@@ -14,16 +14,38 @@ import java.util.Map;
 
 import static com.couchbase.lite.Manager.DEFAULT_OPTIONS;
 
+/**
+ * A helper class for NoSQL database
+ * <p>
+ * This class provides generic functions to store data objects in Couchbase lite database
+ * </p>
+ *
+ * @author Rahul Kadyan, <mail@rahulkadyan.com>
+ * @version 1.0.0
+ */
 public class DatabaseHelper {
+    /**
+     * Debug tag
+     */
     public static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "eeg-mobile-database";
+    /**
+     * property name for kind of document storing
+     */
     public static final String DOC_TYPE = "doc-type";
-    private static final int DATABASE_VERSION = 1;
 
     private static Manager manager = null;
     private static Database database = null;
     private Context context;
 
+    /**
+     * Instantiates a new Database helper.
+     * <p>
+     * Creates a Database manager and opens a connection to default database ${DatabaseHelper::DATABASE_NAME}
+     * </p>
+     *
+     * @param context Android application context
+     */
     public DatabaseHelper(final Context context) {
         this.context = context;
         if (null == manager)
@@ -42,17 +64,34 @@ public class DatabaseHelper {
             }
     }
 
+    /**
+     * Returns Database instance
+     *
+     * @return Database database
+     */
     public Database getDatabase() {
         return database;
     }
 
+    /**
+     * Creates an empty document and returns it
+     *
+     * @return Document
+     */
     public Document getDocument() {
         return database.createDocument();
     }
 
-    public String putProperties(Document document, Map<String, Object> docContent) {
+    /**
+     * Save properties in given document
+     *
+     * @param document   Document instance
+     * @param properties Key-Value pair of properties to be stored
+     * @return String string
+     */
+    public String putProperties(Document document, Map<String, Object> properties) {
         try {
-            document.putProperties(docContent);
+            document.putProperties(properties);
         } catch (CouchbaseLiteException e) {
             Log.e(TAG, "Cannot write document to database", e);
             return "";
@@ -60,11 +99,19 @@ public class DatabaseHelper {
         return document.getId();
     }
 
+    /**
+     * Close all database connections
+     */
     public void releaseHelper() {
         if (null != database) database.close();
         if (null != manager) manager.close();
     }
 
+    /**
+     * Get cached context
+     *
+     * @return Android application context
+     */
     public Context getContext() {
         return context;
     }

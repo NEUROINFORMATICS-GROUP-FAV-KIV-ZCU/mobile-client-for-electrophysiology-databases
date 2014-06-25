@@ -62,7 +62,6 @@
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="ormlite-android-4.48" level="project" />
-    <orderEntry type="library" exported="" name="couchbase-lite-java-core-1.0.0-75" level="project" />
     <orderEntry type="library" exported="" name="jdom-1.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
@@ -73,8 +72,9 @@
     <orderEntry type="library" exported="" name="slf4j-jdk14-1.7.7" level="project" />
     <orderEntry type="library" exported="" name="ormlite-core-4.48" level="project" />
     <orderEntry type="library" exported="" name="spring-android-core-1.0.1.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="couchbase-lite-android-1.0.0-75" level="project" />
+    <orderEntry type="library" exported="" name="couchbase-lite-java-core-1.0.1-8" level="project" />
     <orderEntry type="library" exported="" name="simple-xml-2.7.1" level="project" />
+    <orderEntry type="library" exported="" name="couchbase-lite-android-1.0.1-8" level="project" />
     <orderEntry type="library" exported="" name="jackson-mapper-asl-1.9.2" level="project" />
   </component>
 </module>

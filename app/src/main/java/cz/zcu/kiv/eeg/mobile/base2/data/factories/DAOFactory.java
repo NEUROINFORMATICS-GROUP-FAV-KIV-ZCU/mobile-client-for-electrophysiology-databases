@@ -15,11 +15,15 @@ import cz.zcu.kiv.eeg.mobile.base2.data.store.MenuItemsStore;
 import cz.zcu.kiv.eeg.mobile.base2.data.store.UserStore;
 
 /**
- * 
+ * Support class to enable usage of NoSQL storage factory using old SQLite API
+ *
  * @author Jaroslav Hošek
- * 
+ * @author Rahul Kadyan
+ * @version 2.0.0
+ * @deprecated use cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory instead
+ * @see cz.zcu.kiv.eeg.mobile.base2.data.factories.StoreFactory
  */
-public class DAOFactory extends StoreFactory{
+public class DAOFactory extends StoreFactory {
 
 
     public DAOFactory(Context context) {
@@ -27,46 +31,46 @@ public class DAOFactory extends StoreFactory{
     }
 
     public FormStore getFormDAO() {
-		return getFormStore();
-	}
+        return getFormStore();
+    }
 
-	public FieldStore getFieldDAO() {
-		return getFieldStore();
-	}
+    public FieldStore getFieldDAO() {
+        return getFieldStore();
+    }
 
-	public LayoutStore getLayoutDAO() {
-		return getLayoutStore();
-	}
+    public LayoutStore getLayoutDAO() {
+        return getLayoutStore();
+    }
 
-	public FormLayoutsStore getFormLayoutsDAO() {
-		return getFormLayoutsStore();
-	}
+    public FormLayoutsStore getFormLayoutsDAO() {
+        return getFormLayoutsStore();
+    }
 
     public FieldLayoutsStore getFieldLayoutsDAO() {
-		return getFieldLayoutsStore();
-	}
+        return getFieldLayoutsStore();
+    }
 
-	public MenuItemsStore getMenuItemDAO() {
-		return getMenuItemStore();
-	}
+    public MenuItemsStore getMenuItemDAO() {
+        return getMenuItemStore();
+    }
 
-	public DataStore getDataDAO() {
-		return getDataStore();
-	}
+    public DataStore getDataDAO() {
+        return getDataStore();
+    }
 
-	public DatasetStore getDataSetDAO() {
-		return getDatasetStore();
-	}
+    public DatasetStore getDataSetDAO() {
+        return getDatasetStore();
+    }
 
-	public UserStore getUserDAO() {
-		return getUserStore();
-	}
+    public UserStore getUserDAO() {
+        return getUserStore();
+    }
 
-	public LayoutPropertyStore getLayoutPropertyDAO() {
-		return getLayoutPropertyStore();
-	}
-	
-	public FieldValueStore getFieldValueDAO() {
+    public LayoutPropertyStore getLayoutPropertyDAO() {
+        return getLayoutPropertyStore();
+    }
+
+    public FieldValueStore getFieldValueDAO() {
         return getFieldValueStore();
-	}
+    }
 }
