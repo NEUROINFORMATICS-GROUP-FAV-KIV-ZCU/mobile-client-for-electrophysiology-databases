@@ -41,7 +41,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
-import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 import android.view.View.OnClickListener;
 
 /**

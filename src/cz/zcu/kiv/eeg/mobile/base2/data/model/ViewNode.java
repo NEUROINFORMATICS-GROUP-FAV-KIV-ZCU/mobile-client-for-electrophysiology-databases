@@ -1,5 +1,8 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.SpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
@@ -31,6 +35,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutTouchListener;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
+import cz.zcu.kiv.eeg.mobile.base2.ui.form.ListAllFormsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 
 /**
@@ -51,6 +56,9 @@ public class ViewNode {
 	private ActionMode mActionMode;
 	private ViewBuilder vb;
 	private MenuItems menuItem;
+	
+	public FormAdapter adapter;
+	public List<FormRow> selectedHardware  = new ArrayList<FormRow>();;
 	
 	public ViewNode(Field field, LayoutProperty property) {			
 		this.field = field;
@@ -395,4 +403,7 @@ public class ViewNode {
 	public Field getField() { // do4asn0
 		return field;
 	}
+	
+	
+	
 }

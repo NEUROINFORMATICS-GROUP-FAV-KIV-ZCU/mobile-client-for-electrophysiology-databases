@@ -63,9 +63,9 @@ public class FieldDAO {
 		return null;
 	}
 
-	public Field saveOrUpdate(final String name, final String type, final Form form) {
+	public Field saveOrUpdate(final String name, final String type, final Form form, String datatype) {
 		try {
-			Field field = new Field(name, type, form);
+			Field field = new Field(name, type, form, datatype);
 			getFieldDao().createOrUpdate(field);
 			return field;
 		} catch (SQLException e) {

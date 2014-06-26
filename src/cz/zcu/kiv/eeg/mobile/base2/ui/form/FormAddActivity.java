@@ -41,7 +41,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldEditorAddActivity;
-import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 import cz.zcu.kiv.eeg.mobile.base2.util.ValidationUtils;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
@@ -208,8 +207,8 @@ public class FormAddActivity extends TaskFragmentActivity {
 		User user = null;//daoFactory.getUserDAO().getUser();
 		//User user = daoFactory.getUserDAO().getUser();  //TODO
 		if (user == null || user.getFirstName() == null) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
+			///////////////Intent intent = new Intent(this, LoginActivity.class);
+			//startActivity(intent);
 			Toast.makeText(this, "You must login first", Toast.LENGTH_SHORT).show();
 		} else {
 			///mTaskFragment.startFetchLayouts(typeAdapter); todo
@@ -275,7 +274,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 			typeSpinner.setSelection(typeAdapter.getPosition(form));
 
 			Layout layout = addItemToLayoutSpinner(type + getString(R.string.form_layout_generated));
-			Field field = new Field(getString(R.string.field_description), "Textbox", form);
+			Field field = new Field(getString(R.string.field_description), "Textbox", form, Values.STRING);
 			daoFactory.getFieldDAO().create(field);
 			fieldAdapter.add(field);
 			fieldSpinner.setSelection(fieldAdapter.getPosition(field));

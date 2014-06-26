@@ -23,6 +23,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
+import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 
 /**
@@ -36,23 +37,36 @@ public class TaskFragment extends Fragment {
 
 	public TaskFragmentActivity activity;
 	public DashboardActivity dashboard;
+	public FormActivity formActivity;
+	
 	private DummyTask mTask;
 	private TestCreditialsTask mTaskLogin;
 	private FetchLayoutsTask mTaskLayouts;
 	private FetchDataTask mTaskData;
 	private DAOFactory daoFactory;
 	public TaskState state = INACTIVE;
+	
+	boolean isRunning = false;
+	public int progress = 0;
+	public int max = 0;
 
 	@Override
 	public void onAttach(Activity activity) {
 		Log.i(TAG, "onAttach(Activity)");
 		super.onAttach(activity);
-		this.activity = (TaskFragmentActivity)activity;
+		this.activity = (TaskFragmentActivity)activity;	
+		
 		if(activity instanceof DashboardActivity){
 			dashboard = (DashboardActivity) activity;
 		}
 		
+		if(activity instanceof FormActivity){
+			formActivity = (FormActivity) activity;
+		}
+		
 	}
+	
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,23 +102,23 @@ public class TaskFragment extends Fragment {
 		}
 	}
 	
-	public void startData(String url, FormAdapter adapter, MenuItems menu) {
+	public void startData(String url, String url2, String url3 , MenuItems menu,DAOFactory daoFactory) {
 		if (state != RUNNING) {
-			mTaskData = new FetchDataTask(this, adapter, menu);
-			mTaskData.execute(url);
+			mTaskData = new FetchDataTask(this, menu,daoFactory);
+			mTaskData.execute(url, url2, url3);
 		}
 	}
 	
 	public void startLogin(User user) {
 		if (state != RUNNING) {
-			mTaskLogin = new TestCreditialsTask(this, user);
-			mTaskLogin.execute();
+			mTaskLogin = new TestCreditialsTask(this);
+			mTaskLogin.execute(user);
 		}
 	}
 	
-	public void startFetchLayouts(MenuItems menu) {
+	public void startFetchLayouts(LayoutDialogAdapter adapter, MenuItems menu) {
 		if (state != RUNNING) {
-			mTaskLayouts = new FetchLayoutsTask(this, menu);
+			mTaskLayouts = new FetchLayoutsTask(this, adapter, menu);
 			mTaskLayouts.execute();
 		}
 	}
@@ -211,15 +225,24 @@ public class TaskFragment extends Fragment {
     }
 	
 	public void createProgressBarHorizontal(final int max,  final int titleCode) {
-		activity.initProgressBar(max, activity.getString(titleCode));
+		//this.max = max;
+		//isRunning = true;
+		activity.initProgressBar(max, activity.getString(titleCode), 0);
 	}
 	
 	protected void setState(final int progress) {
+		//this.progress = progress;
 		activity.changeProgress(progress);
 	}
 	
 	protected void setStateIncrement(final int diff) {
+		//this.progress += progress;
 		activity.incrementProgressBy(diff);
+	}
+	
+	protected void resetProgressCounter(){
+		//max = 0;
+		//isRunning = false;
 	}
 
 	/************************/
@@ -230,6 +253,18 @@ public class TaskFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		Log.i(TAG, "onActivityCreated(Bundle)");
 		super.onActivityCreated(savedInstanceState);
+		/*if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            //max = savedInstanceState.getInt("pokus", -1);
+            max = savedInstanceState.getInt("max",  max);
+            progress = savedInstanceState.getInt("progress",  progress);
+            isRunning = savedInstanceState.getBoolean("isRunning",  isRunning);
+            
+            if(isRunning){
+            	System.out.println();
+            }
+        }*/
+		
 	}
 
 	@Override
@@ -255,4 +290,12 @@ public class TaskFragment extends Fragment {
 		Log.i(TAG, "onStop()");
 		super.onStop();
 	}
+	
+	public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pokus",  1000);
+        outState.putInt("max",  max);
+        outState.putInt("progress",  progress);
+        outState.putBoolean("isRunning",  isRunning);
+    }
 }

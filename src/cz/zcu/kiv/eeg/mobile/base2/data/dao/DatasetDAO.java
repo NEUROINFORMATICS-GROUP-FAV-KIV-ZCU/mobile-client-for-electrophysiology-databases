@@ -51,6 +51,16 @@ public class DatasetDAO {
 		return null;
 	}
 	
+	public Dataset create (Dataset dataset) {
+		try {
+			getDataSetDao().create(dataset);
+			return dataset;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Dataset getDataSet(final int id) {
 		try {
 			return getDataSetDao().queryForId(id);

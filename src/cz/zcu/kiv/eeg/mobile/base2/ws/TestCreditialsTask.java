@@ -31,14 +31,14 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
  * @author Jaroslav Hošek
  * 
  */
-public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
+public class TestCreditialsTask extends AsyncTask<User, Void, User> {
 	private static final String TAG = TestCreditialsTask.class.getSimpleName();
 	private TaskFragment fragment;
-	private User user;
+	//private User user;
 
-	public TestCreditialsTask(TaskFragment fragment, User user) {
+	public TestCreditialsTask(TaskFragment fragment) {
 		this.fragment = fragment;
-		this.user = user;
+		//this.user = user;
 	}
 
 	@Override
@@ -47,7 +47,8 @@ public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 	}
 
 	@Override
-	protected User doInBackground(Void... ignore) {
+	protected User doInBackground(User... users) {
+		User user = users[0];
 		user.setFirstName(null);		
 		String url = user.getUrl() + Values.SERVICE_USER_LOGIN + "login";
 
@@ -66,7 +67,8 @@ public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 			user.setFirstName(tmp.getFirstName());
 			user.setSurname(tmp.getSurname());
 			user.setRights(tmp.getRights());		
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			fragment.setState(ERROR, e);
 			Log.i("test", "testovnicek");
 			Log.e(TAG, e.getMessage(), e);
@@ -79,8 +81,7 @@ public class TestCreditialsTask extends AsyncTask<Void, Void, User> {
 		fragment.setState(DONE);
 		
 		if (testUser.getFirstName() != null) {
-			fragment.dashboard.saveNewWorkspace(false, true);
-			//fragment.getDaoFactory().getUserDAO().saveOrUpdate(testUser);
+			fragment.dashboard.saveNewWorkspace(false, true);			
 			
 		}
 	}

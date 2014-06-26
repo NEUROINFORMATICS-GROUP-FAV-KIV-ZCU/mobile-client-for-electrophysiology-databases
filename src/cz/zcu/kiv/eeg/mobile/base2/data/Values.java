@@ -93,6 +93,9 @@ public class Values {
 	public static final int WORKSPACE_EDIT = 2;
 	public static final int WORKSPACE_DELETE = 3;
 	
+	//DASHBOARD
+	public static final int BACK_FOLDER_BUTTON = -1;
+	
 
 	// ODML
 	public static final String ODML_STRING_TYPE = "string";

@@ -36,6 +36,9 @@
             android:label="@string/app_settings" />
         <activity
             android:name=".ui.form.FormAddActivity"
+            android:label="@string/form_new" />  
+        <activity
+            android:name=".ui.form.FormAddActivityNew"
             android:label="@string/form_new" />
         <activity
             android:name=".ui.form.FormDetailsActivity"

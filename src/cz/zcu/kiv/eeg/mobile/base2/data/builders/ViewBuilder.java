@@ -368,9 +368,12 @@ public class ViewBuilder {
 	public MenuItems getSubmenuItem(LayoutProperty property, Layout subLayout) {
 		MenuItems menuItem;
 		if (getDaoFactory().getMenuItemDAO().getMenu(property.getLabel()) == null) {
+			
 			menuItem = new MenuItems(property.getLabel(), subLayout, subLayout.getRootForm(),
 					property.getPreviewMajor(), property.getPreviewMinor(), null);
 			getDaoFactory().getMenuItemDAO().saveOrUpdate(menuItem);
+		
+		
 		} else {
 			menuItem = getDaoFactory().getMenuItemDAO().getMenu(property.getLabel());
 		}
@@ -736,11 +739,15 @@ public class ViewBuilder {
 		mActionMode = null;
 	}
 	
-	private  List<FormRow> selectedHardware = new ArrayList<FormRow>();
+	
+	
+	
+	
+	//private  List<FormRow> selectedHardware = new ArrayList<FormRow>();
 	
 	public void selectHardwareDialog(Layout subLayout, LayoutProperty property, final LinearLayout container) {
 		//selectedHardware.clear();
-		
+		//subLayout.getName()
 		AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
         final LayoutInflater inflater = fragment.getActivity().getLayoutInflater();
         
@@ -749,14 +756,13 @@ public class ViewBuilder {
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setEmptyView(dialogView.findViewById(android.R.id.empty));
         
-        final FormAdapter adapter = ListAllFormsFragment.getStaticAdapter(ctx, getSubmenuItem(property, subLayout),
+        final ViewNode node = nodes.get(property.getIdNode());
+       node.adapter = ListAllFormsFragment.getStaticAdapter(ctx, getSubmenuItem(property, subLayout),
 				daoFactory);
-        //listView.setAdapter(getHardwareAdapter());
-        listView.setAdapter(adapter);
-
-        /*if (!isWorking() && hardwareAdapter.isEmpty())
-            updateHardwareList();*/
-
+        
+       // node.selectedHardware=         
+        listView.setAdapter(node.adapter);
+    
         dialog.setTitle("Pokus");
         dialog.setView(dialogView);
         dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
@@ -767,23 +773,20 @@ public class ViewBuilder {
         });
 
         dialog.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 int len = listView.getCount();
-                SparseBooleanArray checked = listView.getCheckedItemPositions();
-
-                //selectedHardware.clear();
+                SparseBooleanArray checked = listView.getCheckedItemPositions();               
+                node.selectedHardware.clear();
 
                 //find out selected items
                 for (int i = 0; i < len; i++) {
-                    if (checked.get(i))  {                	
-                        selectedHardware.add(adapter.getItem(i));
+                    if (checked.get(i))  {
+                    	//FormAdapter tmp = ((FormAdapter)listView.getAdapter());                   	
+                    	node.selectedHardware.add(node.adapter.getItem(i));
                     }
                 }
-
-                fillHardwareListRows(container);
+                fillHardwareListRows(container, node.selectedHardware);
             }
         });
 
@@ -791,28 +794,36 @@ public class ViewBuilder {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                selectedHardware.clear();
-                fillHardwareListRows(container);
+            	node.selectedHardware.clear();
+                fillHardwareListRows(container,node.selectedHardware);
                 //fillHardwareListRows();
                 //Toast.makeText(ExperimentAddActivity.this, R.string.dialog_selection_cleared, Toast.LENGTH_SHORT).show();*/
             }
         });
 
-        //reselect previously selected items
-        for (FormRow hw : selectedHardware)
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).getId() == hw.getId()) {
+        //reselect previously selected items - TODO
+      for (FormRow hw : node.selectedHardware)
+            for (int i = 0; i < node.adapter.getCount(); i++) {
+                if (node.adapter.getItem(i).getId() == hw.getId()) {
                     listView.setItemChecked(i, true);
                 }
             }
         dialog.show();
     }
 	
-	public void fillHardwareListRows(final ViewGroup viewGroup){
+	
+	public void fillHardwareListRows(final ViewGroup viewGroup,  List<FormRow> selectedHardware){
 		 if (selectedHardware != null && !selectedHardware.isEmpty()) {
 	            //create and inflate row by row
 	            final LayoutInflater inflater = getLayoutInflater(viewGroup);
-
+	            
+	            //tvořim seznam všech (co zbyde v tomhle poli tak to odstranim)
+	            ArrayList<Integer> remove = new ArrayList<Integer>();
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+					View view = viewGroup.getChildAt(i);
+					remove.add(view.getId()); 			
+				}
+	            
 	            for (final FormRow record : selectedHardware) {
 	                View row = inflater.inflate(R.layout.form_row, viewGroup, false);
 	                	                       		
@@ -831,7 +842,8 @@ public class ViewBuilder {
 	        				description.setText(record.getDescription());
 	        			}
 	            
-
+	        		row.setId(record.getId());
+	        		
 	                //every row has its detail dialog
 	                row.setOnClickListener(new View.OnClickListener() {
 	                    @Override
@@ -839,12 +851,43 @@ public class ViewBuilder {
 	                        //getHardwareDetailDialog(inflater, viewGroup, record).show();
 	                    }
 	                });
-
-	                row.setBackgroundResource(R.drawable.list_selector);
-	                viewGroup.addView(row);
+	                
+	               
+	               
+	          
+	                //hledání jestli tam už není
+	                boolean isFill = false;
+	                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+						View view = viewGroup.getChildAt(i);
+						if(view.getId() == record.getId()){
+							isFill = true;
+							//remove.remove(view.getId());
+							remove.remove((Integer)view.getId());
+						}
+					}
+	                
+	                // pokud ne tak ho přídám
+	                if(isFill ==false){
+	                	row.setBackgroundResource(R.drawable.list_selector);
+		                viewGroup.addView(row);
+	                }
+	                                                                
 	            }
+	            
+	          //odstraněné polí co tam nemaj být
+                for(Integer r : remove){
+                	for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                		View view = viewGroup.getChildAt(i);
+						if(view.getId() == r.intValue()){
+							
+							viewGroup.removeView(view);
+						
+						}
+                		
+					}
+                }
 	        } else {
-	            setNoRecord(viewGroup);
+	           // setNoRecord(viewGroup);
 	        }
 	}
 	

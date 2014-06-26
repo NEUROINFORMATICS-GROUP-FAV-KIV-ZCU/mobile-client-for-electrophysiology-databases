@@ -43,6 +43,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutMenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
@@ -102,9 +103,25 @@ public class ListAllFormsFragment extends ListFragment {
 		setListAdapter(getStaticAdapter(getActivity(), menu, daoFactory));
 		registerForContextMenu(getListView());
 	}
+	
+	public static void resetAdapter( MenuItems menu) {
+		for (int i = 0; i < adapters.size(); i++) {		
+			if(adapters.get(i) != null){
+				adapters.get(i).clear();		
+			}
+				
+		}
+	
+		
+		//FormAdapter adapter = adapters.get(menu.getId());
+		//adapter.clear();
+		//adapter = null;	
+		//getActivity().finish();
+		//adapter = null;
+	}
 
 	public static FormAdapter getStaticAdapter(Activity activity, MenuItems menu, DAOFactory daoFactory) {
-		FormAdapter adapter = adapters.get(menu.getId());
+		FormAdapter adapter = adapters.get(menu.getId());		
 
 		if (adapter == null) {
 			adapter = new FormAdapter(activity, R.layout.form_row, menu, daoFactory, new ArrayList<FormRow>());
@@ -117,7 +134,7 @@ public class ListAllFormsFragment extends ListFragment {
 			Form form = daoFactory.getFormDAO().getForm(menu.getRootForm().getType());
 			if (menu.getPreviewMajor() != null) {
 				previewMajor = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
-				//form = daoFactory.getFormDAO().getForm(previewMajor.getForm().getType());
+				// form = daoFactory.getFormDAO().getForm(previewMajor.getForm().getType());
 			}
 			if (menu.getPreviewMinor() != null) {
 				PreviewMinor = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
@@ -183,11 +200,13 @@ public class ListAllFormsFragment extends ListFragment {
 	 */
 	private void update() {
 
-		/*
-		 * CommonActivity activity = (CommonActivity) getActivity(); if (ConnectionUtils.isOnline(activity)) { new
-		 * FetchScenarios(activity, getAdapter(), Values.SERVICE_QUALIFIER_ALL).execute(); } else
-		 * activity.showAlert(activity.getString(R.string.error_offline));
-		 */
+		//CommonActivity activity = (CommonActivity) getActivity()
+			//	;
+		//if (ConnectionUtils.isOnline(activity)) {
+	/*		new FetchScenarios(activity, getAdapter(), Values.SERVICE_QUALIFIER_ALL).execute();
+		} else
+			activity.showAlert(activity.getString(R.string.error_offline));*/
+
 	}
 
 	@Override
@@ -236,7 +255,8 @@ public class ListAllFormsFragment extends ListFragment {
 		final Dialog dialog = new Dialog(ctx);
 		dialog.setContentView(R.layout.form_preview_fields);
 		dialog.setTitle(getString(R.string.form_preview_fields));
-		ArrayList<Field> fields = (ArrayList<Field>) daoFactory.getFieldDAO().getFieldsTextbox(menu.getRootForm().getType());
+		ArrayList<Field> fields = (ArrayList<Field>) daoFactory.getFieldDAO().getFieldsTextbox(
+				menu.getRootForm().getType());
 
 		final Spinner previewMajor = (Spinner) dialog.findViewById(R.id.form_spinnerPreviewMajor);
 		final Spinner previewMinor = (Spinner) dialog.findViewById(R.id.form_spinnerPreviewMinor);
@@ -250,28 +270,28 @@ public class ListAllFormsFragment extends ListFragment {
 		previewMinor.setAdapter(previewAdapter2);
 
 		int position;
-		if(menu.getPreviewMajor() != null){
+		if (menu.getPreviewMajor() != null) {
 			position = previewAdapter.getPosition(menu.getPreviewMajor());
 			previewMajor.setSelection(position);
 		}
-		if(menu.getPreviewMajor() != null){
+		if (menu.getPreviewMajor() != null) {
 			position = previewAdapter2.getPosition(menu.getPreviewMinor());
 			previewMinor.setSelection(position);
-		}	
+		}
 
 		Button createForm = (Button) dialog.findViewById(R.id.form_change_preview);
 		createForm.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {			
-				Field prevMajor  = (Field) previewMajor.getSelectedItem();
-				Field prevMinor = (Field) previewMinor.getSelectedItem();		
+			public void onClick(View v) {
+				Field prevMajor = (Field) previewMajor.getSelectedItem();
+				Field prevMinor = (Field) previewMinor.getSelectedItem();
 				menu.setPreviewMajor(prevMajor);
 				menu.setPreviewMinor(prevMinor);
-				
+
 				daoFactory.getMenuItemDAO().saveOrUpdate(menu);
 				setListAdapter(null);
 				adapters.put(menu.getId(), null);
-				setListAdapter(getStaticAdapter(getActivity(), menu, daoFactory));			
+				setListAdapter(getStaticAdapter(getActivity(), menu, daoFactory));
 				dialog.dismiss();
 
 			}
@@ -289,15 +309,21 @@ public class ListAllFormsFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.form_refresh:
-			showAlert("Not implemented yet", false);
-
-			/*
-			 * clearAdapter(menu.getId()); String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType(); //
-			 * mTaskFragment.startData(url, getAdapter(menu.getId()), menu);
-			 * 
-			 * mTaskFragment.startData(url, getStaticAdapter(getActivity(), menu, daoFactory), menu);
-			 */
-
+			//showAlert("Not implemented yet", false);
+			MenuItems menuRoot = daoFactory.getMenuItemDAO().getMenu(menu.getParentId().getId());
+			
+			User user = daoFactory.getUserDAO().getUser(menuRoot.getCredential().getId());
+			menu.setCredential(user);
+			
+			clearAdapter(menu.getId());
+				
+			//String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType();
+			String url = "/rest/form-layouts/data/count?entity=" +menu.getRootForm().getType();
+			String url2 = "/rest/form-layouts/data/ids?entity=" + menu.getRootForm().getType();
+			String url3 = "/rest/form-layouts/data?entity="+menu.getRootForm().getType()+ "&id=";
+			
+			mTaskFragment.startData(url,url2,url3,  menu, daoFactory);
+					
 			break;
 		}
 		return super.onOptionsItemSelected(item);

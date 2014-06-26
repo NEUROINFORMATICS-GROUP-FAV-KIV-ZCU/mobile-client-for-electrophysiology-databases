@@ -56,11 +56,12 @@ public class Field {
 		super();
 	}
 
-	public Field(String name, String type, Form form) {
+	public Field(String name, String type, Form form, String dataType) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.form = form;
+		this.dataType = dataType;
 	}
 
 	public int getId() {

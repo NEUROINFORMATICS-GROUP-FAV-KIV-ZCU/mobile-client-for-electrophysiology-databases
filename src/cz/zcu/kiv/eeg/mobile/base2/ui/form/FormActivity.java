@@ -123,6 +123,10 @@ public class FormActivity extends TaskFragmentActivity {
 		outState.putInt(Values.MENU_ITEM_ID, menuItemID);	
 	}
 
+	public void restartAdapter(){
+		this.finish();
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

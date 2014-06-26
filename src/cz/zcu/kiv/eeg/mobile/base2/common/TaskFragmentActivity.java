@@ -23,25 +23,36 @@ import android.widget.TextView;
 public class TaskFragmentActivity extends Activity {
 
 	private static final String TAG = TaskFragmentActivity.class.getSimpleName();
-
+	
 	/**
 	 * Progress dialog informing of common service state.
 	 */
 	protected volatile ProgressDialog progressDialog;
+    public int  max = 0;
+    public int progress = 0;
+    public boolean isRunning = false;
+    
+    public void setPokus(){
+    	
+    }
 
 	@Override
 	protected void onResume() {
 		// TODO obnovit stav progresu
 		Log.i(TAG, "onResume()");
 		super.onResume();
-		if (progressDialog != null) {
+		/*if (progressDialog != null) {
 			if (progressDialog.getProgress() < progressDialog.getMax()) {
-				progressDialog.show();
+				progressDialog.show();		
 			}
-		}
+		}else{
+			if(isRunning){
+				initProgressBar(max, "pokus", progress);
+			}			
+		}*/
 	}
 
-	public void initProgressBar(final int max, final String title) {
+	public void initProgressBar(final int max, final String title,final int init) {
 		Log.i(TAG, "init");
 		final Context cx = this;
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -50,7 +61,7 @@ public class TaskFragmentActivity extends Activity {
 				progressDialog = new ProgressDialog(cx);
 				progressDialog.setTitle(title);
 				progressDialog.setMax(max);
-				progressDialog.setProgress(0);
+				progressDialog.setProgress(init); //0
 				progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 				progressDialog.setCancelable(false);
 				progressDialog.setIndeterminate(false);

@@ -44,10 +44,12 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, ArrayList<String>
 	private static final String TAG = FetchLayoutsTask.class.getSimpleName();
 	private TaskFragment fragment;
 	private MenuItems menu;
+	LayoutDialogAdapter adapter;
 
-	public FetchLayoutsTask(TaskFragment fragment, MenuItems menu ) {
+	public FetchLayoutsTask(TaskFragment fragment, LayoutDialogAdapter adapter, MenuItems menu) {
 		this.fragment = fragment;
 		this.menu = menu;
+		this.adapter = adapter;
 	}
 	
 	@Override
@@ -81,6 +83,7 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, ArrayList<String>
 			if (body != null) {
 				fragment.setState(DONE); // konec nekonečného progresu
 				fragment.createProgressBarHorizontal(body.size(), R.string.working_ws_layouts);
+				
 				System.out.println("layouty ulozeny" + body.size());
 
 				for (Layout layout : body.getLayouts()) {
@@ -102,6 +105,8 @@ public class FetchLayoutsTask extends AsyncTask<Void, Integer, ArrayList<String>
 	@Override
 	protected void onPostExecute(ArrayList<String> layouts) {
 		fragment.setState(DONE);
+		
+		adapter.notifyDataSetChanged();
 		fragment.dashboard.createSelectLayoutDialog(layouts);	
 	}
 

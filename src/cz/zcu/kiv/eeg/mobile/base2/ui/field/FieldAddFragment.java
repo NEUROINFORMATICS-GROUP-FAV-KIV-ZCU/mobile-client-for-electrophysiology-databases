@@ -267,7 +267,7 @@ public class FieldAddFragment extends Fragment {
 				activityCallBack.showAlert(activity.getString(R.string.field_exists));
 			} else {
 				Form form = new Form(formType);
-				Field newField = new Field(nameValue, typeValue, form);
+				Field newField = new Field(nameValue, typeValue, form , dataTypeValue);
 				
 				if(editFieldId > 0){
 					newField.setAction(Values.ACTION_EDIT);
@@ -275,7 +275,7 @@ public class FieldAddFragment extends Fragment {
 					newField.setAction(Values.ACTION_ADD);
 				}
 						
-				newField.setDataType(dataTypeValue);
+				//newField.setDataType(dataTypeValue);
 				// textbox
 				if (!minLengthTmp.equalsIgnoreCase("")) {
 					newField.setMinLength(Integer.parseInt(minLengthTmp));

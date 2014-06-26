@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
-import cz.zcu.kiv.eeg.mobile.base2.ui.settings.LoginActivity;
 
 /**
  * 

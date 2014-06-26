@@ -36,31 +36,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
                 android:src="@drawable/ic_action_new_dark" />
-
-
-            <ImageButton
-                android:id="@+id/form_editForm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
-                android:src="@drawable/ic_action_edit_dark" />
-
-            <ImageButton
-                android:id="@+id/form_deleteForm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
-                android:src="@drawable/ic_action_discard_dark" />
         </LinearLayout>
 
         <!-- Form name -->
@@ -95,30 +73,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
                 android:src="@drawable/ic_action_new_dark" />
-
-            <ImageButton
-                android:id="@+id/form_editLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
-                android:src="@drawable/ic_action_edit_dark" />
-
-            <ImageButton
-                android:id="@+id/form_deleteLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:contentDescription="@string/form_edit_field"
-                android:onClick="editField"
-                android:src="@drawable/ic_action_discard_dark" />
 
         </LinearLayout>
 

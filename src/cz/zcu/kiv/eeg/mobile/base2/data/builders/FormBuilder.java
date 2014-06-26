@@ -133,7 +133,7 @@ public class FormBuilder {
 		Field field = daoFactory.getFieldDAO().getField(fieldSection.getName(), form.getType());
 
 		if (field == null) {
-			field = new Field(fieldSection.getName(), fieldSection.getType(), form);
+			field = new Field(fieldSection.getName(), fieldSection.getType(), form, Values.STRING);
 			setTextboxOptions(fieldSection, field);
 			daoFactory.getFieldDAO().create(field);
 		} else if (field.getType() == null) {
@@ -217,7 +217,7 @@ public class FormBuilder {
 	private Field createPrevField(String fieldName, Form form) {
 		Field prew = daoFactory.getFieldDAO().getField(fieldName, form.getType());
 		if (prew == null) {
-			prew = new Field(fieldName, null, form);
+			prew = new Field(fieldName, null, form, Values.STRING);
 			daoFactory.getFieldDAO().create(prew);
 		}
 		return prew;

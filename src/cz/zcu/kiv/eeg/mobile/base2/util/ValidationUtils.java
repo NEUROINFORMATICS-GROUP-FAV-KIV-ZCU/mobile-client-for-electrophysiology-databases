@@ -20,19 +20,12 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
  */
 public class ValidationUtils {
 
-	public static String isWorkspaceValid(Context cx, User user, String workspaceName, DAOFactory daoFactory,
-			boolean isEdit) {
+	public static String isWorkspaceValid(Context cx, User user, String workspaceName, DAOFactory daoFactory) {
 		StringBuilder error = new StringBuilder();
 
 		if (isEmpty(workspaceName)) {
 			error.append(cx.getString(R.string.error_invalid_workspace_name)).append('\n');
-		} else {
-			if (!isEdit) {
-				MenuItems menu = daoFactory.getMenuItemDAO().getMenu(workspaceName);
-				if (menu != null) {
-					error.append(cx.getString(R.string.error_ivalid_workspace_name_exists)).append('\n');
-				}
-			}
+		
 		}
 
 		if (!user.getUsername().equals("") || !user.getPassword().equals("") 
