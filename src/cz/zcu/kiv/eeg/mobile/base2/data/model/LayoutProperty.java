@@ -30,6 +30,7 @@ public class LayoutProperty {
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_SUBLAYOUT)
 	private Layout subLayout;
 	
+	//pro podformulář
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MAJOR)
 	private Field previewMajor;
 	

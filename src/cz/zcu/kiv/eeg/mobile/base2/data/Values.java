@@ -54,16 +54,18 @@ public class Values {
 	public static final int PICK_SUBFORM_ID = 2;
 	public static final int NEW_FORM_REQUEST = 3;
 	public static final String USED_FIELD = "usedFields";
+	public static final String SUBFORM = "subform";
+	public static final String SUBLAYOUT = "sublayout";
 	
 	// ViewBuilder
 	public static final String FORM = "form";
 	public static final String CHECKBOX = "checkbox";
-	public static final String TEXTBOX = "Textbox";
-	public static final String COMBOBOX = "Combobox";
-	public static final String STRING = "String";
-	public static final String INTEGER = "Integer";
-	public static final String EMAIL = "Email";
-	public static final String DATE = "Date";
+	public static final String TEXTBOX = "textbox";
+	public static final String COMBOBOX = "combobox";
+	public static final String STRING = "string";
+	public static final String INTEGER = "integer";
+	public static final String EMAIL = "email";
+	public static final String DATE = "date";
 	
 	public static final int NODE_ID = 1;
 	public static final int NEW_DATA = -1;
@@ -72,6 +74,7 @@ public class Values {
 	public static final int FORM_NEW_SUBFORM = 2;
 	public static final int FORM_EDIT_DATA = 3;
 	public static final int FORM_EDIT_LAYOUT = 4;
+	public static final int FORM_EDIT_SUBFORM = 5;
 	public static final String FORM_EMPTY = "Empty";
 	
 	// FORM

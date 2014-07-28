@@ -114,6 +114,7 @@
     <string name="field_maxValue">Maximum value</string>
     <string name="field_defaultValue">Default value</string>
     <string name="field_newItem">Add item</string>
+    <string name="field_newForm">Select Form</string>
     
     
     <!-- person management -->
@@ -184,6 +185,7 @@
     <string name="error_empty_field">Field must be filled</string>
     <string name="error_empty_layout">Layout must be filled</string>
     <string name="error_empty_type">Form type must be filled</string>
+    <string name="error_selected_type">Form type must be selected</string>
     <string name="error_empty_form_name">Form name must be filled</string>
     <string name="error_layout_no_fields">Add fields to layout (Press "Edit layout button ...")</string>
     <string name="field_empty_name">Empty field name</string>

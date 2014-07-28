@@ -6,6 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * 
  * @author Jaroslav Hošek
+ *	Slouží k určení jaký layout je použit 
  * 
  */
 @DatabaseTable(tableName = LayoutMenuItems.TABLE_NAME)

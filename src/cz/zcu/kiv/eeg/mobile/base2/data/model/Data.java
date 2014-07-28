@@ -17,6 +17,10 @@ public class Data {
 
 	@DatabaseField(generatedId = true)
 	private int id;
+	
+	//TODO
+	//doplním record ID, které naplním ID ze serveru při stažení dat (Person88) a pak všechny co budou vyplněný projdu a vyhledám
+	// dataset s daným recordID a do data uložím ID datasetu
 
 	@DatabaseField
 	private String data;
@@ -26,24 +30,11 @@ public class Data {
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_Field)
 	private Field field;
+	
 
 	public Data() {
 		super();
 	}
-
-	/*public Data(int id, String data) {
-		super();
-		this.id = id;
-		this.data = data;
-	}*/
-
-	/*public Data(int id, Dataset dataset, Field field, String data) {
-		super();
-		this.id = id;
-		this.dataset = dataset;
-		this.field = field;
-		this.data = data;
-	}*/
 
 	public Data(Dataset dataset, Field field, String data) {
 		super();

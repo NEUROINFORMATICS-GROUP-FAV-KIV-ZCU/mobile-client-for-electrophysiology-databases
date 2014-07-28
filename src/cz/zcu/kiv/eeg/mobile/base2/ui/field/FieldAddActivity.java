@@ -23,6 +23,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddFragment.FieldAddCallBack;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.ListAllFormsFragment;
@@ -41,6 +42,7 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 	private String formType;
 	private String layoutName;
 	private int fieldId;
+	private MenuItems menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +53,13 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 		actionBar.setDisplayHomeAsUpEnabled(true);	
 		actionBar.setIcon(R.drawable.ic_action_storage);	
 		actionBar.setTitle("Edit field");
+		
+		int menuItemID = 0;
 						
 		if (savedInstanceState != null) {
 			formType = savedInstanceState.getString(Form.FORM_TYPE);
 			layoutName = savedInstanceState.getString(Layout.LAYOUT_NAME, null);
+			menuItemID = savedInstanceState.getInt(Values.MENU_ITEM_ID);
 			
 			
 		} else {
@@ -71,8 +76,11 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 				formType = extras.getString(Form.FORM_TYPE);
 				layoutName = extras.getString(Layout.LAYOUT_NAME);
 				fieldId = extras.getInt(Field.FIELD_ID, -1);
+				menuItemID = extras.getInt(Values.MENU_ITEM_ID);
 			}					
 		}
+		
+		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 	}
 	
 	public String getFormType() {
@@ -85,6 +93,10 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 	
 	public int getFieldId(){
 		return fieldId;
+	}
+	
+	public MenuItems getMenuItem(){
+		return menu;
 	}
 	
 	@Override
@@ -109,6 +121,7 @@ public class FieldAddActivity extends Activity implements FieldAddCallBack{
 		super.onSaveInstanceState(outState);
 		outState.putString(Form.FORM_TYPE, formType);
 		outState.putString(Layout.LAYOUT_NAME, layoutName);
+		outState.putInt(Values.MENU_ITEM_ID, menu.getId());
 	}
 
 	public void hideKeyboard(){

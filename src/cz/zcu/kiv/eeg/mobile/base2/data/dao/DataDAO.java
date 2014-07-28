@@ -93,7 +93,7 @@ public class DataDAO {
 		}
 	}
 	
-	public void delete(final int dataset) {
+	public void deleteByDataset(final int dataset) {
 		try {		
 			DeleteBuilder<Data, Integer> deleteBuilder = getDataDao().deleteBuilder();
 			Where<Data, Integer> where = deleteBuilder.where();
@@ -102,6 +102,14 @@ public class DataDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void delete(final int dataId) {
+		try {
+			getDataDao().deleteById(dataId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 	}
 
 	public Data getData(final Dataset dataset, final Field field) {

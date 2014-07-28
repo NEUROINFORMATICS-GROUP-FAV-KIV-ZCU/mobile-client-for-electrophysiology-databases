@@ -6,14 +6,18 @@ import java.io.OutputStream;
 import odml.core.Property;
 import odml.core.Section;
 import odml.core.Writer;
+import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.elements.UIElement;
+import cz.zcu.kiv.eeg.mobile.base2.data.elements.UITextbox;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
+import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 
 /**
  * 
@@ -24,7 +28,7 @@ public class OdmlBuilder {
 	private static final String TAG = OdmlBuilder.class.getSimpleName();
 	// odml z view
 
-	public static void createODML(SparseArray<ViewNode> nodes, Layout layout, DAOFactory daoFactory) {
+	public static void createODML(SparseArray<UIElement> elements, Layout layout, DAOFactory daoFactory) {
 		Section rootSection;
 		try {
 			String formType = layout.getRootForm().getType();
@@ -34,12 +38,12 @@ public class OdmlBuilder {
 			property.setType(Values.ODML_STRING_TYPE);
 			rootSection.add(property);
 
-			for (int i = 1; i <= nodes.size(); i++) {
-				ViewNode node = nodes.get(i);
+			for (int i = 1; i <= elements.size(); i++) {
+				UIElement element = elements.get(i);
 				//Field field = daoFactory.getFieldDAO().getField(node.getName(), formType);
 				//LayoutProperty propertyDB = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
-				Field field = node.getField();
-				LayoutProperty layoutProperty = node.getProperty();
+				Field field = element.getField();
+				LayoutProperty layoutProperty = element.getProperty();
 				
 				Section section = new Section(field.getName(), field.getType());
 
@@ -55,12 +59,12 @@ public class OdmlBuilder {
 				
 				// TODO doplnit Required, datatype
 
-				if (node.getIdRight() != 0) {
-					Property right = new Property(Values.ODML_ID_RIGHT, node.getIdRight());
+				if (element.getIdRight() != 0) {
+					Property right = new Property(Values.ODML_ID_RIGHT, element.getIdRight());
 					property.setType(Values.ODML_INT_TYPE);
 					section.add(right);
-				} else if (node.getIdBottom() != 0) {
-					Property bottom = new Property(Values.ODML_ID_BOTTOM, node.getIdBottom());
+				} else if (element.getIdBottom() != 0) {
+					Property bottom = new Property(Values.ODML_ID_BOTTOM, element.getIdBottom());
 					property.setType(Values.ODML_INT_TYPE);
 					section.add(bottom);
 				}		
@@ -89,10 +93,10 @@ public class OdmlBuilder {
 		}
 	}
 	
-	public static void createDefaultODML(Field field, Layout layout, LayoutProperty property, DAOFactory daoFactory) {
-		ViewNode node = new ViewNode(field, property);
-		SparseArray<ViewNode> nodes = new SparseArray<ViewNode>();
-		nodes.put(1, node);
-		createODML(nodes, layout, daoFactory);	
+	public static void createDefaultODML(Field field, Layout layout, LayoutProperty property , DAOFactory daoFactory, Context ctx) {
+		UIElement textBox = new UITextbox(field, property, daoFactory, ctx, null, null);
+		SparseArray<UIElement> elements = new SparseArray<UIElement>();
+		elements.put(1, textBox);
+		createODML(elements, layout, daoFactory);	
 	}
 }

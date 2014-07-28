@@ -12,6 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class FormLayouts {
 	public static final String TABLE_NAME = "form_layouts";
 	public static final String FK_ID_FORM = "form_id";
+	public static final String FK_ID_ROOT_LAYOUT = "layout_root_id";
 	public static final String FK_ID_LAYOUT = "layout_id";
 	public static final String INDEX_NAME = "form_layouts_formlayout_idx";
 
@@ -20,17 +21,27 @@ public class FormLayouts {
 
 	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_FORM, uniqueIndexName = INDEX_NAME)
 	private Form form;
+	
+	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_ROOT_LAYOUT, uniqueIndexName = INDEX_NAME)
+	private Layout rootLayout;
 
-	@DatabaseField(foreign = true, canBeNull = false, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
+	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_LAYOUT, uniqueIndexName = INDEX_NAME)
 	private Layout layout;
 
 	public FormLayouts() {
 		super();
 	}
 
-	public FormLayouts(Form form, Layout layout) {
+	public FormLayouts(Form form, Layout rootLayout) {
 		super();
 		this.form = form;
+		this.rootLayout = rootLayout;
+	}
+	
+	public FormLayouts(Form form, Layout rootLayout, Layout layout) {
+		super();
+		this.form = form;
+		this.rootLayout = rootLayout;
 		this.layout = layout;
 	}
 

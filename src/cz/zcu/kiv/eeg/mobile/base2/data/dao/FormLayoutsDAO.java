@@ -26,17 +26,21 @@ public class FormLayoutsDAO {
 		this.databaseHelper = databaseHelper;
 	}
 
-	private Dao<FormLayouts, Integer> getFormDao() throws SQLException {
+	private Dao<FormLayouts, Integer> getFormLayoutDao() throws SQLException {
 		return databaseHelper.getFormLayoutsDao();
 	}
 	
 	private Dao<Layout, String> getLayoutDao() throws SQLException {
 		return databaseHelper.getLayoutDao();
 	}
+	
+	private Dao<Form, String> getFormDao() throws SQLException {
+		return databaseHelper.getFormDao();
+	}
 
 	public CreateOrUpdateStatus saveOrUpdate(final FormLayouts formLayouts) {
 		try {
-			return getFormDao().createOrUpdate(formLayouts);
+			return getFormLayoutDao().createOrUpdate(formLayouts);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -46,7 +50,17 @@ public class FormLayoutsDAO {
 	public CreateOrUpdateStatus saveOrUpdate(final Form form, final Layout layout) {
 		try {
 			FormLayouts formLayouts = new FormLayouts(form, layout);
-			return getFormDao().createOrUpdate(formLayouts);
+			return getFormLayoutDao().createOrUpdate(formLayouts);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public CreateOrUpdateStatus saveOrUpdate(final Form form, final Layout rootLayout, final Layout layout) {
+		try {
+			FormLayouts formLayouts = new FormLayouts(form, rootLayout, layout);
+			return getFormLayoutDao().createOrUpdate(formLayouts);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +69,7 @@ public class FormLayoutsDAO {
 	
 	public List<Layout> getLayout(final Form form) {
 		try {
-			QueryBuilder<FormLayouts, Integer> formLayoutsQb = getFormDao().queryBuilder();
+			QueryBuilder<FormLayouts, Integer> formLayoutsQb = getFormLayoutDao().queryBuilder();
 			formLayoutsQb.where().eq(FormLayouts.FK_ID_FORM, form);
 			QueryBuilder<Layout, String> layoutQb = getLayoutDao().queryBuilder();
 			// join with the order query
@@ -69,9 +83,23 @@ public class FormLayoutsDAO {
 		return null;
 	}
 	
+	public List<Form> getForm(final Layout rootLayout) {
+		try {
+			QueryBuilder<FormLayouts, Integer> formLayoutsQb = getFormLayoutDao().queryBuilder();
+			formLayoutsQb.where().eq(FormLayouts.FK_ID_ROOT_LAYOUT, rootLayout);
+			QueryBuilder<Form, String> formQb = getFormDao().queryBuilder();
+			// join with the order query
+			List<Form> results = formQb.join(formLayoutsQb).query();							
+			return results;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public List<FormLayouts> getFormLayouts() {
 		try {
-			return getFormDao().queryForAll();
+			return getFormLayoutDao().queryForAll();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

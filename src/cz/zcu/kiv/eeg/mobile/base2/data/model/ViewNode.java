@@ -120,14 +120,14 @@ public class ViewNode {
 				button_param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		
 				final Layout subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());
-				menuItem = vb.getSubmenuItem(property, subLayout);
+				//menuItem = vb.getSubmenuItem(property, subLayout);
 				
 				
 				
 				button.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {	
-						vb.selectHardwareDialog(subLayout, property, (LinearLayout)node);
+						///////////////////17.7   vb.selectHardwareDialog(subLayout, property, (LinearLayout)node);
 						/*//fragment.showSubform(Values.FORM_NEW_SUBFORM, 0, menuItem, field.getId());	
 						LinearLayout spinnerLayout = (LinearLayout) node;
 						int size = spinnerLayout.getChildCount();
@@ -195,19 +195,19 @@ public class ViewNode {
 	}
 
 	// drag and drop pro vyplňované pole
-	public void setEditor(SparseArray<ViewNode> nodes) {
+	public void setEditor(){//SparseArray<ViewNode> nodes) {
 		Drawable dragShape = ctx.getResources().getDrawable(R.drawable.shape);
 
-		if(field.getType().equalsIgnoreCase(Values.FORM)){
+	/*	if(field.getType().equalsIgnoreCase(Values.FORM)){
 			RelativeLayout parent = (RelativeLayout)label.getParent();
 			parent.setOnTouchListener(new LayoutTouchListener());
-			parent.setOnDragListener(new LayoutDragListener(ctx, nodes));
+			parent.setOnDragListener(new LayoutDragListener(ctx));//, nodes));
 		}else{
 			node.setOnTouchListener(new LayoutTouchListener());
-			node.setOnDragListener(new LayoutDragListener(ctx, nodes));
+			node.setOnDragListener(new LayoutDragListener(ctx));//, nodes));
 			label.setOnTouchListener(new LayoutTouchListener());
-			label.setOnDragListener(new LayoutDragListener(ctx, nodes));
-		}
+			label.setOnDragListener(new LayoutDragListener(ctx));//, nodes));
+		}*/
 		
 
 		layout.setBackgroundDrawable(dragShape);

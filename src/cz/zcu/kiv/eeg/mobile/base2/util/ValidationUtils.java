@@ -29,7 +29,8 @@ public class ValidationUtils {
 		}
 
 		if (!user.getUsername().equals("") || !user.getPassword().equals("") 
-				|| !user.getUrl().equalsIgnoreCase("https://uu404p22-kiv.fav.zcu.cz:8443")){//|| !user.getUrl().equals("https://")) {
+				//|| !user.getUrl().equalsIgnoreCase("https://uu404p22-kiv.fav.zcu.cz:8443")){//|| !user.getUrl().equals("https://")) {
+				|| !user.getUrl().equals("https://")) {
 			if (isUsernameFormatInvalid(user.getUsername()))
 				error.append(cx.getString(R.string.error_invalid_username)).append('\n');
 			if (isPasswordFormatInvalid(user.getPassword()))

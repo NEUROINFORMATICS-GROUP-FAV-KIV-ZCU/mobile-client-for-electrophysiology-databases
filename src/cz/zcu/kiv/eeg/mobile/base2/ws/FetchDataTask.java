@@ -60,13 +60,13 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<String>>
 	private static final String TAG = FetchDataTask.class.getSimpleName();
 	private TaskFragment fragment;
 	private FormAdapter adapter;
-	private MenuItems menu;
+	private MenuItems workspace;
 	private DAOFactory daoFactory;
 
 	public FetchDataTask(TaskFragment fragment, MenuItems menu, DAOFactory daoFactory) {
 		this.fragment = fragment;
 		this.adapter = adapter;
-		this.menu = menu;
+		this.workspace = menu;
 		this.daoFactory = daoFactory;
 	}
 
@@ -77,7 +77,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<String>>
 
 	@Override
 	protected ArrayList<String> doInBackground(String... serviceUrl) {
-		User user = menu.getCredential();
+		User user = workspace.getCredential();
 		String url = user.getUrl() + serviceUrl[0];
 		String url2 = user.getUrl() + serviceUrl[1];
 		String url3 = user.getUrl() + serviceUrl[2];
@@ -123,7 +123,8 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<String>>
 					ResponseEntity<Resource> result3 = restTemplate.exchange(urlLayout, HttpMethod.GET, entity,
 							Resource.class);
 
-					DataBuilder databuilder = new DataBuilder(fragment.getDaoFactory(), result3);
+					//System.out.println("zzzzzzzzzzzzzzzzzzzzzzz " + urlLayout );
+					DataBuilder databuilder = new DataBuilder(fragment.getDaoFactory(), workspace, result3);
 					databuilder.getData();
 					publishProgress(1);
 				}
@@ -149,9 +150,17 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<String>>
 		return layouts;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	//metoda na odeslání dat
 	private void post(){
-		Form form = menu.getRootForm();
-		List<Dataset> datasety = daoFactory.getDataSetDAO().getDataSet(form);
+		Form form = workspace.getRootForm();
+		List<Dataset> datasety = daoFactory.getDataSetDAO().getDataSet(form, workspace.getParentId());
 
 		for (Dataset dataset : datasety) {
 
@@ -204,7 +213,7 @@ public class FetchDataTask extends AsyncTask<String, Integer, ArrayList<String>>
 	protected void onPostExecute(ArrayList<String> layouts) {
 		fragment.setState(DONE);
 
-		ListAllFormsFragment.resetAdapter(menu);
+		ListAllFormsFragment.resetAdapter(workspace);
 		fragment.formActivity.finish();
 
 		/*

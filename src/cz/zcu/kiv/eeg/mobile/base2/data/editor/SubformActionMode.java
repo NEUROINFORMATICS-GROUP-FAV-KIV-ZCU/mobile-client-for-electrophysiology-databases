@@ -15,6 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+
+/*
+ * odstranit
+ * 
+ */
 public class SubformActionMode implements ActionMode.Callback {
 
 	private ViewBuilder vb;
@@ -69,7 +74,7 @@ public class SubformActionMode implements ActionMode.Callback {
 			return true;
 			
 		case R.id.form_edit_field:
-			fragment.showSubform(Values.FORM_EDIT_DATA, datasetId, menuItem, field.getId());
+			//fragment.showSubform(Values.FORM_EDIT_DATA, datasetId, menuItem, field.getId());
 			//fragment.showSubform(Values.FORM_NEW_SUBFORM, 0, menuItem, field.getId());	
 			
 			mode.finish(); // Action picked, so close the CAB

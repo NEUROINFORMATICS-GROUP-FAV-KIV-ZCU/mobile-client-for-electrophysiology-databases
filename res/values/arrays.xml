@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="field_type">
-        <item>Textbox</item>
-        <item>Checkbox</item>
-        <item>Combobox</item>
-        <item>Form</item>
+        <item>textbox</item>
+        <item>checkbox</item>
+        <item>combobox</item>
+        <item>form</item>
     </string-array>
     
     <string-array name="field_datatype">
-        <item>String</item>
-        <item>Integer</item>
-        <item>Date</item>
-        <item>Email</item>
+        <item>string</item>
+        <item>integer</item>
+        <item>date</item>
+        <item>email</item>
     </string-array>
 </resources>

@@ -23,6 +23,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.field.FieldAddFragment.FieldAddCallBack;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.ListAllFormsFragment;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.TabListener;
@@ -42,11 +43,13 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 	private String layoutName;
 	private ArrayList<Integer> usedFieldsOnLayout;
 	private ArrayList<Field> unusedFieldsOnLayout;
+	private MenuItems menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		daoFactory = new DAOFactory(this);
+		int menuItemID = 0;
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setIcon(R.drawable.ic_action_storage);
@@ -73,6 +76,7 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 			formType = savedInstanceState.getString(Form.FORM_TYPE);
 			layoutName = savedInstanceState.getString(Layout.LAYOUT_NAME);
 			usedFieldsOnLayout = savedInstanceState.getIntegerArrayList(Values.USED_FIELD);
+			menuItemID = savedInstanceState.getInt(Values.MENU_ITEM_ID);
 			setUnusedFields();
 			
 			actionBar.setSelectedNavigationItem(savedInstanceState.getInt(SELECTED_TAB, 1));
@@ -82,6 +86,7 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 				formType = extras.getString(Form.FORM_TYPE);
 				layoutName = extras.getString(Layout.LAYOUT_NAME);
 				usedFieldsOnLayout = extras.getIntegerArrayList(Values.USED_FIELD);
+				menuItemID = extras.getInt(Values.MENU_ITEM_ID);
 				setUnusedFields();
 			}
 			
@@ -90,7 +95,8 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 			} else {
 				actionBar.setSelectedNavigationItem(1);
 			}
-		}
+		}	
+		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 	}
 
 	@Override
@@ -120,7 +126,8 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 		outState.putString(Form.FORM_TYPE, formType);
 		outState.putString(Layout.LAYOUT_NAME, layoutName);
 		outState.putIntegerArrayList(Values.USED_FIELD, usedFieldsOnLayout);
-		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());		
+		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());	
+		outState.putInt(Values.MENU_ITEM_ID, menu.getId());
 	}
 
 	public ArrayList<Field> getFields() {
@@ -146,6 +153,10 @@ public class FieldEditorAddActivity extends Activity implements FieldAddCallBack
 	
 	public int getFieldId(){
 		return 0;
+	}
+	
+	public MenuItems getMenuItem(){
+		return menu;
 	}
 
 	public void hideKeyboard(){

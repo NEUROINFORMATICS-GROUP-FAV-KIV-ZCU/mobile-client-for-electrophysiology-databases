@@ -29,6 +29,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
 /**
@@ -42,9 +43,11 @@ public class DataBuilder {
 	private String xmlData;
 	// private Section odmlForm;
 	private Section odmlRoot;
+	private MenuItems workspace;
 
-	public DataBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
+	public DataBuilder(DAOFactory daoFactory, MenuItems workspace, ResponseEntity<Resource> data) {
 		this.daoFactory = daoFactory;
+		this.workspace = workspace;
 
 		Reader reader;
 		try {
@@ -68,7 +71,7 @@ public class DataBuilder {
 			Form form = daoFactory.getFormDAO().getForm(formType);
 
 			if (dataset == null) {
-				dataset = new Dataset(form);
+				dataset = new Dataset(form, workspace);
 				dataset.setRecordId(recordId);
 				dataset = daoFactory.getDataSetDAO().create(dataset);
 				Vector<Property> properties = section.getProperties();
@@ -78,14 +81,27 @@ public class DataBuilder {
 					String value = property.getValue().toString();
 
 					Field field = daoFactory.getFieldDAO().getField(name, formType);
-					daoFactory.getDataDAO().create(dataset, field, value);
+					if(field != null){
+						daoFactory.getDataDAO().create(dataset, field, value);
+						/*System.out.println("xxxxxxxxxxxxxxxxxxxxx test");
+						System.out.println(dataset.getForm().getType());
+						System.out.println(dataset.getRecordId());
+						System.out.println(name);
+						System.out.println(value);
+						/*
+						System.out.println("xxxxxxxxxxxxxxxxxxxxx" + field.getId());
+						System.out.println("xxxxxxxxxxxxxxxxxxxxx" + field.getDataType());
+						System.out.println("xxxxxxxxxxxxxxxxxxxxx" + field.getName());
+						System.out.println("xxxxxxxxxxxxxxxxxxxxx" + field.getType());*/
+					}
+					
 				}
 			}
 		}
 	}
 
-	public static void createData(Form form, DAOFactory daoFactory) {
-		List<Dataset> datasety = daoFactory.getDataSetDAO().getDataSet(form);
+	public static void createData(Form form, MenuItems workspace, DAOFactory daoFactory) {
+		List<Dataset> datasety = daoFactory.getDataSetDAO().getDataSet(form, workspace);
 
 		for (Dataset dataset : datasety) {
 

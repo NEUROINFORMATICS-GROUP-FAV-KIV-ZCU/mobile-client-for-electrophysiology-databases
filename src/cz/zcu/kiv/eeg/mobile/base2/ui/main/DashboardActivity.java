@@ -71,21 +71,17 @@ public class DashboardActivity extends TaskFragmentActivity {
 	private LinearLayout leftDrawer;
 	private DrawerAdapter drawerAdapter;
 	
-	private Spinner typeSpinner;
-	private Spinner layoutSpinner;
-	private LayoutSpinnerAdapter layoutAdapter;
 	FormTypeSpinnerAdapter typeAdapter;
 	
 	private ListView drawerList;
 	private ActionBarDrawerToggle drawerToggle;
 	private ActionBar actionBar;
 
-	private MenuItems rootMenu; // rodič podložky
+	private MenuItems rootMenu; // rodič položky
 	private MenuItems selectedMenuItem;
 
 	// private MenuItems newMenu;
 	private Dialog dialog;
-
 	private TaskFragment mTaskFragment;
 
 	@Override
@@ -183,7 +179,7 @@ public class DashboardActivity extends TaskFragmentActivity {
 					// o úroveň výše
 					updateRootAdapter();
 				} else {
-					// otevření podformuláře
+					// otevření formuláře
 					Intent intent = new Intent(this, FormActivity.class);
 					intent.putExtra(Values.MENU_ITEM_ID, selectedMenuItem.getId()); // v db se indexue od 1
 					startActivity(intent);
@@ -305,12 +301,18 @@ public class DashboardActivity extends TaskFragmentActivity {
 		// inicializace údajů
 		if (mode == Values.WORKSPACE_EDIT) {
 			MenuItems menuItem = daoFactory.getMenuItemDAO().getMenu(folderId);
-			User user = daoFactory.getUserDAO().getUser(menuItem.getCredential().getId());
-
 			workspaceNameField.setText(menuItem.getName());
-			usernameField.setText(user.getUsername());
-			passwordField.setText(user.getPassword());
-			urlField.setText(user.getUrl());
+			
+			if(menuItem.getCredential() == null){
+				usernameField.setText("");
+				passwordField.setText("");
+			}else{
+				User user = daoFactory.getUserDAO().getUser(menuItem.getCredential().getId());
+				
+				usernameField.setText(user.getUsername());
+				passwordField.setText(user.getPassword());
+				urlField.setText(user.getUrl());
+			}					
 		}
 
 		Button cancelButton = (Button) dialog.findViewById(R.id.settings_button_cancel);
@@ -330,18 +332,28 @@ public class DashboardActivity extends TaskFragmentActivity {
 
 				if (mode == Values.WORKSPACE_EDIT) {
 					selectedMenuItem = daoFactory.getMenuItemDAO().getMenu(folderId);
-					user = daoFactory.getUserDAO().getUser(selectedMenuItem.getCredential().getId());
+					if(selectedMenuItem.getCredential() == null){
+						user = new User();
+					}
+					else{
+						user = daoFactory.getUserDAO().getUser(selectedMenuItem.getCredential().getId());
+					}				
 					isEdit = true;
 				} else if (mode == Values.WORKSPACE_NEW) {
 					user = new User();
 					selectedMenuItem = new MenuItems();
 					// todo odstranit testovaci
-					urlField.setText(Values.URL_DEFAULT);// default					
+					//urlField.setText(Values.URL_DEFAULT);// default					
 				}
-
+				
+				rootMenu = selectedMenuItem;
+				
 				String workSpaceName = workspaceNameField.getText().toString();
 				user.setUsername(usernameField.getText().toString());
 				user.setPassword(passwordField.getText().toString());
+				//user.setUsername("axim@students.zcu.cz");
+				//user.setPassword("19821983");
+				
 				user.setUrl(urlField.getText().toString());
 				selectedMenuItem.setName(workSpaceName);
 				selectedMenuItem.setIcon(Values.ICON_FOLDER);
@@ -349,11 +361,16 @@ public class DashboardActivity extends TaskFragmentActivity {
 				String error = ValidationUtils.isWorkspaceValid(ctx, user, workSpaceName, daoFactory);
 
 				if (error.toString().isEmpty()) {
-					daoFactory.getUserDAO().saveOrUpdate(user);
-					selectedMenuItem.setCredential(user);
-					// zkouška uživatele a adresy serveru
-					mTaskFragment.startLogin(user);
-
+					//pouze vytořit workspace, bez ověření serverem
+					if(user.getUrl().equals("https://")){
+						saveNewWorkspace(true, true);
+					}
+					else{
+						daoFactory.getUserDAO().saveOrUpdate(user);
+						selectedMenuItem.setCredential(user);
+						// zkouška uživatele a adresy serveru
+						mTaskFragment.startLogin(user);
+					}			
 				} else {
 					showAlert(error.toString());
 				}
@@ -390,12 +407,13 @@ public class DashboardActivity extends TaskFragmentActivity {
 		final LayoutDialogAdapter adapter = new LayoutDialogAdapter(this, R.layout.layout_row,
 				new ArrayList<LayoutRow>());
 
-		List<Layout> menuLayouts = daoFactory.getLayoutMenuItemsDAO().getLayout(selectedMenuItem);
+		////List<Layout> menuLayouts = daoFactory.getLayoutMenuItemsDAO().getLayout(selectedMenuItem);
 
+		//INFO - pokud zde chci zobrazovat všechny layouty musím předat s parametrem layouts
 		if (layouts != null) {
 			for (String layoutName : layouts) {
 				LayoutMenuItems layoutMenuItems = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(
-						selectedMenuItem, layoutName);
+						rootMenu, layoutName);
 				adapter.getCount();
 				if (layoutMenuItems != null) {
 					adapter.add(new LayoutRow(layoutName, true));
@@ -407,16 +425,21 @@ public class DashboardActivity extends TaskFragmentActivity {
 
 		ListView list = (ListView) dialog.findViewById(R.id.layoutList);
 		list.setAdapter(adapter);
-
+		
 		ImageButton refreshButton = (ImageButton) dialog.findViewById(R.id.form_button_refresh);
-		refreshButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mTaskFragment.startFetchLayouts(adapter, selectedMenuItem);
-				dialog.dismiss();
-			}
-		});
-
+		//bez přihlášeného uživatele (nezobrazovat stahování layoutů ze serveru)
+		if(rootMenu.getCredential() == null){
+			refreshButton.setVisibility(View.GONE);
+		}else{
+			refreshButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mTaskFragment.startFetchLayouts(adapter, rootMenu);
+					dialog.dismiss();
+				}
+			});
+		}
+		
 		Button addButton = (Button) dialog.findViewById(R.id.layout_button_add);
 		addButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -426,30 +449,30 @@ public class DashboardActivity extends TaskFragmentActivity {
 				for (LayoutRow row : list) {
 					Layout layout = daoFactory.getLayoutDAO().getLayout(row.getName());
 					LayoutMenuItems layoutMenuItems = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(
-							selectedMenuItem, layout.getName());
+							rootMenu, layout.getName());
 
 					// přidání nového formuláře
 					if (row.getChecked()) {
 						if (layoutMenuItems == null) {
-							// nový formulář (menu item)
+							// nový formulář (menu item) -- TODO tohle bude upravené, bude se předávat do menuItem pouze layout
 							MenuItems menuItem = new MenuItems(layout.getName(), layout, layout.getRootForm(), layout
-									.getPreviewMajor(), layout.getPreviewMinor(), selectedMenuItem);
+									.getPreviewMajor(), layout.getPreviewMinor(), rootMenu);
 							menuItem.setIcon("");
 							daoFactory.getMenuItemDAO().saveOrUpdate(menuItem);
 
-							layoutMenuItems = new LayoutMenuItems(layout, selectedMenuItem, menuItem);
+							layoutMenuItems = new LayoutMenuItems(layout, rootMenu, menuItem);
 							daoFactory.getLayoutMenuItemsDAO().saveOrUpdate(layoutMenuItems);
 
-							rootMenu = selectedMenuItem;
+							/////////// TODO21:22 rootMenu = selectedMenuItem;
 							updateAdapter();
 						}
 					}
-					// odškrtnutej vymazat
+					// odškrtnutý vymazat
 					else {
 						if (layoutMenuItems != null) {
 							daoFactory.getMenuItemDAO().delete(layoutMenuItems.getMenu().getId());
 							daoFactory.getLayoutMenuItemsDAO().delete(layoutMenuItems.getId());
-							rootMenu = selectedMenuItem;
+							////////// TODO21:22rootMenu = selectedMenuItem;
 							updateAdapter();
 						}
 					}
@@ -465,7 +488,7 @@ public class DashboardActivity extends TaskFragmentActivity {
 				dialog.dismiss();
 				//createFormDialog();
 				Intent intent = new Intent(ctx, FormAddActivityNew.class);
-				intent.putExtra(MenuItems.ROOT_MENU, selectedMenuItem.getId());
+				intent.putExtra(MenuItems.ROOT_MENU, rootMenu.getId());
 				//startActivityForResult(intent, Values.NEW_FORM_REQUEST);			
 				startActivity(intent);								
 			}
@@ -481,6 +504,8 @@ public class DashboardActivity extends TaskFragmentActivity {
 	
 	
 
+	
+	
 	
 
 	public void deleteAlertDialog(final MenuItems menuItem) {

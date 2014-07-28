@@ -12,6 +12,7 @@ import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
@@ -41,7 +42,7 @@ public class FormDetailsActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setIcon(R.drawable.ic_action_info);
-		actionBar.setTitle(getIntent().getExtras().getString(Values.MENU_ITEM_NAME));
+		actionBar.setTitle(getIntent().getExtras().getString(Layout.LAYOUT_ID));
 		
 		formMode = getIntent().getExtras().getInt(Form.FORM_MODE, Values.FORM_EDIT_DATA);
 	}

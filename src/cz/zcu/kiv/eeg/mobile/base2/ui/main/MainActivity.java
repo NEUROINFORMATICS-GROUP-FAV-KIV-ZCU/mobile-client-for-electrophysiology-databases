@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 		} else {*/
 			Intent mainIntent = new Intent(this, DashboardActivity.class);
 			mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(mainIntent);
+			startActivity(mainIntent);		
 		/*}
 		finish();*/		
 	}

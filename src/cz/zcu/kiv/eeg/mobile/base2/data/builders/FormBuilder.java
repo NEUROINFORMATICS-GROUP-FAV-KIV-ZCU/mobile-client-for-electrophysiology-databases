@@ -13,6 +13,7 @@ import java.util.Vector;
 //import odml.core.Reader;
 //import odml.core.Section;
 
+
 import odml.core.Reader;
 import odml.core.Section;
 import odml.core.Writer;
@@ -27,6 +28,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FieldValue;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 
@@ -84,6 +86,7 @@ public class FormBuilder {
 					xmlData = stream.toString();
 
 					Layout subLayout = saveLayout(section, subform);
+					saveFormLayouts(subform, layout, subLayout);
 					saveField(section, form, subform, layout, subLayout);				
 					createFields(section.getSections(), subform, subLayout);
 				} else {
@@ -127,6 +130,10 @@ public class FormBuilder {
 
 	private void saveFormLayouts(Form form, Layout layout) {
 		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
+	}
+	
+	private void saveFormLayouts(Form form, Layout rootLayout, Layout layout) {
+		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, rootLayout, layout);
 	}
 
 	private void saveField(Section fieldSection, Form form, Form subForm, Layout layout, Layout subLayout) {

@@ -35,16 +35,16 @@ public class Field {
 	private Form form;
 	
 	@DatabaseField
-	private int minLength;
+	private int minLength = -1;
 	
 	@DatabaseField
-	private int maxLength;
+	private int maxLength = -1;
 	
 	@DatabaseField
-	private int minValue;
+	private int minValue= -1;;
 	
 	@DatabaseField
-	private int maxValue;
+	private int maxValue= -1;;
 	
 	@DatabaseField
 	private String defaultValue;

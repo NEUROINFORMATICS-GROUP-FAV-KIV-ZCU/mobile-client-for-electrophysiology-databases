@@ -13,6 +13,7 @@ import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
@@ -27,6 +28,7 @@ public class FormActivity extends TaskFragmentActivity {
 	private static final String TAG = FormActivity.class.getSimpleName();
 	private static final String SELECTED_TAB = "selected_tab";
 	private MenuItems menu;
+	private Layout layout;
 	private int menuItemID = -1;
 	private DAOFactory daoFactory;
 
@@ -38,7 +40,7 @@ public class FormActivity extends TaskFragmentActivity {
 		actionBar.setIcon(R.drawable.ic_action_event);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
+
 		ActionBar.Tab mine = actionBar
 				.newTab()
 				.setText("Mine")
@@ -62,18 +64,20 @@ public class FormActivity extends TaskFragmentActivity {
 		} else {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				menuItemID = extras.getInt(Values.MENU_ITEM_ID, -1);			
+				menuItemID = extras.getInt(Values.MENU_ITEM_ID, -1);
 			}
 		}
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
-		actionBar.setTitle(menu.getName());
+		layout = daoFactory.getLayoutDAO().getLayout(menu.getLayout().getName());
+		// actionBar.setTitle(menu.getName());
+		actionBar.setTitle(layout.getName());
 
 	}
-	
-	public void newData(){
+
+	public void newData() {
 		Intent intent = new Intent(this, FormDetailsActivity.class);
 		intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
-		intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+		intent.putExtra(Layout.LAYOUT_ID, layout.getName());	
 		intent.putExtra(Form.FORM_MODE, Values.FORM_NEW_DATA);
 		startActivity(intent);
 	}
@@ -86,6 +90,11 @@ public class FormActivity extends TaskFragmentActivity {
 	// voláno z fragmentu
 	public MenuItems getMenuData() {
 		return menu;
+	}
+
+	// voláno z fragmentu
+	public Layout getLayout() {
+		return layout;
 	}
 
 	@Override
@@ -104,11 +113,11 @@ public class FormActivity extends TaskFragmentActivity {
 		case R.id.form_new_data:
 			newData();
 			break;
-		
+
 		case R.id.form_edit_layout:
 			Intent intentEdit = new Intent(this, FormDetailsActivity.class);
 			intentEdit.putExtra(Values.MENU_ITEM_ID, menu.getId());
-			intentEdit.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+			intentEdit.putExtra(Layout.LAYOUT_ID, layout.getName());	
 			intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_LAYOUT);
 			startActivity(intentEdit);
 			break;
@@ -120,13 +129,13 @@ public class FormActivity extends TaskFragmentActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());
-		outState.putInt(Values.MENU_ITEM_ID, menuItemID);	
+		outState.putInt(Values.MENU_ITEM_ID, menuItemID);
 	}
 
-	public void restartAdapter(){
+	public void restartAdapter() {
 		this.finish();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

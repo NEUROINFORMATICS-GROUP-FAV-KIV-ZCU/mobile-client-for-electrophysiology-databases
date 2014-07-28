@@ -3,6 +3,8 @@ package cz.zcu.kiv.eeg.mobile.base2.data.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import android.view.MenuItem;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -12,6 +14,7 @@ import com.j256.ormlite.stmt.Where;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * 
@@ -40,9 +43,9 @@ public class DatasetDAO {
 		return null;
 	}
 
-	public Dataset create (final Form form) {
+	public Dataset create (final Form form, final MenuItems workspace) {
 		try {
-			Dataset dataset = new Dataset(form);
+			Dataset dataset = new Dataset(form, workspace);
 			getDataSetDao().create(dataset);
 			return dataset;
 		} catch (SQLException e) {
@@ -90,10 +93,10 @@ public class DatasetDAO {
 		return null;
 	}
 
-	public List<Dataset> getDataSet(final Form form) {
+	public List<Dataset> getDataSet(final Form form, final MenuItems workspace) {
 		try {
 			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
-			queryBuilder.where().eq("form_id", form);
+			queryBuilder.where().eq("form_id", form).and().eq("root_menu_id", workspace);
 			return queryBuilder.query();
 		} catch (SQLException e) {
 			e.printStackTrace();

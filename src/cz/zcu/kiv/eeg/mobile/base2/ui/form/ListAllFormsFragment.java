@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,18 +22,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FieldSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
@@ -41,10 +37,9 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutMenuItems;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
-import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
 /**
@@ -55,11 +50,11 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 public class ListAllFormsFragment extends ListFragment {
 
 	public final static String TAG = ListAllFormsFragment.class.getSimpleName();
-	// public static FormAdapter adapter;
 	// TODO podpora pro adaptéry ze všech formulářů
-	private static SparseArray<FormAdapter> adapters = new SparseArray<FormAdapter>();
+	private static SparseArray<HashMap<String, FormAdapter>> workspaceAdapters = new SparseArray<HashMap<String, FormAdapter>>();
 	private DAOFactory daoFactory;
 	private MenuItems menu;
+	private Layout layout;
 	private TaskFragment mTaskFragment;
 
 	@Override
@@ -99,48 +94,72 @@ public class ListAllFormsFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		menu = ((FormActivity) getActivity()).getMenuData();
+		layout = ((FormActivity) getActivity()).getLayout();
 		setListAdapter(null);
-		setListAdapter(getStaticAdapter(getActivity(), menu, daoFactory));
+		setListAdapter(getStaticAdapter(getActivity(), menu.getParentId(), layout, daoFactory)); // TODO upravit
 		registerForContextMenu(getListView());
 	}
 	
+	//voláno z fragmentu fetchData ale podle mě spíše volat removeAdapter
 	public static void resetAdapter( MenuItems menu) {
-		for (int i = 0; i < adapters.size(); i++) {		
-			if(adapters.get(i) != null){
-				adapters.get(i).clear();		
+		for (int i = 0; i < workspaceAdapters.size(); i++) {		
+			if(workspaceAdapters.get(i) != null){
+				workspaceAdapters.get(i).clear();		
 			}
 				
-		}
-	
-		
+		}		
 		//FormAdapter adapter = adapters.get(menu.getId());
 		//adapter.clear();
 		//adapter = null;	
 		//getActivity().finish();
 		//adapter = null;
 	}
-
-	public static FormAdapter getStaticAdapter(Activity activity, MenuItems menu, DAOFactory daoFactory) {
-		FormAdapter adapter = adapters.get(menu.getId());		
+	
+	public static FormAdapter getStaticAdapter(Activity activity, MenuItems workspace, Layout layout, DAOFactory daoFactory) {
+		return getStaticAdapter(activity, workspace, layout, null, daoFactory);
+	}
+	
+	/*
+	 * workspaceID - id menutItem (Root)
+	 */
+	//public static FormAdapter getStaticAdapter(Activity activity, MenuItems menu, DAOFactory daoFactory) {
+	public static FormAdapter getStaticAdapter(Activity activity, MenuItems workspace, Layout layout, LayoutProperty property, DAOFactory daoFactory) {
+		HashMap<String, FormAdapter> layoutAdapters = workspaceAdapters.get(workspace.getId());   // nalezení správného workspacu
+		if(layoutAdapters == null){
+			layoutAdapters = new HashMap<String, FormAdapter>();
+			workspaceAdapters.put(workspace.getId(), layoutAdapters);
+		}
+		FormAdapter adapter = layoutAdapters.get(layout.getName());  // nalezení FormAdapter pro daný formulář		
 
 		if (adapter == null) {
-			adapter = new FormAdapter(activity, R.layout.form_row, menu, daoFactory, new ArrayList<FormRow>());
+			adapter = new FormAdapter(activity, R.layout.form_row, daoFactory, layout.getRootForm(), new ArrayList<FormRow>());
 
 			// podle čeho hledám
 			String id = "id";// menu.getFieldID().getName(); //ID DATASETU
-
+			Form form = daoFactory.getFormDAO().getForm(layout.getRootForm().getType());
+			
 			Field previewMajor = null;
 			Field PreviewMinor = null;
-			Form form = daoFactory.getFormDAO().getForm(menu.getRootForm().getType());
-			if (menu.getPreviewMajor() != null) {
-				previewMajor = daoFactory.getFieldDAO().getField(menu.getPreviewMajor().getId());
-				// form = daoFactory.getFormDAO().getForm(previewMajor.getForm().getType());
+			
+			//previewMinor/Major u podformuláře se určuje z PropertyLayout, jinak z Layout
+			if(property == null){
+				if (layout.getPreviewMajor() != null) {
+					previewMajor = daoFactory.getFieldDAO().getField(layout.getPreviewMajor().getId());			
+				}
+				if (layout.getPreviewMinor() != null) {
+					PreviewMinor = daoFactory.getFieldDAO().getField(layout.getPreviewMinor().getId());
+				}
+			}else{
+				if (property.getPreviewMajor() != null) {
+					previewMajor = daoFactory.getFieldDAO().getField(property.getPreviewMajor().getId());			
+				}
+				if (property.getPreviewMinor() != null) {
+					PreviewMinor = daoFactory.getFieldDAO().getField(property.getPreviewMinor().getId());
+				}
 			}
-			if (menu.getPreviewMinor() != null) {
-				PreviewMinor = daoFactory.getFieldDAO().getField(menu.getPreviewMinor().getId());
-			}
+			
 			if (form != null) {
-				for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form)) {
+				for (Dataset dataset : daoFactory.getDataSetDAO().getDataSet(form, workspace)) {
 					int dataset_id = dataset.getId();
 					String descriptionData1 = null;
 					String descriptionData2 = null;
@@ -160,18 +179,24 @@ public class ListAllFormsFragment extends ListFragment {
 					adapter.add(new FormRow(dataset_id, descriptionData1, descriptionData2, "Já"));
 				}
 			}
-			adapters.put(menu.getId(), adapter);
+			layoutAdapters.put(layout.getName(), adapter);
 		}
 
 		return adapter;
 	}
-
-	private void clearAdapter(int menuID) {
-		adapters.put(menuID, null);
+	
+	/*
+	 * odstraní adaptér
+	 */
+	public static void removeAdapter(MenuItems workspace, Layout layout){
+		HashMap<String, FormAdapter> layoutAdapters = workspaceAdapters.get(workspace.getId());   // nalezení správného workspacu
+		if(layoutAdapters != null){
+			layoutAdapters.put(layout.getName(), null);
+		}	
 	}
 
-	public static SparseArray<FormAdapter> getAdaptersForUpdate() {
-		return adapters;
+	public static HashMap<String, FormAdapter> getAdaptersForUpdate(int workspaceID) {
+		return workspaceAdapters.get(workspaceID);
 	}
 
 	@Override
@@ -180,17 +205,18 @@ public class ListAllFormsFragment extends ListFragment {
 		// this.setSelection(position);
 	}
 
-	private void showDetails(int index) {
-		// FormAdapter dataAdapter = getAdapter(menu.getId());
-		FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu, daoFactory);
+	private void showDetails(int index) {		
+		//FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu, daoFactory);
+		FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu.getParentId(), layout, daoFactory);
 		boolean empty = dataAdapter == null || dataAdapter.isEmpty();
 		if (!empty) {
 			FormRow row = dataAdapter.getItem(index);
 			Intent intent = new Intent();
 			intent.setClass(getActivity(), FormDetailsActivity.class);
 			intent.putExtra(Dataset.DATASET_ID, row.getId());
-			intent.putExtra(Values.MENU_ITEM_ID, menu.getId());
-			intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
+			intent.putExtra(Values.MENU_ITEM_ID, menu.getId());		
+			intent.putExtra(Layout.LAYOUT_ID, layout.getName());		
+			//intent.putExtra(Values.MENU_ITEM_NAME, menu.getName());
 			startActivity(intent);
 		}
 	}
@@ -222,7 +248,8 @@ public class ListAllFormsFragment extends ListFragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 
 		int position = info.position;
-		FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu, daoFactory);
+		//FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu, daoFactory);
+		FormAdapter dataAdapter = getStaticAdapter(getActivity(), menu.getParentId(), layout, daoFactory);
 		boolean empty = dataAdapter == null || dataAdapter.isEmpty();
 
 		/*
@@ -235,7 +262,7 @@ public class ListAllFormsFragment extends ListFragment {
 		switch (item.getItemId()) {
 		case R.id.menu_edit_preview:
 			if (!empty) {
-				createFormDialog();
+				createPreviewDialog();
 			}
 			return true;
 		case R.id.menu_delete:
@@ -250,13 +277,16 @@ public class ListAllFormsFragment extends ListFragment {
 		}
 	}
 
-	public void createFormDialog() {
+	public void createPreviewDialog() {
 		final Context ctx = getActivity();
 		final Dialog dialog = new Dialog(ctx);
 		dialog.setContentView(R.layout.form_preview_fields);
 		dialog.setTitle(getString(R.string.form_preview_fields));
+		
+		refreshLayout();
+	
 		ArrayList<Field> fields = (ArrayList<Field>) daoFactory.getFieldDAO().getFieldsTextbox(
-				menu.getRootForm().getType());
+				layout.getRootForm().getType());
 
 		final Spinner previewMajor = (Spinner) dialog.findViewById(R.id.form_spinnerPreviewMajor);
 		final Spinner previewMinor = (Spinner) dialog.findViewById(R.id.form_spinnerPreviewMinor);
@@ -268,14 +298,14 @@ public class ListAllFormsFragment extends ListFragment {
 		FieldSpinnerAdapter previewAdapter2 = new FieldSpinnerAdapter(ctx, R.layout.spinner_row_simple,
 				(ArrayList<Field>) fields);
 		previewMinor.setAdapter(previewAdapter2);
-
+		
 		int position;
-		if (menu.getPreviewMajor() != null) {
-			position = previewAdapter.getPosition(menu.getPreviewMajor());
+		if (layout.getPreviewMajor() != null) {
+			position = previewAdapter.getPosition(layout.getPreviewMajor());
 			previewMajor.setSelection(position);
 		}
-		if (menu.getPreviewMajor() != null) {
-			position = previewAdapter2.getPosition(menu.getPreviewMinor());
+		if (layout.getPreviewMinor() != null) {
+			position = previewAdapter2.getPosition(layout.getPreviewMinor());
 			previewMinor.setSelection(position);
 		}
 
@@ -285,19 +315,23 @@ public class ListAllFormsFragment extends ListFragment {
 			public void onClick(View v) {
 				Field prevMajor = (Field) previewMajor.getSelectedItem();
 				Field prevMinor = (Field) previewMinor.getSelectedItem();
-				menu.setPreviewMajor(prevMajor);
-				menu.setPreviewMinor(prevMinor);
+				layout.setPreviewMajor(prevMajor);
+				layout.setPreviewMinor(prevMinor);
 
-				daoFactory.getMenuItemDAO().saveOrUpdate(menu);
+				daoFactory.getLayoutDAO().saveOrUpdate(layout);
 				setListAdapter(null);
-				adapters.put(menu.getId(), null);
-				setListAdapter(getStaticAdapter(getActivity(), menu, daoFactory));
+				
+				//aktualizace - odstranění původního adaptéru a vytvoření nového
+				removeAdapter(menu.getParentId(), layout);				
+				setListAdapter(getStaticAdapter(getActivity(), menu.getParentId(), layout, daoFactory));			
 				dialog.dismiss();
-
 			}
 		});
-
 		dialog.show();
+	}
+	
+	private void refreshLayout(){
+		layout = daoFactory.getLayoutDAO().getLayout(layout.getName());
 	}
 
 	@Override
@@ -314,14 +348,21 @@ public class ListAllFormsFragment extends ListFragment {
 			
 			User user = daoFactory.getUserDAO().getUser(menuRoot.getCredential().getId());
 			menu.setCredential(user);
-			
-			clearAdapter(menu.getId());
+			//clearAdapter(menu.getId());  /////////TODO pokud budu chtit pridavat data tak pozor
 				
+							
+			/*List<Form> forms = daoFactory.getFormLayoutsDAO().getForm(menu.getLayout());
+			for(Form form : forms){
+				String url = "/rest/form-layouts/data/count?entity=" + form.getType();
+				String url2 = "/rest/form-layouts/data/ids?entity=" + form.getType();
+				String url3 = "/rest/form-layouts/data?entity=" + form.getType()+ "&id=";
+				mTaskFragment.startData(url,url2,url3,  menu, daoFactory);
+			}*/						
+			
 			//String url = Values.SERVICE_GET_DATA + menu.getRootForm().getType();
 			String url = "/rest/form-layouts/data/count?entity=" +menu.getRootForm().getType();
 			String url2 = "/rest/form-layouts/data/ids?entity=" + menu.getRootForm().getType();
 			String url3 = "/rest/form-layouts/data?entity="+menu.getRootForm().getType()+ "&id=";
-			
 			mTaskFragment.startData(url,url2,url3,  menu, daoFactory);
 					
 			break;

@@ -54,7 +54,7 @@
         android:layout_alignRight="@+id/field_spinner_type"
         android:layout_below="@+id/field_label"
         android:ems="10"
-        android:inputType="textCapWords" />  
+        android:inputType="textCapWords" />
 
     <TextView
         android:id="@+id/field_options_label"
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
- 		android:layout_alignParentRight="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/field_options_label"
         android:visibility="gone" >
 
@@ -193,9 +193,78 @@
                 android:id="@+id/field_button_newItem"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"               
+                android:layout_height="wrap_content"
                 android:text="@string/field_newItem" />
+        </LinearLayout>
+    </ScrollView>
 
+    <ScrollView
+        android:id="@+id/field_scrollView_optionForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/field_edit_Label"
+        android:layout_below="@+id/field_options_label" >
+
+        <LinearLayout
+            android:id="@+id/field_form_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/field_button_newForm"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/field_newForm" />
+
+            <TextView
+                android:id="@+id/field_formType_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/form_section" />
+
+            <TextView
+                android:id="@+id/field_formType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/field_formLayout_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/form_layout_section" />
+
+            <TextView
+                android:id="@+id/field_formLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/field_previewMajor_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/form_previewMajor" />
+
+            <Spinner
+                android:id="@+id/field_previewMajor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/field_previewMinor_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/form_previewMinor" />
+            
+            <Spinner
+                android:id="@+id/field_previewMinor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </ScrollView>
 

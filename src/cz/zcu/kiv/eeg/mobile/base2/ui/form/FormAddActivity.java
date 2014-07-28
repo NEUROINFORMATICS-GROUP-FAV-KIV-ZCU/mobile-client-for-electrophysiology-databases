@@ -287,7 +287,7 @@ public class FormAddActivity extends TaskFragmentActivity {
 			EditText formName = (EditText) findViewById(R.id.form_editName);
 			formName.setText(type);
 
-			OdmlBuilder.createDefaultODML(field, layout, property, daoFactory);
+			////////OdmlBuilder.createDefaultODML(field, layout, property, daoFactory);
 		}
 	}
 

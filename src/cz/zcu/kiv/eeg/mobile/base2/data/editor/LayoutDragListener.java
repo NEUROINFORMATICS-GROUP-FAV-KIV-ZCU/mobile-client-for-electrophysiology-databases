@@ -12,21 +12,25 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
+import cz.zcu.kiv.eeg.mobile.base2.data.elements.UIElement;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
 public class LayoutDragListener implements OnDragListener {
 	static int count = 0; // TODO
 	Drawable enterShape;
 	Drawable normalShape;
-	Context ctx; // TODO zatim zbytecne
-	private SparseArray<ViewNode> nodes;// TODO zatim zbytecne
+	Context ctx; 
+	SparseArray<UIElement> elements;
+	//private SparseArray<ViewNode> nodes;// TODO zatim zbytecne
 
-	public LayoutDragListener(Context ctx, SparseArray<ViewNode> nodes) {
+	public LayoutDragListener(Context ctx, SparseArray<UIElement> elements){//, SparseArray<ViewNode> nodes) {
 		this.enterShape = ctx.getResources().getDrawable(R.drawable.shape_droptarget); // červený rámeček
 		this.normalShape = ctx.getResources().getDrawable(R.drawable.shape);
-		this.nodes = nodes;
+		//this.nodes = nodes;
 		this.ctx = ctx;
 		count++;
+		this.elements = elements;
 	}
 
 	// TODO viewB, wrapLayoutB = target
@@ -131,10 +135,12 @@ public class LayoutDragListener implements OnDragListener {
 
 			if (i != 1 && i != count) {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight;
-				nodes.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				//ViewBuilder.elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			} else {
 				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight - 10;
-				nodes.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				//ViewBuilder.elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			}
 		}
 	}
@@ -160,7 +166,8 @@ public class LayoutDragListener implements OnDragListener {
 		Button button = new Button(ctx);
 		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT));
-		button.setOnDragListener(new LayoutDragListener(ctx, nodes));
+		//button.setOnDragListener(new LayoutDragListener(ctx));//, nodes));
+		button.setOnDragListener(new LayoutDragListener(ctx, elements));//, nodes));
 		button.setText(" ");
 		button.setTag(R.id.NODE_ID, -1);
 		layout.addView(button);

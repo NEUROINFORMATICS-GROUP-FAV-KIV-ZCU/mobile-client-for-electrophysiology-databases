@@ -72,7 +72,7 @@ public class TaskFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
-		daoFactory = new DAOFactory(activity);
+		daoFactory = new DAOFactory(activity);  //TODO tohle se mi tu vůbec nelíbí...ale je zase fakt 
 		setRetainInstance(true);
 	}
 
