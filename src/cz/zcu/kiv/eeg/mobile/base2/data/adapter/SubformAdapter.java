@@ -119,10 +119,7 @@ public class SubformAdapter extends ArrayAdapter<FormRow> {
 			}
 			if (description != null) {
 				description.setText(record.getDescription());
-			}
-			/*
-			 * if (mine != null) { mine.setText(record.getMine()); }
-			 */
+			}		
 		}
 		return row;
 	}

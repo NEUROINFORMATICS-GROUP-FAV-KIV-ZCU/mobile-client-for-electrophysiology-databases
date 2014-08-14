@@ -58,8 +58,6 @@ import cz.zcu.kiv.eeg.mobile.base2.util.ValidationUtils;
 public class FieldAddFragment extends Fragment {
 
 	public final static String TAG = FieldAddFragment.class.getSimpleName();
-	// private FieldEditorAddActivity activity;
-	// private FieldAddActivity activity;
 	private Activity activity;
 	private DAOFactory daoFactory;
 
@@ -105,7 +103,6 @@ public class FieldAddFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		// this.activity = (FieldEditorAddActivity) activity;
 		this.activity = activity;
 		try {
 			activityCallBack = (FieldAddCallBack) activity;
@@ -194,7 +191,7 @@ public class FieldAddFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				newComboboxItem(null);
+				newComboboxItem("");
 			}
 		});
 		
@@ -365,12 +362,21 @@ public class FieldAddFragment extends Fragment {
 						activityCallBack.showAlert(activity.getString(R.string.error_selected_type));
 						return;
 					}
+					Layout rootLayout = new Layout(layoutName);
+					daoFactory.getFormLayoutsDAO().create(form, rootLayout, subLayout);
+					
 					previewMajor = (Field) previewMajorSpinner.getSelectedItem();
 					previewMinor = (Field) previewMinorSpinner.getSelectedItem();	
 					
 					if(previewMajor != subLayout.getPreviewMajor() || previewMinor != subLayout.getPreviewMinor()){	
 						subLayout.setPreviewMajor(previewMajor);
 						subLayout.setPreviewMinor(previewMinor);
+						// editace podformuláře
+						if (editFieldId > 0) {
+							subLayout.setState(Values.ACTION_EDIT);
+						}else{
+							subLayout.setState(Values.ACTION_ADD);
+						}			
 						daoFactory.getLayoutDAO().saveOrUpdate(subLayout);
 						ListAllFormsFragment.removeAdapter(activityCallBack.getMenuItem().getParentId(), subLayout);
 					}
@@ -385,9 +391,7 @@ public class FieldAddFragment extends Fragment {
 					LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(newField.getId(),
 							layout.getName());
 					property.setLabel(labelValue);
-					property.setSubLayout(subLayout);
-					//property.setPreviewMajor(previewMajor);
-					//property.setPreviewMinor(previewMinor);
+					property.setSubLayout(subLayout);				
 					daoFactory.getLayoutPropertyDAO().saveOrUpdate(property);
 					message = activity.getString(R.string.field_was_edited);
 				}
@@ -398,9 +402,7 @@ public class FieldAddFragment extends Fragment {
 
 					LayoutProperty property = new LayoutProperty(newField, layout);
 					property.setLabel(labelValue);
-					property.setSubLayout(subLayout);
-					//property.setPreviewMajor(previewMajor);
-					//property.setPreviewMinor(previewMinor);
+					property.setSubLayout(subLayout);			
 					daoFactory.getLayoutPropertyDAO().create(property);
 					message = activity.getString(R.string.field_was_created);
 				}
@@ -462,7 +464,7 @@ public class FieldAddFragment extends Fragment {
 
 	private void newComboboxItem(String value) {
 		TextView newItem = new TextView(activity);
-		if (value == null) {
+		if (value.equals("")) {
 			newItem.setText(activity.getString(R.string.field_fill_item_name) + value);
 		} else {
 			newItem.setText(value);
@@ -514,8 +516,7 @@ public class FieldAddFragment extends Fragment {
 	}
 	
 	private void newForm() {
-		Intent intent = new Intent(activity, FormAddActivityNew.class);
-		//intent.putExtra(MenuItems.ROOT_MENU, rootMenu.getId());
+		Intent intent = new Intent(activity, FormAddActivityNew.class);		
 		intent.putExtra(Values.SUBFORM, true);
 		startActivityForResult(intent, Values.NEW_FORM_REQUEST);		
 	}
@@ -549,7 +550,7 @@ public class FieldAddFragment extends Fragment {
 				if (layout.getPreviewMinor() != null) {
 					position = previewAdapterMinor.getPosition(layout.getPreviewMinor());
 					previewMinorSpinner.setSelection(position);
-				}
+				}			
 			} 
 		}
 	}
@@ -575,8 +576,7 @@ public class FieldAddFragment extends Fragment {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			return false;
-		case R.id.field_discard:
-			// newField.setAction(Values.ACTION_ADD);
+		case R.id.field_discard:			
 			getActivity().finish();
 			return true;
 		case R.id.form_add_field:

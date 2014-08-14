@@ -16,8 +16,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 
 /**
  * 
@@ -26,7 +24,6 @@ import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
  */
 public class OdmlBuilder {
 	private static final String TAG = OdmlBuilder.class.getSimpleName();
-	// odml z view
 
 	public static void createODML(SparseArray<UIElement> elements, Layout layout, DAOFactory daoFactory) {
 		Section rootSection;
@@ -40,8 +37,6 @@ public class OdmlBuilder {
 
 			for (int i = 1; i <= elements.size(); i++) {
 				UIElement element = elements.get(i);
-				//Field field = daoFactory.getFieldDAO().getField(node.getName(), formType);
-				//LayoutProperty propertyDB = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
 				Field field = element.getField();
 				LayoutProperty layoutProperty = element.getProperty();
 				
@@ -49,8 +44,7 @@ public class OdmlBuilder {
 
 				Property id = new Property(Values.ODML_ID_NODE, i);
 				property.setType(Values.ODML_INT_TYPE);
-				section.add(id);
-				//propertyDB.setIdNode(i);
+				section.add(id);				
 							
 				
 				Property label = new Property(Values.ODML_LABEL, layoutProperty.getLabel());
@@ -68,14 +62,8 @@ public class OdmlBuilder {
 					property.setType(Values.ODML_INT_TYPE);
 					section.add(bottom);
 				}		
-				rootSection.add(section);
-				//LayoutProperty test = daoFactory.getLayoutPropertyDAO().getProperty(layoutProperty.getId());
-				//if(test != null){
-					daoFactory.getLayoutPropertyDAO().saveOrUpdate(layoutProperty);
-				//}else{
-					//daoFactory.getLayoutPropertyDAO().create(layoutProperty);
-				//}
-				
+				rootSection.add(section);			
+				daoFactory.getLayoutPropertyDAO().saveOrUpdate(layoutProperty);					
 			}
 			
 			Writer writer = new Writer(rootSection);
@@ -83,6 +71,7 @@ public class OdmlBuilder {
 			writer.write(stream);
 			String result = stream.toString();
 			layout.setXmlData(result);
+			layout.setState(Values.ACTION_EDIT);
 			daoFactory.getLayoutDAO().saveOrUpdate(layout);		
 			System.out.println("result: " + result);
 			

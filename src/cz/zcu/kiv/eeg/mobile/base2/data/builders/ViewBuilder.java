@@ -32,7 +32,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
-
 /**
  * 
  * @author Jaroslav Hošek
@@ -59,7 +58,7 @@ public class ViewBuilder {
 	private int rootID;
 	public String error = "";
 
-	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetId, int formMode, MenuItems menu,
+	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetRecordId, int formMode, MenuItems menu,
 			DAOFactory daoFactory) {
 		super();	
 		this.fragment = fragment;
@@ -67,8 +66,8 @@ public class ViewBuilder {
 		this.daoFactory = daoFactory;
 		this.formMode = formMode;
 		this.menu = menu;
-		this.ctx = fragment.getActivity();
-		dataset = daoFactory.getDataSetDAO().getDataSet(datasetId);
+		this.ctx = fragment.getActivity();		
+		dataset = daoFactory.getDataSetDAO().getDataSet(layout.getRootForm(), datasetRecordId, menu.getParentId());
 		elements = new SparseArray<UIElement>();
 	}
 
@@ -85,7 +84,6 @@ public class ViewBuilder {
 				System.out.println("test");
 			}
 		} catch (Exception e) {
-			//Log.e(TAG, "GGGGGGGGGGGGGGGGGGGGGGGGGGG "+ e.getMessage());
 			Log.e(TAG,e.getMessage());
 		}
 		return createForm();
@@ -95,13 +93,12 @@ public class ViewBuilder {
 		for (Section section : sections) {
 			createView(section.getName(), reference, false);
 		}
-		System.out.println("pokusnicek");
 	}
 
 	public UIElement createView(String name, String reference, boolean asTemplate) {
 		Field field = daoFactory.getFieldDAO().getField(name, reference);
 		LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
-
+		
 		if (asTemplate) {
 			property.setIdNode(availabelId);
 		}
@@ -118,8 +115,7 @@ public class ViewBuilder {
 			element = new UICombobox(field, property, daoFactory, ctx, fragment, this);
 		} else if (type.equalsIgnoreCase("choice")) {
 			element = new UITextbox(field, property, daoFactory, ctx, fragment, this);
-		} else if (type.equalsIgnoreCase(Values.FORM)) {
-			//view = createSubform(data, field, property);
+		} else if (type.equalsIgnoreCase(Values.FORM)) {		
 			element = new UIForm(field, property, daoFactory, ctx, fragment, this);	
 		}
 	
@@ -156,9 +152,9 @@ public class ViewBuilder {
 				rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 						LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
 
-				UIElement element = getViewNode2(nodeId);				
+				UIElement element = getElement(nodeId);				
 				if(formMode == Values.FORM_EDIT_DATA || formMode == Values.FORM_EDIT_SUBFORM){
-					element.initData(dataset); // TODO nove
+					element.initData(dataset);
 				}		
 				element.setDiffWeight(10);
 				View view = element.getWrapLayout();
@@ -167,7 +163,7 @@ public class ViewBuilder {
 
 				// přidání všech položek na řádku
 				while (element.getIdRight() != 0) {
-					element = getViewNode2(element.getIdRight());
+					element = getElement(element.getIdRight());
 					rowLayout.addView(element.getWrapLayout());
 				}
 
@@ -186,7 +182,7 @@ public class ViewBuilder {
 			LinearLayout rowLayout = new LinearLayout(ctx);
 			rowLayout.setOrientation(LinearLayout.HORIZONTAL);
 			rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-					LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
+					LinearLayout.LayoutParams.MATCH_PARENT));
 			rowLayout.addView(getNewColumnButton(false));
 			rowLayout.addView(getNewColumnButton(false));
 			formLayout.addView(rowLayout);
@@ -194,13 +190,8 @@ public class ViewBuilder {
 		}
 		return rootLayout;
 	}
-
-	// TODO
-	// public void addFieldsToForm(ArrayList<Integer> fields, boolean isEnabledMove, Activity activity) {
+	
 	public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
-
-		// if (fields != null) {
-		// for (int fieldId : fields) {
 		Field field = daoFactory.getFieldDAO().getField(fieldId);
 		UIElement node = createView(field.getName(), field.getForm().getType(), true);
 
@@ -222,9 +213,7 @@ public class ViewBuilder {
 			node.setLocalEdit(this, activity);
 		}
 		// pole přidávám na předposlední řádek, poslední řádek slouží v editoru k přesunu
-		formLayout.addView(rowLayout, formLayout.getChildCount() - 1);
-		// }
-		// }
+		formLayout.addView(rowLayout, formLayout.getChildCount() - 1);		
 	}
 
 	public void removeFieldFromDB(int fieldId) {			
@@ -340,7 +329,7 @@ public class ViewBuilder {
 		}
 	}
 
-	private UIElement getViewNode2(int key) {
+	private UIElement getElement(int key) {
 		return elements.get(key);
 	}
 
@@ -368,15 +357,20 @@ public class ViewBuilder {
 	}
 
 	// slouží k uložení/aktualizace do databáze
-	// public int saveFormData(int datasetID) {
-	public int saveFormData(int datasetID) {
-		//String error = "";
+	public int saveFormData(int datasetRecordID) {
+				
 		Form form = layout.getRootForm();
 		Dataset dataset;
-		if (formMode != Values.FORM_NEW_DATA) {
-			dataset = daoFactory.getDataSetDAO().getDataSet(datasetID);
+			
+		if (formMode != Values.FORM_NEW_DATA) {	
+			dataset = daoFactory.getDataSetDAO().getDataSet(layout.getRootForm(),datasetRecordID, menu.getParentId());
+
 		} else {
-			dataset = new Dataset(form, menu.getParentId());
+			dataset = new Dataset(form, menu.getParentId(), Values.ACTION_ADD);
+			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
+			
+			//kvůli podformulářům		
+			dataset.setRecordId(dataset.getId());		
 			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
 		}
 
@@ -396,8 +390,7 @@ public class ViewBuilder {
 		rootID = Integer.MAX_VALUE;
 
 		for (int i = 0; i < elements.size(); i++) {
-			int childID = elements.keyAt(i);
-
+			int childID = elements.keyAt(i);					
 			// rootID je vždy nejnižší id na layoutu
 			if (childID < rootID) {
 				rootID = childID;
@@ -417,9 +410,7 @@ public class ViewBuilder {
 	public void refreshSubforms(){
 		for (int i = 0; i < elements.size(); i++) {
 			UIElement element = elements.valueAt(i);
-			if(element.getField().getType().equalsIgnoreCase(Values.FORM)){
-				//element.initData(dataset);
-				//((UIForm)element).removeData(dataset);
+			if(element.getField().getType().equalsIgnoreCase(Values.FORM)){				
 				((UIForm)element).initData(dataset);	
 			};
 					
@@ -460,5 +451,13 @@ public class ViewBuilder {
 
 	public void setMenu(MenuItems menu) {
 		this.menu = menu;
+	}
+
+	public int getFormMode() {
+		return formMode;
+	}
+
+	public void setFormMode(int formMode) {
+		this.formMode = formMode;
 	}	
 }

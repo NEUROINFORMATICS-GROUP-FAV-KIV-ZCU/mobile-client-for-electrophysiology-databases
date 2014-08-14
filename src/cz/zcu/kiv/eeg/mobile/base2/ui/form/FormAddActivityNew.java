@@ -41,7 +41,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutMenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
@@ -150,10 +149,7 @@ public class FormAddActivityNew extends TaskFragmentActivity {
 						MenuItems menuItem = new MenuItems(layout.getName(), layout, layout.getRootForm(), layout
 								.getPreviewMajor(), layout.getPreviewMinor(), rootMenu);
 						menuItem.setIcon("");
-						daoFactory.getMenuItemDAO().saveOrUpdate(menuItem);
-
-						LayoutMenuItems layoutMenuItems = new LayoutMenuItems(layout, rootMenu, menuItem);
-						daoFactory.getLayoutMenuItemsDAO().saveOrUpdate(layoutMenuItems);
+						daoFactory.getMenuItemDAO().saveOrUpdate(menuItem);						
 						close();
 					}
 				} else {
@@ -196,7 +192,7 @@ public class FormAddActivityNew extends TaskFragmentActivity {
 	}
 
 	private void initLayoutSpinner(Form form) {
-		List<Layout> layouts = daoFactory.getFormLayoutsDAO().getLayout(form);
+		List<Layout> layouts = daoFactory.getFormLayoutsDAO().getLayout(form, daoFactory);
 		layoutAdapter = new LayoutSpinnerAdapter(this, R.layout.spinner_row_simple, (ArrayList<Layout>) layouts);
 		layoutSpinner.setAdapter(layoutAdapter);
 	}
@@ -277,7 +273,7 @@ public class FormAddActivityNew extends TaskFragmentActivity {
 			}
 
 			Layout layout = daoFactory.getLayoutDAO().create(name, null, form, null, field);
-			daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
+			daoFactory.getFormLayoutsDAO().create(form, layout);
 
 			LayoutProperty property = new LayoutProperty(field, layout);
 			property.setIdNode(1);

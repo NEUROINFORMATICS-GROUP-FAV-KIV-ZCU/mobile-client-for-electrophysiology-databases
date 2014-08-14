@@ -40,6 +40,23 @@ public class ValidationUtils {
 		}
 		return error.toString();
 	}
+	
+	public static String isWorkspaceValid(Context cx, String workspaceName) {
+		StringBuilder error = new StringBuilder();
+
+		if (isEmpty(workspaceName)) {
+			error.append(cx.getString(R.string.error_invalid_workspace_name)).append('\n');
+		
+		}
+		return error.toString();
+	}
+	
+	public static Boolean isEmptyUsername(User user) {
+		if (!user.getUsername().equals("") || !user.getPassword().equals("") || !user.getUrl().equals("https://")) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Checks, whether is provided string a valid mail address.

@@ -77,26 +77,4 @@ public class FormDetailsActivity extends Activity {
 		}
 		return false;
 	}
-	
-	/*//todo tohle upravit, tak aby to mohlo otevírat i konkretní záznam a volalo to startActiityForResults
-	public void showSubform(int formMode, MenuItems item){
-		Intent intent = new Intent();
-		intent.setClass(this, FormDetailsActivity.class);
-		intent.putExtra(Form.FORM_MODE, formMode);
-		intent.putExtra(Values.MENU_ITEM_ID, item.getId());
-		intent.putExtra(Values.MENU_ITEM_NAME, item.getName());
-		startActivityForResult(intent, Values.PICK_SUBFORM_ID);
-	}
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == Activity.RESULT_OK) {
-			 if (requestCode == Values.PICK_SUBFORM_ID) {
-				Intent intent = getIntent();
-				finish();
-				startActivity(intent);
-			}
-		}
-	}*/
 }

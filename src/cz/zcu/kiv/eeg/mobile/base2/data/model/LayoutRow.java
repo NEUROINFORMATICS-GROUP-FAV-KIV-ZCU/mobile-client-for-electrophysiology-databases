@@ -27,7 +27,7 @@ public class LayoutRow {
 	}
 
 
-	public Boolean getChecked() {
+	public Boolean isChecked() {
 		return checked;
 	}
 

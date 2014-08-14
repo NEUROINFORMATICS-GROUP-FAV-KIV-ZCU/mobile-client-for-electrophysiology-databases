@@ -94,6 +94,11 @@ public class LayoutDialogAdapter extends ArrayAdapter<LayoutRow> {
 		return initView(position, convertView, parent);
 	}
 
+	static class ViewHolder {
+		protected TextView layoutName;
+		protected CheckBox checkbox;
+	}
+
 	/**
 	 * Getter of row view.
 	 * 
@@ -103,38 +108,37 @@ public class LayoutDialogAdapter extends ArrayAdapter<LayoutRow> {
 	 * @return row view
 	 */
 	private View initView(int position, View convertView, ViewGroup parent) {
-		View row = convertView;
-		if (row == null) {
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			row = inflater.inflate(rowLayout, parent, false);
-		}
-		final LayoutRow record = getItem(position);
-		if (record != null) {
-			TextView layoutName = (TextView) row.findViewById(R.id.layoutName);
-			CheckBox checkbox = (CheckBox) row.findViewById(R.id.pokuss);
-			
+		//View row = convertView;
+		ViewHolder viewHolder = null;
 
-			if (layoutName != null) {
-				layoutName.setText(record.getName());
-			}
-			if (checkbox != null) {
-				if(record.getChecked()){
-					checkbox.setChecked(true);
-				}else{
-					checkbox.setChecked(false);
-				}
-			}	
-			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {				
+		if (convertView == null) {
+			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+			convertView = inflater.inflate(rowLayout, null);
+
+			viewHolder = new ViewHolder();
+			viewHolder.layoutName = (TextView) convertView.findViewById(R.id.layoutName);
+			viewHolder.checkbox = (CheckBox) convertView.findViewById(R.id.pokuss);
+			viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					System.out.println("blaf");
-					record.setChecked(isChecked);
-					
+					int getPosition = (Integer) buttonView.getTag(); // Here we get the position that we have set for
+																		// the checkbox using setTag.
+					layoutList.get(getPosition).setChecked(buttonView.isChecked()); // Set the value of checkbox to
+																					// maintain its state.
 				}
 			});
-			
+			convertView.setTag(viewHolder);
+			convertView.setTag(R.id.layoutName, viewHolder.layoutName);
+			convertView.setTag(R.id.pokuss, viewHolder.checkbox);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		return row;
+
+		viewHolder.checkbox.setTag(position); // This line is important.
+		viewHolder.layoutName.setText(layoutList.get(position).getName());
+		viewHolder.checkbox.setChecked(layoutList.get(position).isChecked());
+		return convertView;
 	}
 
 	/**

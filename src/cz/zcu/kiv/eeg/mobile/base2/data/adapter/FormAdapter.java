@@ -14,7 +14,6 @@ import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.FormRow;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
  * 
@@ -26,7 +25,6 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	private final Context context;
 	private final int rowLayout;
 	private List<FormRow> formList;
-	//private MenuItems menu;
 	private Form form;
 	private DAOFactory daoFactory;
 
@@ -41,7 +39,6 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 		super(context, rowLayout);
 		this.rowLayout = rowLayout;
 		this.context = context;
-		//this.formType = formType;
 		this.form = form;
 		this.formList = new ArrayList<FormRow>(items.size());
 		this.daoFactory = daoFactory;
@@ -82,10 +79,10 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 		return formList.isEmpty();
 	}
 	
-	public int getDatasetPosition(int datasetId){
+	public int getDatasetPosition(int recordId){
 		int i = 0;
 		for(FormRow row : formList){
-			if(datasetId == row.getId()){
+			if(recordId == row.getId()){
 				return i;
 			}
 			i++;
@@ -149,10 +146,7 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 			}
 			if (description != null) {
 				description.setText(record.getDescription());
-			}
-			/*
-			 * if (mine != null) { mine.setText(record.getMine()); }
-			 */
+			}		
 		}
 		return row;
 	}
@@ -163,24 +157,7 @@ public class FormAdapter extends ArrayAdapter<FormRow> {
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
-	}
-
-	/*public String getFormType() {
-		return formType;
-	}
-
-	public void setFormType(String formType) {
-		this.formType = formType;
-	}*/
-
-	
-	/*public MenuItems getMenu() {
-		return menu;
-	}
-	
-	public void setMenu(MenuItems menu) {
-		this.menu = menu;
-	}*/
+	}	
 
 	public Form getForm() {
 		return form;

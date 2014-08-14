@@ -7,25 +7,25 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
  */
 public class FormRow {
 
-	private int id; // TODO ID datasetu (zatím)) - předělám to na String -> Person35
+	private int recordId; //                  TODO ID datasetu (zatím)) - předělám to na String -> Person35
 	private String name;
 	private String description;
 	private String mine;
 
 	public FormRow(int id, String name, String description, String mine) {
 		super();
-		this.id = id;
+		this.recordId = id;
 		this.name = name;
 		this.description = description;
 		this.mine = mine;
 	}
 
 	public int getId() {
-		return id;
+		return recordId;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.recordId = id;
 	}
 
 	public String getName() {

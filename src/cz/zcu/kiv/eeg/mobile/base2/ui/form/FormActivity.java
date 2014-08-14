@@ -1,13 +1,11 @@
 package cz.zcu.kiv.eeg.mobile.base2.ui.form;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
@@ -15,7 +13,6 @@ import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
-import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
 /**
@@ -23,7 +20,7 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
  * @author Jaroslav Hošek
  * 
  */
-public class FormActivity extends TaskFragmentActivity {
+public class FormActivity extends TaskFragmentActivity implements FormActivityCallBack{
 
 	private static final String TAG = FormActivity.class.getSimpleName();
 	private static final String SELECTED_TAB = "selected_tab";
@@ -36,6 +33,14 @@ public class FormActivity extends TaskFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		daoFactory = new DAOFactory(this);
+		
+		FragmentManager fm = getFragmentManager();
+		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "taskFragment");
+		if (mTaskFragment == null) {
+			mTaskFragment = new TaskFragment();
+			fm.beginTransaction().add(mTaskFragment, TAG + "taskFragment").commit();
+		}
+		
 		ActionBar actionBar = getActionBar();
 		actionBar.setIcon(R.drawable.ic_action_event);
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -43,19 +48,13 @@ public class FormActivity extends TaskFragmentActivity {
 
 		ActionBar.Tab mine = actionBar
 				.newTab()
-				.setText("Mine")
+				.setText(" ")
 				.setTabListener(
 						new TabListener<ListAllFormsFragment>(this, ListAllFormsFragment.class.getSimpleName(),
 								ListAllFormsFragment.class));
-		ActionBar.Tab all = actionBar
-				.newTab()
-				.setText("All")
-				.setTabListener(
-						new TabListener<ListAllFormsFragment>(this, ListAllFormsFragment.class.getSimpleName(),
-								ListAllFormsFragment.class));
-
+		
 		actionBar.addTab(mine);
-		actionBar.addTab(all);
+		
 
 		// menu
 		if (savedInstanceState != null) {
@@ -69,9 +68,7 @@ public class FormActivity extends TaskFragmentActivity {
 		}
 		menu = daoFactory.getMenuItemDAO().getMenu(menuItemID);
 		layout = daoFactory.getLayoutDAO().getLayout(menu.getLayout().getName());
-		// actionBar.setTitle(menu.getName());
-		actionBar.setTitle(layout.getName());
-
+		actionBar.setTitle(layout.getName());	
 	}
 
 	public void newData() {
@@ -126,7 +123,7 @@ public class FormActivity extends TaskFragmentActivity {
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt(SELECTED_TAB, getActionBar().getSelectedNavigationIndex());
 		outState.putInt(Values.MENU_ITEM_ID, menuItemID);
@@ -134,6 +131,11 @@ public class FormActivity extends TaskFragmentActivity {
 
 	public void restartAdapter() {
 		this.finish();
+	}
+	
+	@Override
+	public TaskFragment getTaskFragment() {
+		return mTaskFragment;
 	}
 
 	@Override

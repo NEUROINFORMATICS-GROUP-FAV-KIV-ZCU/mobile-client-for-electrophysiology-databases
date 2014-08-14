@@ -11,11 +11,9 @@ import cz.zcu.kiv.eeg.mobile.base2.data.dao.FieldValueDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.FormLayoutsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.LayoutDAO;
-import cz.zcu.kiv.eeg.mobile.base2.data.dao.LayoutMenuItemsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.MenuItemsDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.LayoutPropertyDAO;
 import cz.zcu.kiv.eeg.mobile.base2.data.dao.UserDAO;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutMenuItems;
 import android.content.Context;
 
 /**
@@ -36,7 +34,6 @@ public class DAOFactory {
 	private UserDAO userDao;
 	private LayoutPropertyDAO layoutPropertyDao;
 	private FieldValueDAO fieldValueDao;
-	private LayoutMenuItemsDAO layoutMenuItems;
 	private DatabaseHelper databaseHelper = null;
 
 	public DAOFactory(final Context context) {
@@ -119,13 +116,6 @@ public class DAOFactory {
 			fieldValueDao = new FieldValueDAO(databaseHelper);
 		}
 		return fieldValueDao;
-	}
-	
-	public LayoutMenuItemsDAO getLayoutMenuItemsDAO() {
-		if (layoutMenuItems == null) {
-			layoutMenuItems = new LayoutMenuItemsDAO(databaseHelper);
-		}
-		return layoutMenuItems;
 	}
 
 	public DatabaseHelper getHelper() {

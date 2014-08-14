@@ -5,7 +5,12 @@ import java.util.List;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 
@@ -26,7 +31,7 @@ public class UserDAO {
 	private Dao<User, Integer> getUserDao() throws SQLException {
 		return databaseHelper.getUserDao();
 	}
-
+	
 	public CreateOrUpdateStatus saveOrUpdate(final User user) {
 		try {
 			return getUserDao().createOrUpdate(user);
@@ -34,6 +39,30 @@ public class UserDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void create(final User user) {
+		try {
+			getUserDao().create(user);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void update(final User user) {
+		try {			
+			getUserDao().update(user);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void delete(final int id) {
+		try {			
+			getUserDao().deleteById(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public User getUser(int id){

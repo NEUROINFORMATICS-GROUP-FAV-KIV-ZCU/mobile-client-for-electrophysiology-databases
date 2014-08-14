@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 
 /**
  * 

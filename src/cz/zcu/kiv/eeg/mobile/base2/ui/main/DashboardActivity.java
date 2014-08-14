@@ -16,7 +16,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -32,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.common.TaskFragmentActivity;
@@ -40,21 +38,13 @@ import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.DrawerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.FormTypeSpinnerAdapter;
 import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutDialogAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.adapter.LayoutSpinnerAdapter;
-import cz.zcu.kiv.eeg.mobile.base2.data.builders.OdmlBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutMenuItems;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutRow;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormActivity;
-import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormAddActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormAddActivityNew;
-import cz.zcu.kiv.eeg.mobile.base2.util.ConnectionUtils;
 import cz.zcu.kiv.eeg.mobile.base2.util.ValidationUtils;
 import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 
@@ -70,19 +60,18 @@ public class DashboardActivity extends TaskFragmentActivity {
 	private DrawerLayout drawerLayout;
 	private LinearLayout leftDrawer;
 	private DrawerAdapter drawerAdapter;
-	
+
 	FormTypeSpinnerAdapter typeAdapter;
-	
+
 	private ListView drawerList;
 	private ActionBarDrawerToggle drawerToggle;
 	private ActionBar actionBar;
 
 	private MenuItems rootMenu; // rodič položky
 	private MenuItems selectedMenuItem;
+	private User rollbackUser = null;
 
-	// private MenuItems newMenu;
 	private Dialog dialog;
-	private TaskFragment mTaskFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,10 +129,10 @@ public class DashboardActivity extends TaskFragmentActivity {
 		setMenuButton();
 
 		FragmentManager fm = getFragmentManager();
-		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "Fragment");
+		mTaskFragment = (TaskFragment) fm.findFragmentByTag(TAG + "taskFragment");
 		if (mTaskFragment == null) {
 			mTaskFragment = new TaskFragment();
-			fm.beginTransaction().add(mTaskFragment, "taskFragment").commit();
+			fm.beginTransaction().add(mTaskFragment, TAG + "taskFragment").commit();
 		}
 	}
 
@@ -170,13 +159,15 @@ public class DashboardActivity extends TaskFragmentActivity {
 		default:
 			selectedMenuItem = drawerAdapter.getItem(itemPosition);
 
-			if (rootMenu == null) {
+			//nacházím se v seznamu workspaců
+			if (selectedMenuItem.getParentId() == null && selectedMenuItem.getId() != Values.BACK_FOLDER_BUTTON) {
 				// open submenu
 				rootMenu = selectedMenuItem;
 				updateAdapter();
 			} else {
+				// nacházím v seznamu podformulářů
 				if (selectedMenuItem.getId() == Values.BACK_FOLDER_BUTTON) {
-					// o úroveň výše
+					// o úroveň výše (přechod na seznam workspaců)
 					updateRootAdapter();
 				} else {
 					// otevření formuláře
@@ -282,7 +273,9 @@ public class DashboardActivity extends TaskFragmentActivity {
 
 	// kliknutím na tlačítko CreateForm uvnitř workspacu
 	public void createForm(View view) {
-		createSelectLayoutDialog(getLayoutNames(rootMenu));
+		User user = daoFactory.getUserDAO().getUser(rootMenu.getCredential().getId());
+		rootMenu.setCredential(user);
+		createSelectLayoutDialog();
 
 	}
 
@@ -291,7 +284,6 @@ public class DashboardActivity extends TaskFragmentActivity {
 		dialog = new Dialog(this);
 		dialog.setContentView(R.layout.workspace_add);
 		dialog.setTitle(title);
-
 		final EditText workspaceNameField = (EditText) dialog.findViewById(R.id.settings_workspace_name);
 		final TextView usernameField = (TextView) dialog.findViewById(R.id.settings_username);
 		final TextView passwordField = (TextView) dialog.findViewById(R.id.settings_password);
@@ -302,23 +294,34 @@ public class DashboardActivity extends TaskFragmentActivity {
 		if (mode == Values.WORKSPACE_EDIT) {
 			MenuItems menuItem = daoFactory.getMenuItemDAO().getMenu(folderId);
 			workspaceNameField.setText(menuItem.getName());
-			
-			if(menuItem.getCredential() == null){
+
+			if (menuItem.getCredential() == null) {
 				usernameField.setText("");
 				passwordField.setText("");
-			}else{
+
+			} else {
 				User user = daoFactory.getUserDAO().getUser(menuItem.getCredential().getId());
-				
 				usernameField.setText(user.getUsername());
 				passwordField.setText(user.getPassword());
-				urlField.setText(user.getUrl());
-			}					
+				urlField.setText(user.getUrl());			
+				rollbackUser = new User();
+				rollbackUser.setFirstName(user.getFirstName());
+				rollbackUser.setId(user.getId());
+				rollbackUser.setPassword(user.getPassword());
+				rollbackUser.setRights(user.getRights());
+				rollbackUser.setSurname(user.getSurname());
+				rollbackUser.setUrl(user.getUrl());
+				rollbackUser.setUsername(user.getUsername());
+			}
 		}
 
 		Button cancelButton = (Button) dialog.findViewById(R.id.settings_button_cancel);
 		cancelButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (rollbackUser != null) {
+					daoFactory.getUserDAO().update(rollbackUser);
+				}
 				dialog.dismiss();
 			}
 		});
@@ -328,185 +331,178 @@ public class DashboardActivity extends TaskFragmentActivity {
 			@Override
 			public void onClick(View v) {
 				User user = null;
-				boolean isEdit = false;
 
 				if (mode == Values.WORKSPACE_EDIT) {
 					selectedMenuItem = daoFactory.getMenuItemDAO().getMenu(folderId);
-					if(selectedMenuItem.getCredential() == null){
+					if (selectedMenuItem.getCredential() == null) {
 						user = new User();
+					} else {
+						user = daoFactory.getUserDAO().getUser(selectedMenuItem.getCredential().getId());						
 					}
-					else{
-						user = daoFactory.getUserDAO().getUser(selectedMenuItem.getCredential().getId());
-					}				
-					isEdit = true;
 				} else if (mode == Values.WORKSPACE_NEW) {
 					user = new User();
 					selectedMenuItem = new MenuItems();
-					// todo odstranit testovaci
-					//urlField.setText(Values.URL_DEFAULT);// default					
 				}
-				
+
 				rootMenu = selectedMenuItem;
-				
+
 				String workSpaceName = workspaceNameField.getText().toString();
 				user.setUsername(usernameField.getText().toString());
 				user.setPassword(passwordField.getText().toString());
-				//user.setUsername("axim@students.zcu.cz");
-				//user.setPassword("19821983");
-				
 				user.setUrl(urlField.getText().toString());
+				if (mode == Values.WORKSPACE_NEW) {				
+					//user.setUrl("https://10.0.0.40:8443");
+				}
+
 				selectedMenuItem.setName(workSpaceName);
 				selectedMenuItem.setIcon(Values.ICON_FOLDER);
+				String error = "";
 
-				String error = ValidationUtils.isWorkspaceValid(ctx, user, workSpaceName, daoFactory);
-
-				if (error.toString().isEmpty()) {
-					//pouze vytořit workspace, bez ověření serverem
-					if(user.getUrl().equals("https://")){
-						saveNewWorkspace(true, true);
+				// pouze vytořit workspace, bez ověření serverem
+				if (ValidationUtils.isEmptyUsername(user)) {
+					error = ValidationUtils.isWorkspaceValid(ctx, workSpaceName);
+					if (error.toString().isEmpty()) {
+						daoFactory.getUserDAO().create(user);
+						selectedMenuItem.setCredential(user);
+						saveNewWorkspace();
 					}
-					else{
-						daoFactory.getUserDAO().saveOrUpdate(user);
+				} else {
+					error = ValidationUtils.isWorkspaceValid(ctx, user, workSpaceName, daoFactory);
+					if (error.toString().isEmpty()) {
+						if (mode == Values.WORKSPACE_NEW) {
+							daoFactory.getUserDAO().create(user);
+						} else {
+							daoFactory.getUserDAO().update(user);
+						}
 						selectedMenuItem.setCredential(user);
 						// zkouška uživatele a adresy serveru
-						mTaskFragment.startLogin(user);
-					}			
-				} else {
-					showAlert(error.toString());
+						mTaskFragment.startLogin(user); // předávat workspace edit
+					}
 				}
+				if (!error.toString().isEmpty()) {
+					showAlert(error.toString());
+				}				 							
 			}
 		});
 		dialog.show();
 	}
 
 	// voláno i z TestCreditials
-	public void saveNewWorkspace(boolean isNew, boolean isCredentials) {
+	public void saveNewWorkspace() {
 		daoFactory.getMenuItemDAO().saveOrUpdate(selectedMenuItem);
-		if (isNew) {
-			drawerAdapter.add(selectedMenuItem);
-			drawerAdapter.notifyDataSetChanged();
+				
+		updateRootAdapter();
+		rootMenu = selectedMenuItem;
 
-		} else {
-			updateRootAdapter();
-		}
-		dialog.dismiss();
-
-		// ověření přihlášení a zavolání seznamu layoutů
-		if (isCredentials) {
-			// mTaskFragment.startFetchLayouts(selectedMenuItem);
-			createSelectLayoutDialog(getLayoutNames(selectedMenuItem));
-		}
+		dialog.dismiss();		
+		createSelectLayoutDialog();
+		
 	}
 
-	public void createSelectLayoutDialog(ArrayList<String> layouts) {
+	public void createSelectLayoutDialog() {
 		final Context ctx = this;
 		final Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.workspace_select_layout);
 		dialog.setTitle(getString(R.string.form_layouts));
 
-		final LayoutDialogAdapter adapter = new LayoutDialogAdapter(this, R.layout.layout_row,
+		final LayoutDialogAdapter layoutAdapter = new LayoutDialogAdapter(this, R.layout.layout_row,
 				new ArrayList<LayoutRow>());
-
-		////List<Layout> menuLayouts = daoFactory.getLayoutMenuItemsDAO().getLayout(selectedMenuItem);
-
-		//INFO - pokud zde chci zobrazovat všechny layouty musím předat s parametrem layouts
-		if (layouts != null) {
-			for (String layoutName : layouts) {
-				LayoutMenuItems layoutMenuItems = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(
-						rootMenu, layoutName);
-				adapter.getCount();
-				if (layoutMenuItems != null) {
-					adapter.add(new LayoutRow(layoutName, true));
-				} else {
-					adapter.add(new LayoutRow(layoutName, false));
+		
+		List<Layout> layoutsTmp = daoFactory.getLayoutDAO().getLayouts();
+		final List<MenuItems> menuItems = daoFactory.getMenuItemDAO().getMenu(rootMenu);	//seznam formulřů daného workspacu	
+		
+		// inicializace seznamu layoutů (zaškrtnut/ nezaškrtnut)
+		if(layoutsTmp != null){
+			for(Layout layout : layoutsTmp){
+				boolean used = false;
+				for(MenuItems menu : menuItems){
+					if(menu.getLayout().getName().equalsIgnoreCase(layout.getName())){
+						layoutAdapter.add(new LayoutRow(layout.getName(), true));
+						used = true;
+					}
+				}
+				if(!used){
+					layoutAdapter.add(new LayoutRow(layout.getName(), false));
 				}
 			}
-		}
+		}			
 
 		ListView list = (ListView) dialog.findViewById(R.id.layoutList);
-		list.setAdapter(adapter);
-		
+		list.setAdapter(layoutAdapter);
+
+		//stáhnutí seznamu layoutů
 		ImageButton refreshButton = (ImageButton) dialog.findViewById(R.id.form_button_refresh);
-		//bez přihlášeného uživatele (nezobrazovat stahování layoutů ze serveru)
-		if(rootMenu.getCredential() == null){
+		User credential = daoFactory.getUserDAO().getUser(rootMenu.getCredential().getId());
+		// bez přihlášeného uživatele (nezobrazovat stahování layoutů ze serveru)
+		if (rootMenu.getCredential() == null  || ValidationUtils.isEmptyUsername(credential)) {
 			refreshButton.setVisibility(View.GONE);
-		}else{
+		} else {
 			refreshButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mTaskFragment.startFetchLayouts(adapter, rootMenu);
+					mTaskFragment.startFetchLayouts(layoutAdapter, rootMenu);
 					dialog.dismiss();
 				}
 			});
 		}
-		
+
+		//OK tlačítko - přidá/odebere vybrané layouty
 		Button addButton = (Button) dialog.findViewById(R.id.layout_button_add);
 		addButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				List<LayoutRow> list = adapter.getList();
+				List<LayoutRow> list = layoutAdapter.getList();
 
 				for (LayoutRow row : list) {
 					Layout layout = daoFactory.getLayoutDAO().getLayout(row.getName());
-					LayoutMenuItems layoutMenuItems = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(
-							rootMenu, layout.getName());
-
-					// přidání nového formuláře
-					if (row.getChecked()) {
-						if (layoutMenuItems == null) {
-							// nový formulář (menu item) -- TODO tohle bude upravené, bude se předávat do menuItem pouze layout
+					
+					//nalezení menuItem				
+					int menuItemID = 0;
+					for(MenuItems menu : menuItems){
+						if(menu.getLayout().getName().equalsIgnoreCase(row.getName())){						
+							menuItemID = menu.getId();						
+							break;
+						}
+					}
+					
+					//MenuItem neexistuje a je zaškrtnuto => přidat
+					if(menuItemID == 0){
+						if (row.isChecked()) {
 							MenuItems menuItem = new MenuItems(layout.getName(), layout, layout.getRootForm(), layout
 									.getPreviewMajor(), layout.getPreviewMinor(), rootMenu);
 							menuItem.setIcon("");
 							daoFactory.getMenuItemDAO().saveOrUpdate(menuItem);
-
-							layoutMenuItems = new LayoutMenuItems(layout, rootMenu, menuItem);
-							daoFactory.getLayoutMenuItemsDAO().saveOrUpdate(layoutMenuItems);
-
-							/////////// TODO21:22 rootMenu = selectedMenuItem;
 							updateAdapter();
 						}
-					}
-					// odškrtnutý vymazat
-					else {
-						if (layoutMenuItems != null) {
-							daoFactory.getMenuItemDAO().delete(layoutMenuItems.getMenu().getId());
-							daoFactory.getLayoutMenuItemsDAO().delete(layoutMenuItems.getId());
-							////////// TODO21:22rootMenu = selectedMenuItem;
+					//MenuItem existuje a je nezaškrnuto => odebrat
+					}else if (menuItemID > 0){
+						if (!row.isChecked()) {
+							daoFactory.getMenuItemDAO().delete(menuItemID);											
 							updateAdapter();
 						}
-					}
-				}
+					}					
+				}												
 				dialog.dismiss();
 			}
 		});
 
+		// otevření aktivity na přidání formuláře
 		Button newButton = (Button) dialog.findViewById(R.id.layout_button_new);
 		newButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialog.dismiss();
-				//createFormDialog();
+				// createFormDialog();
 				Intent intent = new Intent(ctx, FormAddActivityNew.class);
 				intent.putExtra(MenuItems.ROOT_MENU, rootMenu.getId());
-				//startActivityForResult(intent, Values.NEW_FORM_REQUEST);			
-				startActivity(intent);								
+				// startActivityForResult(intent, Values.NEW_FORM_REQUEST);
+				startActivity(intent);
 			}
-			
+
 		});
 
 		dialog.show();
 	}
-
-	
-	
-	
-	
-	
-
-	
-	
-	
 
 	public void deleteAlertDialog(final MenuItems menuItem) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -528,20 +524,13 @@ public class DashboardActivity extends TaskFragmentActivity {
 				if (menuItem.getParentId() == null) {
 					List<MenuItems> items = daoFactory.getMenuItemDAO().getMenu(menuItem);
 					for (MenuItems item : items) {
-						daoFactory.getMenuItemDAO().delete(item.getId());
-						LayoutMenuItems lm = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(menuItem,
-								item.getLayout().getName());
-						daoFactory.getLayoutMenuItemsDAO().delete(lm.getId());
+						daoFactory.getMenuItemDAO().delete(item.getId());					
 					}
 					daoFactory.getMenuItemDAO().delete(menuItem.getId());
 					updateRootAdapter();
 				}
 				// remove item
-				else {
-					LayoutMenuItems lm = daoFactory.getLayoutMenuItemsDAO().getLayoutMenuItems(menuItem.getParentId(),
-							menuItem.getLayout().getName());
-					daoFactory.getLayoutMenuItemsDAO().delete(lm.getId());
-
+				else {			
 					daoFactory.getMenuItemDAO().delete(menuItem.getId());
 					updateAdapter();
 				}
@@ -554,22 +543,6 @@ public class DashboardActivity extends TaskFragmentActivity {
 		});
 
 		builder.show();
-	}
-
-	
-	public ArrayList<String> getLayoutNames(MenuItems menu) {
-		List<Layout> list = daoFactory.getLayoutMenuItemsDAO().getLayoutRootMenu(menu);
-		ArrayList<String> layouts = new ArrayList<String>();
-		for (Layout layout : list) {
-			layouts.add(layout.getName());
-		}
-		return layouts;
-	}
-
-	public void editForm(int menuID) {
-		Intent intent = new Intent(this, FormAddActivity.class);
-		intent.putExtra(MenuItems.ROOT_MENU, menuID);
-		startActivityForResult(intent, Values.NEW_FORM_REQUEST);
 	}
 
 	@Override
@@ -605,9 +578,17 @@ public class DashboardActivity extends TaskFragmentActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.dashboard_menu, menu);
+		
+		if(rootMenu == null){
+			inflater.inflate(R.menu.dashboard_menu, menu);		
+		}
+		else{
+			inflater.inflate(R.menu.dashboard_submenu, menu);
+		}			
 	}
-
+	
+	
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -619,7 +600,7 @@ public class DashboardActivity extends TaskFragmentActivity {
 			if (menuItem.getParentId() == null) {
 				editWorkspace(menuItem);
 			} else {
-				//editForm(menuItem.getId());
+				 //editForm(menuItem.getId());
 			}
 
 			return true;

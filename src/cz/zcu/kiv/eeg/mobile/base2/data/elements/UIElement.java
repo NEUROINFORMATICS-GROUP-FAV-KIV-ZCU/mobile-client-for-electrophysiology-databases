@@ -1,20 +1,8 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.elements;
 
-import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
-import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
-import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutTouchListener;
-import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
-import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.SparseArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,15 +12,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import cz.zcu.kiv.eeg.mobile.base2.R;
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
+import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutDragListener;
+import cz.zcu.kiv.eeg.mobile.base2.data.editor.LayoutTouchListener;
+import cz.zcu.kiv.eeg.mobile.base2.data.factories.DAOFactory;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
+import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
 
 abstract public class UIElement {
 
 	protected Context ctx;
-	protected FormDetailsFragment fragment;  // mozna private
-	protected ViewBuilder vb;			     // mozna private
+	protected FormDetailsFragment fragment;
+	protected ViewBuilder vb;
 	
 	protected Field field;
-	//protected Dataset dataset;
 	protected LayoutProperty property;
 
 	protected View element;
@@ -40,7 +37,7 @@ abstract public class UIElement {
 	protected LinearLayout layout; // obaluje label a element
 	
 	private ActionMode mActionMode;
-	protected Drawable background; 			// mozna private
+	protected Drawable background; 
 	private Drawable editShape;
 
 	DAOFactory daoFactory;
@@ -50,7 +47,6 @@ abstract public class UIElement {
 
 	public UIElement(Field field, LayoutProperty property, Context ctx, DAOFactory daoFactory, FormDetailsFragment fragment, ViewBuilder vb) {
 		this.field = field;
-		// /////this.dataset = dataset;
 		this.property = property;
 		this.ctx = ctx;
 		this.daoFactory = daoFactory;
@@ -80,7 +76,7 @@ abstract public class UIElement {
 	}
 
 	protected void setTag() {
-		element.setTag(R.id.NODE_ID, property.getIdNode()); // todo asi přejmenovat na ELEMENT_ID
+		element.setTag(R.id.NODE_ID, property.getIdNode());
 		label.setTag(R.id.NODE_ID, property.getIdNode());
 		layout.setTag(R.id.NODE_ID, property.getIdNode());
 		layout.setTag(R.id.FIELD_ID, field.getId());
@@ -166,8 +162,7 @@ abstract public class UIElement {
 					return true;
 				}
 			});
-		} else {
-			// node.setOnLongClickListener(new View.OnLongClickListener() {
+		} else {			
 			layout.setOnLongClickListener(new View.OnLongClickListener() {
 				// Called when the user long-clicks on someView
 				public boolean onLongClick(View view) {
@@ -212,8 +207,7 @@ abstract public class UIElement {
 		}
 
 		@Override
-		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			// layout.setBackgroundDrawable(editShape);
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {			
 			switch (item.getItemId()) {
 			case R.id.form_remove_field:
 				vb.removeFieldFromForm(property.getIdNode());

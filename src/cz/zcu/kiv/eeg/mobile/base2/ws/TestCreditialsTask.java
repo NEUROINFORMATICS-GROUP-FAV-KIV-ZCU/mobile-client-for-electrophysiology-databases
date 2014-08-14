@@ -13,17 +13,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import cz.zcu.kiv.eeg.mobile.base2.R;
 import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.User;
-import cz.zcu.kiv.eeg.mobile.base2.ui.main.DashboardActivity;
 import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 
 /**
@@ -34,11 +31,8 @@ import cz.zcu.kiv.eeg.mobile.base2.ws.ssl.SSLSimpleClientHttpRequestFactory;
 public class TestCreditialsTask extends AsyncTask<User, Void, User> {
 	private static final String TAG = TestCreditialsTask.class.getSimpleName();
 	private TaskFragment fragment;
-	//private User user;
-
 	public TestCreditialsTask(TaskFragment fragment) {
 		this.fragment = fragment;
-		//this.user = user;
 	}
 
 	@Override
@@ -47,7 +41,7 @@ public class TestCreditialsTask extends AsyncTask<User, Void, User> {
 	}
 
 	@Override
-	protected User doInBackground(User... users) {
+	protected User doInBackground(User... users) {		
 		User user = users[0];
 		user.setFirstName(null);		
 		String url = user.getUrl() + Values.SERVICE_USER_LOGIN + "login";
@@ -81,7 +75,7 @@ public class TestCreditialsTask extends AsyncTask<User, Void, User> {
 		fragment.setState(DONE);
 		
 		if (testUser.getFirstName() != null) {
-			fragment.dashboard.saveNewWorkspace(false, true);			
+			fragment.dashboard.saveNewWorkspace();			
 			
 		}
 	}

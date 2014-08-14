@@ -12,6 +12,9 @@ import com.j256.ormlite.stmt.Where;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Data;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Dataset;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.FormLayouts;
+import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 
 /**
@@ -30,6 +33,10 @@ public class MenuItemsDAO {
 
 	private Dao<MenuItems, Integer> getMenuItemDao() throws SQLException {
 		return databaseHelper.getMenuItemDao();
+	}
+	
+	private Dao<Layout, String> getLayoutDao() throws SQLException {
+		return databaseHelper.getLayoutDao();
 	}
 	
 	public CreateOrUpdateStatus saveOrUpdate(final MenuItems item) {

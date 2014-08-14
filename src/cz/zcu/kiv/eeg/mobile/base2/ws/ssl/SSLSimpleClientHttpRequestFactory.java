@@ -24,6 +24,9 @@ public class SSLSimpleClientHttpRequestFactory extends SimpleClientHttpRequestFa
     @Override
     protected HttpURLConnection openConnection(URL url, Proxy proxy) throws IOException {
 	final HttpURLConnection httpUrlConnection = super.openConnection(url, proxy);
+	
+	httpUrlConnection.setRequestProperty("Connection", "close");
+	
 	if (url.getProtocol().toLowerCase().equals("https")) {
 	    try {
 		SSLContext ctx = SSLContext.getInstance("TLS");

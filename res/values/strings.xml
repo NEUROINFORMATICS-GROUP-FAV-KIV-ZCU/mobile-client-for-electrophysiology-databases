@@ -51,7 +51,7 @@
     <string name="settings_login">Login</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_layout_name">Layout name</string>
-    <string name="settings_layout_downloaded">Downloaded</string>
+    <string name="settings_layout_selected">Selected</string>
     <string name="settings_new">New ...</string>
     <string name="settings_add">Add</string>
 
@@ -155,17 +155,20 @@
     <string name="error_http_400">Application made invalid request towards server.</string>
     <string name="error_http_401">User authorization check failed. Check your login information.</string>
     <string name="error_http_403">You do not have permissions for such request.</string>
+    <string name="error_http_403_layout_update">You do not have permissions for update:\n</string>
     <string name="error_http_404">Location not found. This is probably a server issue, but check your server URL just to
-        be sure.</string>
+        be sure.</string>     
+    <string name="error_http_404_data">No data stored on the server.</string>
     <string name="error_http_405">Request method not allowed.</string>
     <string name="error_http_408">Request timed out.</string>
+    <string name="error_http_409">The form name and layout name already exists on the server:\n</string>
     <string name="error_http_500">Internal server error.</string>
     <string name="error_http_503">Service is currently unavailable. Try again later.</string>
     <string name="error_no_file_selected">No file selected!</string>
     <string name="error_no_experiment_selected">No experiment selected!</string>
     <string name="error_no_group_selected">No research group selected!</string>
-    <string name="error_invalid_mail_format">Invalid mail format!</string>
-    <string name="error_invalid_date_format">Invalid date format!</string>
+    <string name="error_invalid_mail_format">: Invalid email format!</string>
+    <string name="error_invalid_date_format">: Invalid date format!</string>
     
     <string name="error_ssl">SSL connection fell apart. Try again.</string>
     <string name="error_no_type_selected">No electrode type selected!</string>
@@ -188,12 +191,22 @@
     <string name="error_selected_type">Form type must be selected</string>
     <string name="error_empty_form_name">Form name must be filled</string>
     <string name="error_layout_no_fields">Add fields to layout (Press "Edit layout button ...")</string>
+    <string name="error_field_max_length">: max length is&#160;</string>
+    <string name="error_field_min_length">: min length is&#160;</string>
+    <string name="error_field_max_value">: max value is&#160;</string>
+    <string name="error_field_min_value">: min value is&#160;</string>
     <string name="field_empty_name">Empty field name</string>
     <string name="field_fill_item_name">Fill item name</string>
 
     <!-- Working -->
     <string name="working_ws_credentials">Verifying login information…</string>
     <string name="working_ws_layouts">Fetching available layouts…</string>
+    <string name="working_ws_updating_layouts">Updating layouts</string>
+    <string name="working_ws_uploading_layouts">Uploading modified layouts</string>
+    <string name="working_ws_uploading_new_layouts">Uploading new layouts</string>
+    <string name="working_ws_layouts_prepare">Získávám seznam layoutů.</string>
+    <string name="working_ws_data">Fetching data:&#160;</string>
+    <string name="working_ws_upload_data">Uploading data:&#160;</string>
 
     <!-- Spinners -->
     <string name="spinner_layout">[Select layout...]</string>
@@ -203,5 +216,6 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_remove_item">Remove item</string>
     <string name="dialog_button_clear_selection">Clear selection</string>
+    <string name="dialog_button_new_item">New Item</string>
 
 </resources>

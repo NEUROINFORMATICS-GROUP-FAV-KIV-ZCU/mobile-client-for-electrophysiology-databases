@@ -43,6 +43,7 @@ public class UIForm extends UIElement {
 	protected Layout subLayout;	
 
 	public FormAdapter adapter;
+	//vybrané řádky z podformuláře
 	private List<FormRow> selectedRow = new ArrayList<FormRow>();
 
 	public UIForm(Field field, LayoutProperty property, DAOFactory daoFactory, Context ctx,
@@ -107,13 +108,15 @@ public class UIForm extends UIElement {
 
 			subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());		
 
-			button.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {					
-					selectSubformDialog();					
-				}
-			});
-
+			if(vb.getFormMode() != Values.FORM_EDIT_LAYOUT){
+				button.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {					
+						selectSubformDialog();					
+					}
+				});
+			}
+			
 			labelLayout.addView(label, label_param);
 			labelLayout.addView(button, button_param);
 			layout.addView(labelLayout);
@@ -144,11 +147,13 @@ public class UIForm extends UIElement {
 
 	public String createOrUpdateData(Dataset dataset) {
 		String error = "";
+		// již uloženo v DB
 		List<Data> dataList = daoFactory.getDataDAO().getAllData(dataset.getId(), field.getId());
 		
+		//pokud označený řádek je v DB(dataList), tak ho již nebudu přidávat
 		for(FormRow row : selectedRow){
 			boolean isFill = false;
-			for(Data data : dataList){
+			for(Data data : dataList){				
 				if(data.getData().equalsIgnoreCase(Integer.toString(row.getId()))){
 					dataList.remove(data);
 					isFill = true;
@@ -181,7 +186,7 @@ public class UIForm extends UIElement {
 		}		
 		listView.setAdapter(adapter);
 
-		dialog.setTitle("Pokus");
+		dialog.setTitle(property.getLabel());
 		dialog.setView(dialogView);
 		dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
 			@Override
@@ -207,15 +212,31 @@ public class UIForm extends UIElement {
 			}
 		});
 
-		dialog.setNeutralButton(R.string.dialog_button_clear_selection, new DialogInterface.OnClickListener() {
+		dialog.setNeutralButton(R.string.dialog_button_new_item, new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(DialogInterface dialog, int which) {											
+				int datasetId = fragment.saveData();
+				if (datasetId == -1) {
+					final AlertDialog.Builder builder = new AlertDialog.Builder(vb.fragment.getActivity());
+					builder.setMessage(vb.error).setCancelable(false)
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									vb.error = "";
+									dialog.cancel();
 
-				selectedRow.clear();
-				fillRows();
-				// fillHardwareListRows();
-				// Toast.makeText(ExperimentAddActivity.this, R.string.dialog_selection_cleared,
-				// Toast.LENGTH_SHORT).show();*/
+								}
+							});
+					builder.create().show();
+				}else{									
+					Intent intentEdit = new Intent(ctx, FormDetailsActivity.class);
+					intentEdit.putExtra(Dataset.DATASET_PARENT_ID, datasetId);
+					intentEdit.putExtra(Field.FIELD_ID, field.getId());
+					intentEdit.putExtra(Values.MENU_ITEM_ID, vb.getMenu().getId());
+					intentEdit.putExtra(Layout.LAYOUT_ID, subLayout.getName());	
+					intentEdit.putExtra(Form.FORM_MODE, Values.FORM_NEW_SUBFORM);
+					vb.fragment.startActivityForResult(intentEdit, Values.FORM_NEW_SUBFORM);
+				}	
 			}
 		});
 
@@ -264,15 +285,28 @@ public class UIForm extends UIElement {
 				// every row has its detail dialog
 				row.setOnClickListener(new View.OnClickListener() {
 					@Override
-					public void onClick(View v) {
-						Intent intentEdit = new Intent(ctx, FormDetailsActivity.class);
-						intentEdit.putExtra(Dataset.DATASET_ID, record.getId());
-						intentEdit.putExtra(Values.MENU_ITEM_ID, vb.getMenu().getId());
-						intentEdit.putExtra(Layout.LAYOUT_ID, subLayout.getName());	
-						intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_SUBFORM);
-						//ctx.startActivity(intentEdit);
-						//vb.fragment.getActivity().startActivityForResult(intentEdit, Values.FORM_EDIT_SUBFORM);
-						vb.fragment.startActivityForResult(intentEdit, Values.FORM_EDIT_SUBFORM);
+					public void onClick(View v) {						
+						int datasetId = vb.saveFormData(vb.getDataset().getRecordId());
+						if (datasetId == -1) {
+							final AlertDialog.Builder builder = new AlertDialog.Builder(vb.fragment.getActivity());
+							builder.setMessage(vb.error).setCancelable(false)
+									.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog, int id) {
+											vb.error = "";
+											dialog.cancel();
+
+										}
+									});
+							builder.create().show();
+						}else{
+							Intent intentEdit = new Intent(ctx, FormDetailsActivity.class);
+							intentEdit.putExtra(Dataset.DATASET_RECORD_ID, record.getId());
+							intentEdit.putExtra(Values.MENU_ITEM_ID, vb.getMenu().getId());
+							intentEdit.putExtra(Layout.LAYOUT_ID, subLayout.getName());	
+							intentEdit.putExtra(Form.FORM_MODE, Values.FORM_EDIT_SUBFORM);
+							vb.fragment.startActivityForResult(intentEdit, Values.FORM_EDIT_SUBFORM);
+						}				
 					}
 				});
 

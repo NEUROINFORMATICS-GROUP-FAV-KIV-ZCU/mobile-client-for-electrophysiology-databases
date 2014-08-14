@@ -6,6 +6,8 @@ import org.simpleframework.xml.Root;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
+
 /**
  * 
  * @author Jaroslav Hošek
@@ -45,6 +47,9 @@ public class Layout {
 
 	@DatabaseField(foreign = true, canBeNull = true, columnName = FK_ID_FIELD_PREVIEW_MINOR)
 	private Field previewMinor;
+	
+	@DatabaseField
+	private int state;
 
 	// pouze pomocná proměnná při získávání layoutu z ws
 	@Element
@@ -128,5 +133,13 @@ public class Layout {
 
 	public void setPreviewMinor(Field previewMinor) {
 		this.previewMinor = previewMinor;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 }

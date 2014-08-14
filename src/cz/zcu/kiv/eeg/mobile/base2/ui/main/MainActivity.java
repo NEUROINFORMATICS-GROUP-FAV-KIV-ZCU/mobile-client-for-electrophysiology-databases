@@ -21,18 +21,9 @@ public class MainActivity extends Activity {
 		Log.i(TAG, "onCreate(Bundle)");
 		super.onCreate(savedInstanceState);
 		daoFactory = new DAOFactory(this);
-
-		/*User user = daoFactory.getUserDAO().getUser();
-		if (user == null) {
-			Intent loginIntent = new Intent(this, LoginActivity.class);
-			loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(loginIntent);
-		} else {*/
-			Intent mainIntent = new Intent(this, DashboardActivity.class);
-			mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(mainIntent);		
-		/*}
-		finish();*/		
+		Intent mainIntent = new Intent(this, DashboardActivity.class);
+		mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(mainIntent);
 	}
 
 	@Override

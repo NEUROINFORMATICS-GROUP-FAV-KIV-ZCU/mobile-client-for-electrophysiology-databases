@@ -73,7 +73,7 @@ public class DatasetDAO {
 		return null;
 	}
 	
-	public Dataset getDataSet(final String recordId) {
+	/*public Dataset getDataSetByRecordId(final int recordId) {
 		try {
 			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
 			queryBuilder.where().eq("recordId", recordId);
@@ -82,7 +82,7 @@ public class DatasetDAO {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 
 	public List<Dataset> getDataSet() {
 		try {
@@ -98,6 +98,28 @@ public class DatasetDAO {
 			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
 			queryBuilder.where().eq("form_id", form).and().eq("root_menu_id", workspace);
 			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<Dataset> getDataSet(final Form form, int state) {
+		try {
+			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
+			queryBuilder.where().eq("form_id", form).and().eq("state", state);
+			return queryBuilder.query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Dataset getDataSet(final Form form, int recordId,  final MenuItems workspace) {
+		try {
+			QueryBuilder<Dataset, Integer> queryBuilder = getDataSetDao().queryBuilder();
+			queryBuilder.where().eq("form_id", form).and().eq("recordId", recordId).and().eq("root_menu_id", workspace);
+			return queryBuilder.queryForFirst();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

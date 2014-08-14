@@ -1,33 +1,27 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.editor;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnDragListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import cz.zcu.kiv.eeg.mobile.base2.R;
-import cz.zcu.kiv.eeg.mobile.base2.data.Values;
-import cz.zcu.kiv.eeg.mobile.base2.data.builders.ViewBuilder;
 import cz.zcu.kiv.eeg.mobile.base2.data.elements.UIElement;
-import cz.zcu.kiv.eeg.mobile.base2.data.model.ViewNode;
 
 public class LayoutDragListener implements OnDragListener {
-	static int count = 0; // TODO
+	static int count = 0;
 	Drawable enterShape;
 	Drawable normalShape;
 	Context ctx; 
-	SparseArray<UIElement> elements;
-	//private SparseArray<ViewNode> nodes;// TODO zatim zbytecne
+	SparseArray<UIElement> elements;	
 
-	public LayoutDragListener(Context ctx, SparseArray<UIElement> elements){//, SparseArray<ViewNode> nodes) {
+	public LayoutDragListener(Context ctx, SparseArray<UIElement> elements){
 		this.enterShape = ctx.getResources().getDrawable(R.drawable.shape_droptarget); // červený rámeček
-		this.normalShape = ctx.getResources().getDrawable(R.drawable.shape);
-		//this.nodes = nodes;
+		this.normalShape = ctx.getResources().getDrawable(R.drawable.shape);		
 		this.ctx = ctx;
 		count++;
 		this.elements = elements;
@@ -134,12 +128,10 @@ public class LayoutDragListener implements OnDragListener {
 			View item = rowLayout.getChildAt(i);
 
 			if (i != 1 && i != count) {
-				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight;
-				//ViewBuilder.elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight;			
 				elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			} else {
-				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight - 10;
-				//ViewBuilder.elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
+				((LinearLayout.LayoutParams) item.getLayoutParams()).weight = weight - 10;			
 				elements.get((Integer) item.getTag(R.id.NODE_ID)).setWeight((int) weight);
 			}
 		}
@@ -165,9 +157,8 @@ public class LayoutDragListener implements OnDragListener {
 		layout.setTag(R.id.NODE_ID, -1);
 		Button button = new Button(ctx);
 		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.MATCH_PARENT));
-		//button.setOnDragListener(new LayoutDragListener(ctx));//, nodes));
-		button.setOnDragListener(new LayoutDragListener(ctx, elements));//, nodes));
+				LinearLayout.LayoutParams.MATCH_PARENT));		
+		button.setOnDragListener(new LayoutDragListener(ctx, elements));
 		button.setText(" ");
 		button.setTag(R.id.NODE_ID, -1);
 		layout.addView(button);

@@ -8,7 +8,7 @@ import org.simpleframework.xml.Root;
  * @author Jaroslav Hošek
  * 
  */
-@Root(name = User.XML_ROOT)
+@Root(name = User.XML_ROOT) //TODO co je to za chybu?
 public class RecordCount {
 	public static final String XML_ROOT = "recordCount";
 

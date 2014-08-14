@@ -2,12 +2,14 @@ package cz.zcu.kiv.eeg.mobile.base2.common;
 
 import cz.zcu.kiv.eeg.mobile.base2.data.TaskState;
 import cz.zcu.kiv.eeg.mobile.base2.ws.FetchLayoutsTask;
+import cz.zcu.kiv.eeg.mobile.base2.ws.TaskFragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -23,45 +25,42 @@ import android.widget.TextView;
 public class TaskFragmentActivity extends Activity {
 
 	private static final String TAG = TaskFragmentActivity.class.getSimpleName();
-	
+
 	/**
 	 * Progress dialog informing of common service state.
 	 */
 	protected volatile ProgressDialog progressDialog;
-    public int  max = 0;
-    public int progress = 0;
-    public boolean isRunning = false;
-    
-    public void setPokus(){
-    	
-    }
+	protected TaskFragment mTaskFragment;
+	protected AlertDialog dialog;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.i(TAG, "onCreate(Bundle)");	
+	}
 
 	@Override
 	protected void onResume() {
-		// TODO obnovit stav progresu
-		Log.i(TAG, "onResume()");
-		super.onResume();
-		/*if (progressDialog != null) {
-			if (progressDialog.getProgress() < progressDialog.getMax()) {
-				progressDialog.show();		
-			}
-		}else{
-			if(isRunning){
-				initProgressBar(max, "pokus", progress);
-			}			
-		}*/
+		Log.i(TAG, "onResume()");				
+		super.onResume();	
+		if(mTaskFragment != null){			
+			mTaskFragment.restoreProgressBar();
+		}
 	}
 
-	public void initProgressBar(final int max, final String title,final int init) {
+	public void initProgressBar(final int max, final String title, final int init) {
 		Log.i(TAG, "init");
 		final Context cx = this;
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			@Override
 			public void run() {
+				if(progressDialog != null){
+					progressDialog.dismiss();
+				}
 				progressDialog = new ProgressDialog(cx);
 				progressDialog.setTitle(title);
-				progressDialog.setMax(max);
-				progressDialog.setProgress(init); //0
+				progressDialog.setMax(max);	
+				progressDialog.incrementProgressBy(init);					
 				progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 				progressDialog.setCancelable(false);
 				progressDialog.setIndeterminate(false);
@@ -69,16 +68,28 @@ public class TaskFragmentActivity extends Activity {
 			}
 		});
 	}
-
-	public void incrementProgressBy(final int diff) {
-		Log.i(TAG, "onProgressIncrement(" + diff + "%)");
+	
+	public void resetProgress(final int max, final String title) {
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			@Override
 			public void run() {
-				if (progressDialog != null) {
-					progressDialog.incrementProgressBy(diff);
+				if (progressDialog != null) {					
+					progressDialog.setTitle(title);
+					progressDialog.setMax(max);	
+					progressDialog.incrementProgressBy(0);								
 				}
+			}
+		});
+	}
 
+	public void incrementProgressBy(final int i) {		
+		Log.i(TAG, "onProgressIncrement(" + i + "%)");
+		new Handler(Looper.getMainLooper()).post(new Runnable() {
+			@Override
+			public void run() {
+				if (progressDialog != null) {					
+					 progressDialog.incrementProgressBy(i);
+				}
 			}
 		});
 	}
@@ -111,11 +122,14 @@ public class TaskFragmentActivity extends Activity {
 						}
 						break;
 					case ERROR:
+						if (progressDialog != null && progressDialog.isShowing()) {
+							progressDialog.dismiss();
+						}
 						showAlert(message);
 					default:
 						break;
 					}
-				} catch (Exception e) {				
+				} catch (Exception e) {
 					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
 			}
@@ -147,8 +161,9 @@ public class TaskFragmentActivity extends Activity {
 	 * @param closeActivity close activity on confirmation
 	 */
 	public void showAlert(final String alert, final boolean closeActivity) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(alert).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+			
+		dialogBuilder.setMessage(alert).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
@@ -157,14 +172,22 @@ public class TaskFragmentActivity extends Activity {
 				}
 			}
 		});
-		builder.create().show();
+		
+		dialog = dialogBuilder.create();
+		dialog.show();		
 	}
+	
+	
 
 	@Override
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
+
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
+		}
+		if (dialog != null) {	
+			dialog.dismiss();
 		}
 		super.onPause();
 	}

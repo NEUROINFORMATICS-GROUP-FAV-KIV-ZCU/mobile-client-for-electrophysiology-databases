@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
-import java.util.List;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 

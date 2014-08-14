@@ -130,8 +130,7 @@ public class FieldSelectFragment extends Fragment {
 		}
 	}
 
-	private void saveChanges() {
-		// TODO rozšířím o další options
+	private void saveChanges() {		
 		if(property == null){
 			Layout layout = new Layout(layoutName);
 			property = new LayoutProperty(field, layout);
@@ -160,12 +159,7 @@ public class FieldSelectFragment extends Fragment {
 			activity.finish();
 			return true;
 		case R.id.form_add_field:
-			addSelectField(Values.ACTION_ADD);
-			/*Intent data = new Intent();
-			data.putExtra(Field.FIELD_ID, newFields);
-			activity.setResult(Activity.RESULT_OK, data);
-			activity.finish();*/
-			
+			addSelectField(Values.ACTION_ADD);					
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

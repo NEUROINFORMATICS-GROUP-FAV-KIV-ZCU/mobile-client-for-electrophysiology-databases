@@ -6,6 +6,7 @@ import java.util.List;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
+import cz.zcu.kiv.eeg.mobile.base2.data.Values;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Field;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Form;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
@@ -51,6 +52,7 @@ public class LayoutDAO {
 	public Layout create(String layoutName, String xmlData, Form rootForm, Field minor, Field major) {
 		try {
 			Layout layout = new Layout(layoutName, xmlData , rootForm, major, minor);
+			layout.setState(Values.ACTION_ADD);
 			getLayoutDao().create(layout);
 			return layout;
 		} catch (SQLException e) {

@@ -28,9 +28,15 @@ public class Values {
 	public static final String SERVICE_USER_LOGIN = "/rest/user/";
 	public static final String SERVICE_USER = "/user/";
 	public static final String SERVICE_GET_LAYOUT = "/rest/form-layouts/?form=%s&layout=%s";
-	public static final String SERVICE_GET_COUNT = "/rest/form-layouts/form/count";
+	public static final String SERVICE_LAYOUT = "/rest/form-layouts/?form={formName}&layout={layoutName}";
+	public static final String SERVICE_GET_FORM_COUNT = "/rest/form-layouts/form/count?entity={formName}";
+	public static final String SERVICE_GET_DATA_COUNT = "/rest/form-layouts/data/count?entity={formName}";
+	public static final String SERVICE_POST_DATA   = "/rest/form-layouts/data?entity={formName}";
+	public static final String SERVICE_GET_IDS   = "/rest/form-layouts/data/ids?entity={formName}";//
+	//p    
+			
 	public static final String SERVICE_GET_AVAILABLE_LAYOUTS = "/rest/form-layouts/available";
-	public static final String SERVICE_GET_DATA = "/rest/form-layouts/data?entity=";
+	public static final String SERVICE_GET_DATA = "/rest/form-layouts/data?entity={formName}&id={id}";
 
 	public static final String SERVICE_RESERVATION = "/reservation/";
 	public static final String SERVICE_ARTIFACTS = "/experiments/artifacts";

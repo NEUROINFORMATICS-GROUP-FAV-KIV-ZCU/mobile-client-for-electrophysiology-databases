@@ -13,7 +13,6 @@ import java.util.Vector;
 //import odml.core.Reader;
 //import odml.core.Section;
 
-
 import odml.core.Reader;
 import odml.core.Section;
 import odml.core.Writer;
@@ -43,7 +42,7 @@ public class FormBuilder {
 	private String xmlData;
 	private Section odmlForm;
 	private Section odmlRoot;
-	private String layoutName;
+	private ArrayList<Layout> subLayouts = new ArrayList<Layout>();
 
 	public FormBuilder(DAOFactory daoFactory, ResponseEntity<Resource> data) {
 		this.daoFactory = daoFactory;
@@ -52,11 +51,11 @@ public class FormBuilder {
 		try {
 			reader = new Reader();
 			this.xmlData = getStringFromInputStream(data.getBody().getInputStream());
-			 //this.xmlData = getStringFromInputStream(readOdmlFromFile()); // todo testovaci odstranit tadz to nebude
+			// this.xmlData = getStringFromInputStream(readOdmlFromFile()); // todo testovaci odstranit tadz to nebude
 			// treba
 
 			odmlRoot = reader.load(data.getBody().getInputStream());
-			 //odmlRoot = reader.load(readOdmlFromFile());// todo testovaci
+			// odmlRoot = reader.load(readOdmlFromFile());// todo testovaci
 			odmlForm = odmlRoot.getSection(0);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
@@ -86,8 +85,9 @@ public class FormBuilder {
 					xmlData = stream.toString();
 
 					Layout subLayout = saveLayout(section, subform);
+					subLayouts.add(subLayout);
 					saveFormLayouts(subform, layout, subLayout);
-					saveField(section, form, subform, layout, subLayout);				
+					saveField(section, form, subform, layout, subLayout);
 					createFields(section.getSections(), subform, subLayout);
 				} else {
 					saveField(section, form, null, layout, null);
@@ -104,24 +104,24 @@ public class FormBuilder {
 		String name;
 		Field major = null;
 		Field minor = null;
-		
+
 		if (formSection.getProperty(Layout.LAYOUT_NAME) != null) {
-			name =  formSection.getProperty(Layout.LAYOUT_NAME).getText();
+			name = formSection.getProperty(Layout.LAYOUT_NAME).getText();
 		}
 		// na serveru generatoru to chce upravit - neuklada se layout pro podformulář
 		name = formSection.getReference() + "-generated";
-		
+
 		if (formSection.getProperty("previewMajor") != null) {
 			String fieldName = formSection.getProperty("previewMajor").getText();
 			major = createPrevField(fieldName, form);
 		}
-			
+
 		if (formSection.getProperty("previewMinor") != null) {
 			String fieldName = formSection.getProperty("previewMinor").getText();
 			minor = createPrevField(fieldName, form);
 		}
-		
-		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, xmlData, form, major, minor);		
+
+		Layout layout = daoFactory.getLayoutDAO().saveOrUpdate(name, xmlData, form, major, minor);
 		if (layout == null) {
 			layout = daoFactory.getLayoutDAO().getLayout(name);
 		}
@@ -129,16 +129,16 @@ public class FormBuilder {
 	}
 
 	private void saveFormLayouts(Form form, Layout layout) {
-		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, layout);
+		daoFactory.getFormLayoutsDAO().create(form, layout);
 	}
-	
-	private void saveFormLayouts(Form form, Layout rootLayout, Layout layout) {
-		daoFactory.getFormLayoutsDAO().saveOrUpdate(form, rootLayout, layout);
+
+	private void saveFormLayouts(Form form, Layout rootLayout, Layout sublayout) {
+		daoFactory.getFormLayoutsDAO().create(form, rootLayout, sublayout);
 	}
 
 	private void saveField(Section fieldSection, Form form, Form subForm, Layout layout, Layout subLayout) {
 		Field field = daoFactory.getFieldDAO().getField(fieldSection.getName(), form.getType());
-
+	
 		if (field == null) {
 			field = new Field(fieldSection.getName(), fieldSection.getType(), form, Values.STRING);
 			setTextboxOptions(fieldSection, field);
@@ -147,9 +147,16 @@ public class FormBuilder {
 			field.setType(fieldSection.getType());
 			setTextboxOptions(fieldSection, field);
 			daoFactory.getFieldDAO().update(field);
+		} else {
+			field.setType(fieldSection.getType());
+			setTextboxOptions(fieldSection, field);
+			daoFactory.getFieldDAO().update(field);
 		}
 
-		LayoutProperty property = new LayoutProperty(field, layout);
+		LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
+		if (property == null) {
+			property = new LayoutProperty(field, layout);
+		}		
 
 		if (fieldSection.getProperty("label") != null) {
 			property.setLabel(fieldSection.getProperty("label").getText());
@@ -159,15 +166,23 @@ public class FormBuilder {
 		}
 		if (fieldSection.getProperty("idTop") != null) {
 			property.setIdTop(Integer.parseInt(fieldSection.getProperty("idTop").getText()));
+		} else {
+			property.setIdTop(0);
 		}
 		if (fieldSection.getProperty("idBottom") != null) {
-			property.setIdTop(Integer.parseInt(fieldSection.getProperty("idBottom").getText()));
+			property.setIdBottom(Integer.parseInt(fieldSection.getProperty("idBottom").getText()));
+		}else {
+			property.setIdBottom(0);
 		}
 		if (fieldSection.getProperty("idLeft") != null) {
 			property.setIdLeft(Integer.parseInt(fieldSection.getProperty("idLeft").getText()));
+		}else {
+			property.setIdLeft(0);
 		}
 		if (fieldSection.getProperty("idRight") != null) {
-			property.setIdLeft(Integer.parseInt(fieldSection.getProperty("idRight").getText()));
+			property.setIdRight(Integer.parseInt(fieldSection.getProperty("idRight").getText()));
+		}else {
+			property.setIdRight(0);
 		}
 		if (fieldSection.getProperty("weight") != null) {
 			property.setWeight(Integer.parseInt(fieldSection.getProperty("weight").getText()));
@@ -230,8 +245,7 @@ public class FormBuilder {
 		return prew;
 	}
 
-
-	private static String getStringFromInputStream(InputStream is) {
+	public static String getStringFromInputStream(InputStream is) {
 		BufferedReader br = null;
 		StringBuilder sb = new StringBuilder();
 
@@ -269,5 +283,9 @@ public class FormBuilder {
 			Log.e(TAG, e.getMessage());
 		}
 		return is;
+	}
+
+	public ArrayList<Layout> getSubLayouts() {
+		return subLayouts;
 	}
 }

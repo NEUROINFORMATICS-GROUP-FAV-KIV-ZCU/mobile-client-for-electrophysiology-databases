@@ -33,6 +33,9 @@ public class FieldDAO {
 	}
 
 	private Dao<Field, Integer> getFieldDao() throws SQLException {
+		if(databaseHelper == null){
+			return null;
+		}
 		return databaseHelper.getFieldDao();
 	}
 

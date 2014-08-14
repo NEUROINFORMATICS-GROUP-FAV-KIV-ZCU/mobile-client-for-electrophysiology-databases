@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.mobile.base2.data.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 

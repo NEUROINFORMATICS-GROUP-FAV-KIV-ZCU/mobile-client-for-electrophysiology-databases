@@ -89,7 +89,7 @@ public class DummyTask extends AsyncTask<Void, Integer, Void> {
 
 	@Override
 	protected void onProgressUpdate(Integer... percent) {
-		fragment.setState(percent[0]);
+		//todo zakomentoval jsem to v taskfragmentu fragment.setState(percent[0]);
 	}
 
 	@Override
