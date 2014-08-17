@@ -12,7 +12,7 @@
         are limited and maybe bugged sometimes. Thank you for your patience and bug reporting on GitHub project site!</string>
     <string name="app_intro">This application was created in order to cover basic needs of EEG researchers.\n
         \n
-        By clicking on drop-down menu in left upper corner you can select from following sections:\n       
+        By clicking on drop-down menu in left upper corner you can select or create workspace.\n       
         \n
         Hopefully you will find this application useful!</string>
     <string name="action_settings">Settings</string>
@@ -107,6 +107,7 @@
     <string name="field_was_created">The field was created</string>
     <string name="field_was_edited">The field was edited</string>
     <string name="field_description">Description</string>
+    <string name="field_description_u">description</string>
     <string name="field_datatype">Data type</string>
     <string name="field_minLength">Minimum length</string>
     <string name="field_maxLength">Maximum length</string>

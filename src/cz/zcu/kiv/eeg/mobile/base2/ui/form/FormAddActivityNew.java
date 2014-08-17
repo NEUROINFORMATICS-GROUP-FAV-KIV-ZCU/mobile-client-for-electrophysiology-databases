@@ -267,11 +267,16 @@ public class FormAddActivityNew extends TaskFragmentActivity {
 			showAlert(getString(R.string.error_empty_type), false);
 		} else {
 			Field field = daoFactory.getFieldDAO().getField(getString(R.string.field_description), form.getType());
-			if (field == null) {
+			Field field2 = daoFactory.getFieldDAO().getField(getString(R.string.field_description_u), form.getType());
+			if(field == null && field2 == null){
 				field = new Field(getString(R.string.field_description), Values.TEXTBOX, form, Values.STRING);
 				field = daoFactory.getFieldDAO().create(field);
+			}else{
+				if(field == null){
+					field = field2;
+				}
 			}
-
+			
 			Layout layout = daoFactory.getLayoutDAO().create(name, null, form, null, field);
 			daoFactory.getFormLayoutsDAO().create(form, layout);
 

@@ -105,7 +105,7 @@ public class UIForm extends UIElement {
 			button_param.addRule(RelativeLayout.ALIGN_BOTTOM, label.getId());
 			button_param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			button_param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-
+		
 			subLayout = vb.getDaoFactory().getLayoutDAO().getLayout(property.getSubLayout().getName());		
 
 			if(vb.getFormMode() != Values.FORM_EDIT_LAYOUT){

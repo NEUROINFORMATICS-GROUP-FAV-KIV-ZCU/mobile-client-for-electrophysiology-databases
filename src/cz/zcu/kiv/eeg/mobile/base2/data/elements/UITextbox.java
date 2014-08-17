@@ -127,12 +127,12 @@ public class UITextbox extends UIElement {
 			}
 		}
 
-		else if (field.getDataType().equalsIgnoreCase(Values.DATE)) {
-			if (!ValidationUtils.isDateValid(data, "dd/MM/yyyy")) {
-				error += property.getLabel() + fragment.getString(R.string.error_invalid_date_format) + "\n";
-				isError = true;
-			}
-		}
+		/*else if (field.getDataType().equalsIgnoreCase(Values.DATE)) {
+				if (!ValidationUtils.isDateValid(data, "dd/MM/yyyy")) {
+					error += property.getLabel() + fragment.getString(R.string.error_invalid_date_format) + "\n";
+					isError = true;
+				}			
+		}*/
 
 		if (!isError) {
 			if (data != null) {

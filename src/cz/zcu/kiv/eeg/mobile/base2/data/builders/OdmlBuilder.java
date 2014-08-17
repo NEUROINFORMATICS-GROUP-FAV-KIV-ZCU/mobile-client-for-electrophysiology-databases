@@ -41,6 +41,9 @@ public class OdmlBuilder {
 				LayoutProperty layoutProperty = element.getProperty();
 				
 				Section section = new Section(field.getName(), field.getType());
+				if(field.getType().equalsIgnoreCase(Values.FORM)){
+					section.setReference(field.getForm().getType());
+				}
 
 				Property id = new Property(Values.ODML_ID_NODE, i);
 				property.setType(Values.ODML_INT_TYPE);

@@ -243,9 +243,9 @@ public class FetchDataTask extends AsyncTask<Void, Integer, HashMap<String, Layo
 						databuilder.getData();
 						publishProgress(1);
 
-						if (i == 15) {
+						/*if (i == 15) {
 							break;
-						}
+						}*/
 					}
 				}
 			} catch (Exception e) {

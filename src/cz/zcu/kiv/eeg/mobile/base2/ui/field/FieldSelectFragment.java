@@ -118,12 +118,14 @@ public class FieldSelectFragment extends Fragment {
 			
 			daoFactory.getFieldDAO().update(field);				
 
-			if (!fieldAdapter.isEmpty()) {
+			if (!fieldAdapter.isEmpty()) {												
+				property.setLabel(field.getName());								
 				fieldSpinner.setSelection(0, true);
-				field = (Field) fieldSpinner.getItemAtPosition(0);			
-				property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
-				property.setLabel(field.getName());
-				initFields(field.getName());								
+				field = (Field) fieldSpinner.getItemAtPosition(0);
+				if(field != null){
+					property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layoutName);
+					initFields(field.getName());
+				}			
 			} else {
 				removeFieldData();
 			}
@@ -132,8 +134,11 @@ public class FieldSelectFragment extends Fragment {
 
 	private void saveChanges() {		
 		if(property == null){
-			Layout layout = new Layout(layoutName);
+			Layout layout = new Layout(layoutName);		
 			property = new LayoutProperty(field, layout);
+			if(field.getType().equalsIgnoreCase(Values.FORM)){
+				property.setSubLayout(layout);
+			}
 		}
 		
 		property.setLabel(label.getText().toString());

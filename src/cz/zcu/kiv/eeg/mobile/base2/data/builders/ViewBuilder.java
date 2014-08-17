@@ -32,6 +32,7 @@ import cz.zcu.kiv.eeg.mobile.base2.data.model.Layout;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.LayoutProperty;
 import cz.zcu.kiv.eeg.mobile.base2.data.model.MenuItems;
 import cz.zcu.kiv.eeg.mobile.base2.ui.form.FormDetailsFragment;
+
 /**
  * 
  * @author Jaroslav Hošek
@@ -60,13 +61,13 @@ public class ViewBuilder {
 
 	public ViewBuilder(FormDetailsFragment fragment, Layout layout, int datasetRecordId, int formMode, MenuItems menu,
 			DAOFactory daoFactory) {
-		super();	
+		super();
 		this.fragment = fragment;
 		this.layout = layout;
 		this.daoFactory = daoFactory;
 		this.formMode = formMode;
 		this.menu = menu;
-		this.ctx = fragment.getActivity();		
+		this.ctx = fragment.getActivity();
 		dataset = daoFactory.getDataSetDAO().getDataSet(layout.getRootForm(), datasetRecordId, menu.getParentId());
 		elements = new SparseArray<UIElement>();
 	}
@@ -84,7 +85,7 @@ public class ViewBuilder {
 				System.out.println("test");
 			}
 		} catch (Exception e) {
-			Log.e(TAG,e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return createForm();
 	}
@@ -98,32 +99,32 @@ public class ViewBuilder {
 	public UIElement createView(String name, String reference, boolean asTemplate) {
 		Field field = daoFactory.getFieldDAO().getField(name, reference);
 		LayoutProperty property = daoFactory.getLayoutPropertyDAO().getProperty(field.getId(), layout.getName());
-		
+
 		if (asTemplate) {
 			property.setIdNode(availabelId);
 		}
 
-		String type = field.getType();		
-		UIElement element = null;		
-		
+		String type = field.getType();
+		UIElement element = null;
+
 		if (type.equalsIgnoreCase("textbox")) {
 			element = new UITextbox(field, property, daoFactory, ctx, fragment, this);
-			
+
 		} else if (type.equalsIgnoreCase(Values.CHECKBOX)) {
 			element = new UICheckbox(field, property, daoFactory, ctx, fragment, this);
 		} else if (type.equalsIgnoreCase("combobox")) {
 			element = new UICombobox(field, property, daoFactory, ctx, fragment, this);
 		} else if (type.equalsIgnoreCase("choice")) {
 			element = new UITextbox(field, property, daoFactory, ctx, fragment, this);
-		} else if (type.equalsIgnoreCase(Values.FORM)) {		
-			element = new UIForm(field, property, daoFactory, ctx, fragment, this);	
+		} else if (type.equalsIgnoreCase(Values.FORM)) {
+			element = new UIForm(field, property, daoFactory, ctx, fragment, this);
 		}
-	
+
 		elements.put(property.getIdNode(), element);
 		availabelId++;
 		return element;
 	}
-	
+
 	// z načtených view vytvořím layout (průchod zleva doprava a dolu)
 	private LinearLayout createForm() { // TODO create form
 		formLayout = new LinearLayout(ctx);
@@ -152,10 +153,10 @@ public class ViewBuilder {
 				rowLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 						LinearLayout.LayoutParams.MATCH_PARENT));// WRAP_CONTENT
 
-				UIElement element = getElement(nodeId);				
-				if(formMode == Values.FORM_EDIT_DATA || formMode == Values.FORM_EDIT_SUBFORM){
+				UIElement element = getElement(nodeId);
+				if (formMode == Values.FORM_EDIT_DATA || formMode == Values.FORM_EDIT_SUBFORM) {
 					element.initData(dataset);
-				}		
+				}
 				element.setDiffWeight(10);
 				View view = element.getWrapLayout();
 				rowLayout.addView(getNewColumnButton(false));
@@ -190,7 +191,7 @@ public class ViewBuilder {
 		}
 		return rootLayout;
 	}
-	
+
 	public void addFieldToForm(int fieldId, boolean isEnabledMove, Activity activity) {
 		Field field = daoFactory.getFieldDAO().getField(fieldId);
 		UIElement node = createView(field.getName(), field.getForm().getType(), true);
@@ -213,15 +214,29 @@ public class ViewBuilder {
 			node.setLocalEdit(this, activity);
 		}
 		// pole přidávám na předposlední řádek, poslední řádek slouží v editoru k přesunu
-		formLayout.addView(rowLayout, formLayout.getChildCount() - 1);		
+		
+		formLayout.removeViewAt(formLayout.getChildCount() - 1);
+		formLayout.addView(rowLayout, formLayout.getChildCount() - 1);
+		
+		// editor - poslední přidávácí řádek
+		LinearLayout lastLine = new LinearLayout(ctx);
+		lastLine.setOrientation(LinearLayout.HORIZONTAL);
+		lastLine.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT));
+		lastLine.addView(getNewColumnButton(isEnabledMove));
+		lastLine.addView(getNewColumnButton(false));
+		if(isEnabledMove){
+			lastLine.setVisibility(View.VISIBLE);
+		}
+		formLayout.addView(lastLine);
 	}
 
-	public void removeFieldFromDB(int fieldId) {			
+	public void removeFieldFromDB(int fieldId) {
 		for (int i = 0; i < formLayout.getChildCount(); i++) {
-			ViewGroup rowLayout = (ViewGroup) formLayout.getChildAt(i);			
+			ViewGroup rowLayout = (ViewGroup) formLayout.getChildAt(i);
 			for (int j = 0; j < rowLayout.getChildCount(); j++) {
 				ViewGroup wrapLayout = (ViewGroup) rowLayout.getChildAt(j);
-				if(wrapLayout.getTag(R.id.FIELD_ID) != null){
+				if (wrapLayout.getTag(R.id.FIELD_ID) != null) {
 					int id = (Integer) wrapLayout.getTag(R.id.FIELD_ID);
 					if (id == fieldId) {
 						if (rowLayout.getChildCount() == 3) { // pole plus dva postraní sloupce
@@ -230,14 +245,14 @@ public class ViewBuilder {
 						} else {
 							rowLayout.removeViewAt(j);
 							elements.remove(id);
-						}						
+						}
 						return;
 					}
-				}		
+				}
 			}
 		}
 		daoFactory.getFieldDAO().delete(fieldId);
-		
+
 	}
 
 	public void removeFieldFromForm(int fieldId) {
@@ -343,7 +358,7 @@ public class ViewBuilder {
 		Button button = new Button(ctx);
 		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT));
-		button.setOnDragListener(new LayoutDragListener(ctx, elements));//, nodes));
+		button.setOnDragListener(new LayoutDragListener(ctx, elements));// , nodes));
 		button.setText(" ");
 		button.setTag(R.id.NODE_ID, -1);
 		layout.addView(button);
@@ -358,29 +373,29 @@ public class ViewBuilder {
 
 	// slouží k uložení/aktualizace do databáze
 	public int saveFormData(int datasetRecordID) {
-				
+
 		Form form = layout.getRootForm();
 		Dataset dataset;
-			
-		if (formMode != Values.FORM_NEW_DATA) {	
-			dataset = daoFactory.getDataSetDAO().getDataSet(layout.getRootForm(),datasetRecordID, menu.getParentId());
+
+		if (formMode != Values.FORM_NEW_DATA) {
+			dataset = daoFactory.getDataSetDAO().getDataSet(layout.getRootForm(), datasetRecordID, menu.getParentId());
 
 		} else {
 			dataset = new Dataset(form, menu.getParentId(), Values.ACTION_ADD);
 			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
-			
-			//kvůli podformulářům		
-			dataset.setRecordId(dataset.getId());		
+
+			// kvůli podformulářům
+			dataset.setRecordId(dataset.getId());
 			daoFactory.getDataSetDAO().saveOrUpdate(dataset);
 		}
 
 		for (int i = 0; i < elements.size(); i++) {
-			error += elements.valueAt(i).createOrUpdateData(dataset);	
+			error += elements.valueAt(i).createOrUpdateData(dataset);
 		}
-		if(!error.equalsIgnoreCase("")){
-			if(formMode == Values.FORM_NEW_DATA){
+		if (!error.equalsIgnoreCase("")) {
+			if (formMode == Values.FORM_NEW_DATA) {
 				daoFactory.getDataSetDAO().delete(dataset.getId());
-			}									
+			}
 			return -1;
 		}
 		return dataset.getId();
@@ -390,7 +405,7 @@ public class ViewBuilder {
 		rootID = Integer.MAX_VALUE;
 
 		for (int i = 0; i < elements.size(); i++) {
-			int childID = elements.keyAt(i);					
+			int childID = elements.keyAt(i);
 			// rootID je vždy nejnižší id na layoutu
 			if (childID < rootID) {
 				rootID = childID;
@@ -406,14 +421,15 @@ public class ViewBuilder {
 			}
 		}
 	}
-	
-	public void refreshSubforms(){
+
+	public void refreshSubforms() {
 		for (int i = 0; i < elements.size(); i++) {
 			UIElement element = elements.valueAt(i);
-			if(element.getField().getType().equalsIgnoreCase(Values.FORM)){				
-				((UIForm)element).initData(dataset);	
-			};
-					
+			if (element.getField().getType().equalsIgnoreCase(Values.FORM)) {
+				((UIForm) element).initData(dataset);
+			}
+			;
+
 		}
 	}
 
@@ -459,5 +475,5 @@ public class ViewBuilder {
 
 	public void setFormMode(int formMode) {
 		this.formMode = formMode;
-	}	
+	}
 }
