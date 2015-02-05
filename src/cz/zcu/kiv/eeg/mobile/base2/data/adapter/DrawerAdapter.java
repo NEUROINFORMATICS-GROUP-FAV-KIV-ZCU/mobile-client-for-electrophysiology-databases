@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.mobile.base2.data.adapter;
 
 import java.util.ArrayList;
 
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -10,35 +10,50 @@
   <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <android-platform>16</android-platform>
-        <android-maven-plugin-version>3.8.2</android-maven-plugin-version>          
-        <android-version>4.0.1.2</android-version>
-        
+        <android-platform>21</android-platform>
+        <android-version>4.1.2</android-version>
 		<spring-android-version>1.0.1.RELEASE</spring-android-version>
         <simple-version>2.7.1</simple-version>
+        <android-maven-plugin-version>3.8.0</android-maven-plugin-version>
+        <maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
+        <java-version>1.6</java-version>
+        <compatibility.version>21.0.3</compatibility.version>
     </properties>
   
   
-  <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>android</artifactId>
-        <version>${android-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>android-test</artifactId>
-        <version>${android-version}</version>
-      </dependency>
-   
-  
-  <dependency>
+        <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7-appcompat</artifactId>
+        <version>${compatibility.version}</version>
+        <type>apklib</type>
+    </dependency>
+
+    <dependency>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v7-appcompat</artifactId>
+        <version>${compatibility.version}</version>
+        <type>jar</type>
+    </dependency>
+            <dependency>
             <groupId>com.android.support</groupId>
             <artifactId>support-v4</artifactId>
-            <version>19.1.0</version>
-     </dependency>
+            <version>18.0.0</version>
+        </dependency>
+        
+            <dependency>
+    <groupId>com.google.android</groupId>
+    <artifactId>android</artifactId>
+    <version>4.1.1.4</version>
+    <scope>provided</scope>
+  </dependency>
   
+                    <dependency>
+            <groupId>org.gnode</groupId>
+            <artifactId>odml-java-lib</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+ 
    <dependency>
         <groupId>org.springframework.android</groupId>
         <artifactId>spring-android-rest-template</artifactId>
@@ -85,28 +100,33 @@
 
 
  </dependencies>
-  </dependencyManagement>
 
-  <build>
-  <finalName>${project.artifactId}</finalName>
-  <sourceDirectory>src</sourceDirectory>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-          <artifactId>android-maven-plugin</artifactId>
-          <version>${android-maven-plugin-version}</version>
-          <configuration>
-            <sdk>
-              <platform>${android-platform}</platform>
-            </sdk>
-            <undeployBeforeDeploy>true</undeployBeforeDeploy>
-          </configuration>
-          <extensions>true</extensions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <version>${android-maven-plugin-version}</version>
+                <configuration>
+                    <sdk>
+                        <platform>${android-platform}</platform>
+                    </sdk>
+                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                </configuration>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin-version}</version>
+                <configuration>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
   
   <repositories>
     <repository>
@@ -114,6 +134,12 @@
 		<name>Google local repository</name>
         <url>file:${env.ANDROID_HOME}/extras/android/m2repository</url>
     </repository>
+    
+    		<!-- Nexus repository for in-house libs and jars not available in public repos -->
+        <repository>
+            <id>releases</id>
+            <url>http://eeg.kiv.zcu.cz:8081/nexus/content/repositories/releases/</url>
+        </repository>
 </repositories>
 
 </project>
