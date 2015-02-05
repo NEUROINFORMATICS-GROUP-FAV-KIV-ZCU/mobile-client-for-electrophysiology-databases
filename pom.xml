@@ -1,145 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>cz.zcu.kiv.eeg.mobile.base2</groupId>
-  <artifactId>EEGBaseClient</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>apk</packaging>
-  <name>Mobile client for electrophysiology databases</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cz.zcu.kiv.eeg.mobile.base2</groupId>
+	<artifactId>EEGBaseClient</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>apk</packaging>
+	<name>Mobile client for electrophysiology databases</name>
 
-  <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <android-platform>21</android-platform>
-        <android-version>4.1.2</android-version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
+		<android-platform>21</android-platform>
+		<android-version>4.1.2</android-version>
 		<spring-android-version>1.0.1.RELEASE</spring-android-version>
-        <simple-version>2.7.1</simple-version>
-        <android-maven-plugin-version>3.8.0</android-maven-plugin-version>
-        <maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
-        <java-version>1.6</java-version>
-        <compatibility.version>21.0.3</compatibility.version>
-    </properties>
-  
-  
-    <dependencies>
-        <dependency>
-        <groupId>android.support</groupId>
-        <artifactId>compatibility-v7-appcompat</artifactId>
-        <version>${compatibility.version}</version>
-        <type>apklib</type>
-    </dependency>
-
-    <dependency>
-        <groupId>android.support</groupId>
-        <artifactId>compatibility-v7-appcompat</artifactId>
-        <version>${compatibility.version}</version>
-        <type>jar</type>
-    </dependency>
-            <dependency>
-            <groupId>com.android.support</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>18.0.0</version>
-        </dependency>
-        
-            <dependency>
-    <groupId>com.google.android</groupId>
-    <artifactId>android</artifactId>
-    <version>4.1.1.4</version>
-    <scope>provided</scope>
-  </dependency>
-  
-                    <dependency>
-            <groupId>org.gnode</groupId>
-            <artifactId>odml-java-lib</artifactId>
-            <version>1.1.7</version>
-        </dependency>
- 
-   <dependency>
-        <groupId>org.springframework.android</groupId>
-        <artifactId>spring-android-rest-template</artifactId>
-        <version>1.0.1.RELEASE</version>
-    </dependency>
-	
-	<dependency>
-    <groupId>org.simpleframework</groupId>
-    <artifactId>simple-xml</artifactId>
-    <version>2.7.1</version>
-    <exclusions>
-        <!-- StAX is not available on Android -->
-        <exclusion>
-            <artifactId>stax</artifactId>
-            <groupId>stax</groupId>
-        </exclusion>
-        <exclusion>
-            <artifactId>stax-api</artifactId>
-            <groupId>stax</groupId>
-        </exclusion>
-        <!-- Provided by Android -->
-        <exclusion>
-            <artifactId>xpp3</artifactId>
-            <groupId>xpp3</groupId>
-        </exclusion>
-    </exclusions>
-</dependency>
-
-<dependency>
-	<groupId>org.jdom</groupId>
-	<artifactId>jdom2</artifactId>
-	<version>2.0.5</version>
-</dependency>
-<dependency>
-	<groupId>com.j256.ormlite</groupId>
-	<artifactId>ormlite-android</artifactId>
-	<version>4.48</version>
-</dependency>
-<dependency>
-	<groupId>com.j256.ormlite</groupId>
-	<artifactId>ormlite-core</artifactId>
-	<version>4.48</version>
-</dependency>
+		<simple-version>2.7.1</simple-version>
+		<android-maven-plugin-version>3.8.0</android-maven-plugin-version>
+		<maven-compiler-plugin-version>3.1</maven-compiler-plugin-version>
+		<java-version>1.6</java-version>
+		<compatibility.version>21.0.3</compatibility.version>
+	</properties>
 
 
- </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v7-appcompat</artifactId>
+			<version>${compatibility.version}</version>
+			<type>apklib</type>
+		</dependency>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <sourceDirectory>src</sourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                <artifactId>android-maven-plugin</artifactId>
-                <version>${android-maven-plugin-version}</version>
-                <configuration>
-                    <sdk>
-                        <platform>${android-platform}</platform>
-                    </sdk>
-                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
-                </configuration>
-                <extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin-version}</version>
-                <configuration>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-  
-  <repositories>
-    <repository>
-        <id>android-support</id>
-		<name>Google local repository</name>
-        <url>file:${env.ANDROID_HOME}/extras/android/m2repository</url>
-    </repository>
-    
-    		<!-- Nexus repository for in-house libs and jars not available in public repos -->
-        <repository>
-            <id>releases</id>
-            <url>http://eeg.kiv.zcu.cz:8081/nexus/content/repositories/releases/</url>
-        </repository>
-</repositories>
+		<dependency>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v7-appcompat</artifactId>
+			<version>${compatibility.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.android.support</groupId>
+			<artifactId>support-v4</artifactId>
+			<version>18.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>4.1.1.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.gnode</groupId>
+			<artifactId>odml-java-lib</artifactId>
+			<version>1.1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.android</groupId>
+			<artifactId>spring-android-rest-template</artifactId>
+			<version>1.0.1.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.simpleframework</groupId>
+			<artifactId>simple-xml</artifactId>
+			<version>2.7.1</version>
+			<exclusions>
+				<!-- StAX is not available on Android -->
+				<exclusion>
+					<artifactId>stax</artifactId>
+					<groupId>stax</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>stax-api</artifactId>
+					<groupId>stax</groupId>
+				</exclusion>
+				<!-- Provided by Android -->
+				<exclusion>
+					<artifactId>xpp3</artifactId>
+					<groupId>xpp3</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.j256.ormlite</groupId>
+			<artifactId>ormlite-android</artifactId>
+			<version>4.48</version>
+		</dependency>
+		<dependency>
+			<groupId>com.j256.ormlite</groupId>
+			<artifactId>ormlite-core</artifactId>
+			<version>4.48</version>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<version>${android-maven-plugin-version}</version>
+				<configuration>
+					<sdk>
+						<platform>${android-platform}</platform>
+					</sdk>
+					<undeployBeforeDeploy>true</undeployBeforeDeploy>
+				</configuration>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin-version}</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>android-support</id>
+			<name>Google local repository</name>
+			<url>file:${env.ANDROID_HOME}/extras/android/m2repository</url>
+		</repository>
+
+		<!-- Nexus repository for in-house libs and jars not available in public 
+			repos -->
+		<repository>
+			<id>releases</id>
+			<url>http://eeg.kiv.zcu.cz:8081/nexus/content/repositories/releases/
+			</url>
+		</repository>
+	</repositories>
 
 </project>
